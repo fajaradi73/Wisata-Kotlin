@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1037036133695",
+    "firebase_url": "https://wisata-6df91.firebaseio.com",
+    "project_id": "wisata-6df91",
+    "storage_bucket": "wisata-6df91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037036133695:android:183878f715bacb0b75078a",
+        "android_client_info": {
+          "package_name": "com.fajarproject.wisata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037036133695-4l29kfhp42rt8f4md87gnm6bvqkjf6o4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fajarproject.wisata",
+            "certificate_hash": "f95d0ef115d83d4026fce3d321e9df9f2959df60"
+          }
+        },
+        {
+          "client_id": "1037036133695-k258pggm1gvergsfhndqgp2l9dtrlctm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAO_T9chWM6e1qsbTWRq2voTIZWNovs5Y0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037036133695-k258pggm1gvergsfhndqgp2l9dtrlctm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">Travels</string>
+    <string name="network_not_enabled">Gps Tidak Aktif</string>
+    <string name="open_location_settings">Harap mengaktifkan lokasi anda untuk melihat wisata terdekat dengan anda</string>
+    <string name="direction">Tidak ada data untuk akses ketempat, apakah anda mau menggunakan direction untuk mengetahui akses ketempat ini</string>
+    <string name="yes">Buka Pengaturan Lokasi</string>
+    <string name="cancel">Batal</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nearby_tour">Wisata Terdekat</string>
+    <string name="not_found_tour">Wisata Tidak Ditemukan</string>
+    <string name="gps_off">Gps Tidak Aktif</string>
+    <string name="ok">OK</string>
+    <string name="share">Share</string>
+    <string name="like">Like</string>
+
+    ///// id ads mob
+    <string name="ads_native_advance">ca-app-pub-2863783427636380/8887054820</string>
+    <string name="ads_institial">ca-app-pub-2863783427636380/2008168745</string>
+    <string name="ads_banner">ca-app-pub-2863783427636380/9050706350</string>
+    <string name="ads_mob_ID">ca-app-pub-2863783427636380~4401014905</string>
+
+    ///// Login
+    <string name="title_login">Selamat datang di Travels</string>
+    <string name="google">Google</string>
+    <string name="facebook">Facebook</string>
+    <string name="email">Email</string>
+    <string name="buat_akun">Buat Akun</string>
+
+    ///// facebook
+    <string name="facebook_app_id">2435991553382079</string>
+    <string name="fb_login_protocol_scheme">fb2435991553382079</string>
+
+    //// Password
+    <string name="hint_password">Kata sandi Anda harus menyertakan setidaknya satu symbol, satu huruf besar, satu angka dan terdiri atas 8 karakter atau lebih</string>
+    <string name="create_password">Buat kata sandi</string>
+    <string name="change_password">Ganti kata sandi</string>
+    <string name="password">KATA SANDI</string>
+    <string name="show">Tampilkan</string>
+    <string name="hide">Sembunyikan</string>
+    <string name="password_old">KATA SANDI LAMA</string>
+    <string name="new_password">KATA SANDI BARU</string>
+    <string name="password_confirm">kata sandi dan konfirmasi kata sandi tidak cocok</string>
+    <string name="password_8_karakter">Panjang kata sandi minimal harus 8 karakter !!</string>
+    <string name="password_special_karakter">Kata sandi harus memiliki setidaknya satu karakter khusus !!</string>
+    <string name="password_uppercase">Kata sandi harus memiliki setidaknya satu karakter huruf besar !!</string>
+    <string name="password_lowercase">Kata sandi harus memiliki setidaknya satu karakter huruf kecil !!</string>
+    <string name="passwrod_number">Kata sandi harus memiliki setidaknya satu digit angka !!</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    ///////// Toast show
+    <string name="error_resp_json">Internet bermasalah, coba lagi</string>
+    <string name="error_resp_internet_con">Tidak ada koneksi internet, periksa dan hubungkan kembali</string>
+    <string name="toast_cancel">Batalkan</string>
+    <string name="nama_depan">Nama Depan</string>
+    <string name="nama_belakang">Nama Belakang</string>
+    <string name="maps_default">Default</string>
+    <string name="maps_satelite">Satelite</string>
+    <string name="maps_terrain">Medan</string>
+    <string name="jenis_peta">Jenis Peta</string>
+    <string name="detail_peta">Detail Peta</string>
+
+</resources>
