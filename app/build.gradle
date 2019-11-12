@@ -154,6 +154,5 @@ dependencies {
 
     ///// Power Menu
     implementation "com.github.skydoves:powermenu:2.1.2"
-
 }
 apply plugin: 'com.google.gms.google-services'

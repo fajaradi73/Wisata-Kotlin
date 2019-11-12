@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:id="@+id/parent_view"
     android:background="@drawable/ic_background"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".createAccount.CreateAccount">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -40,7 +42,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nama_depan"
+            android:text="@string/namaUser"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:id="@+id/title_firstName"
@@ -50,7 +52,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/firstName"
+            android:id="@+id/userName"
             style="@style/TextLabelWhite"
             android:textSize="16sp"
             android:inputType="text"
@@ -73,7 +75,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nama_belakang"
+            android:text="@string/namaFull"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:id="@+id/title_lastName"
@@ -83,7 +85,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/lastName"
+            android:id="@+id/fullName"
             style="@style/TextLabelWhite"
             android:textSize="16sp"
             android:inputType="text"

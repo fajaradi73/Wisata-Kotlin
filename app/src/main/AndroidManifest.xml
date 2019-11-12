@@ -72,7 +72,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".login.activity.Login"
+            android:name=".login.activity.OpsiLogin"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".login.activity.Login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -80,11 +84,11 @@
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".password.Password"
+        <activity
+            android:name=".password.Password"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />

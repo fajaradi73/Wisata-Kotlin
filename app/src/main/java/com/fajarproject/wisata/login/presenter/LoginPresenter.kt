@@ -8,15 +8,14 @@ import com.facebook.AccessToken
 import com.facebook.GraphRequest
 import com.facebook.GraphResponse
 import com.facebook.login.LoginResult
-import com.fajarproject.wisata.MainActivity
 import com.fajarproject.wisata.createAccount.CreateAccount
-import com.fajarproject.wisata.login.activity.Login
+import com.fajarproject.wisata.login.activity.OpsiLogin
 import com.fajarproject.wisata.util.Constant
 import com.google.firebase.auth.FirebaseUser
 import org.json.JSONException
 import org.json.JSONObject
 
-class LoginPresenter(val context : Login) {
+class LoginPresenter(val context : OpsiLogin) {
 
     fun setUserGoogle(user: FirebaseUser){
         val email       : String?  = user.email

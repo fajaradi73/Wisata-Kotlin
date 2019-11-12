@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.login.LoginManager
-import com.fajarproject.wisata.login.activity.Login
+import com.fajarproject.wisata.login.activity.OpsiLogin
 import com.fajarproject.wisata.nearbyTour.activity.NearbyActivity
 import com.fajarproject.wisata.service.MyService
 import com.fajarproject.wisata.tour.activity.WisataActivity
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         btn_penginapan.setOnClickListener{ view ->
-            startActivity(Intent(this, Login::class.java))
+            startActivity(Intent(this, OpsiLogin::class.java))
             /////// Logout Facebook
             LoginManager.getInstance().logOut()
             ///// Google Logout

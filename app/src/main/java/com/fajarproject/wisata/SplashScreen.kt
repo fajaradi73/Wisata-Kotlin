@@ -9,7 +9,7 @@ import android.os.Handler
 import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
-import com.skydoves.powermenu.PowerMenuItem
+import com.fajarproject.wisata.login.activity.OpsiLogin
 
 
 /**
@@ -27,7 +27,7 @@ class SplashScreen : AppCompatActivity() {
         hideSystemUI()
         handler = Handler()
         handler.postDelayed({
-            startActivity(Intent(applicationContext, MainActivity::class.java))
+            startActivity(Intent(applicationContext, OpsiLogin::class.java))
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
             finish()
         }, 1000)

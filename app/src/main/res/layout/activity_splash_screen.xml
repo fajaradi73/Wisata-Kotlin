@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/parent_view"
     android:background="@drawable/ic_background"
-    tools:context=".login.activity.Login"
+    tools:context=".login.activity.OpsiLogin"
     tools:ignore="ContentDescription,RtlSymmetry">
     <TextView
         android:layout_width="match_parent"
