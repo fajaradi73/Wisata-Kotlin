@@ -11,6 +11,7 @@ import com.fajarproject.wisata.App
 import com.fajarproject.wisata.R
 import com.fajarproject.wisata.ResponseApi.DataTour
 import com.fajarproject.wisata.view.OnItemClickListener
+import com.fajarproject.wisata.widget.ImageLoader
 import kotlinx.android.synthetic.main.adapter_wisata.view.*
 
 class AdapterWisata(private val list: List<DataTour>, private val context : Context) :
@@ -41,7 +42,9 @@ class AdapterWisata(private val list: List<DataTour>, private val context : Cont
         holder.itemView.title_wisata.text   = tour.nama_wisata
         holder.itemView.jam_wisata.text     = tour.jam_buka + " - " + tour.jam_tutup
         holder.itemView.alamat_wisata.text  = tour.alamat_wisata
-        Glide.with(context).load(App.BASE_IMAGE + tour.image_wisata).into(holder.itemView.image_wisata)
+
+        ImageLoader.with(context).load(holder.itemView.image_wisata,App.BASE_IMAGE + tour.image_wisata)
+//        Glide.with(context).load(App.BASE_IMAGE + tour.image_wisata).into(holder.itemView.image_wisata)
     }
 
     class WisataHolder(itemView: View,onItemClickListener: OnItemClickListener?) : RecyclerView.ViewHolder(itemView),View.OnClickListener {

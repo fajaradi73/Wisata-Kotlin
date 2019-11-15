@@ -1,17 +1,25 @@
 package com.fajarproject.wisata.nearbyTour.activity
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.fajarproject.wisata.App
 import com.fajarproject.wisata.R
 import com.fajarproject.wisata.ResponseApi.DataTour
 import com.fajarproject.wisata.nearbyTour.adapter.AdapterNearby
@@ -20,7 +28,16 @@ import com.fajarproject.wisata.service.MyService
 import com.fajarproject.wisata.travelDetails.TravelDetails
 import com.fajarproject.wisata.util.Constant
 import com.fajarproject.wisata.util.InternetCheck
+import com.fajarproject.wisata.util.Util
 import com.fajarproject.wisata.view.OnItemClickListener
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import kotlinx.android.synthetic.main.activity_nearby.*
 
 
@@ -28,7 +45,24 @@ import kotlinx.android.synthetic.main.activity_nearby.*
  * Created by Fajar Adi Prasetyo on 09/10/19.
  */
 
-class NearbyActivity : AppCompatActivity() {
+class NearbyActivity : AppCompatActivity(),LocationListener,
+    GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
+
+    override fun onMapReady(p0: GoogleMap?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                buildGoogleApiClient()
+            } else {
+                buildGoogleApiClient()
+            }
+        }
+    }
+
 
     private var nearbyPresenter : NearbyPresenter? = null
     private var kodeGps : String? = ""
@@ -37,46 +71,33 @@ class NearbyActivity : AppCompatActivity() {
     private var mIntent : IntentFilter? = null
     private var statusReceiver : BroadcastReceiver? = null
 
+    private var mGoogleApiClient : GoogleApiClient? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nearby)
         setToolbar()
         nearbyPresenter = NearbyPresenter(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val serviceIntent = Intent(baseContext, MyService::class.java)
-        startService(serviceIntent)
-    }
-
-    override fun onResume() {
-        super.onResume()
         shimmer_view_container.startShimmerAnimation()
-        InternetCheck(object : InternetCheck.Consumer {
-            override fun accept(internet: Boolean?) {
-                if (internet!!){
-                    LocalBroadcastManager.getInstance(this@NearbyActivity).registerReceiver(broadcastReceiver, IntentFilter("NOW"))
-                }else{
-                    shimmer_view_container.stopShimmerAnimation()
-                    shimmer_view_container.visibility = View.GONE
-                    ll_nodata.visibility = View.VISIBLE
-                }
-            }
-        })
+        init()
     }
 
-    override fun onPause() {
-        if (mIntent != null){
-            unregisterReceiver(statusReceiver)
-            mIntent = null
+    private fun init(){
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.maps_nearby) as SupportMapFragment?
+        mapFragment!!.getMapAsync(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Util.checkLocationPermission(this)
         }
-        super.onPause()
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(Intent(baseContext,MyService::class.java))
+        //show error dialog if Google Play Services not available
+        if (!Util.checkGooglePlayServicesAvailable(this)){
+            Log.d("onCreate", "Google Play Services not available. Ending Test case.")
+            finish()
+        }else{
+            Log.d("onCreate", "Google Play Services available. Continuing.")
+        }
+
     }
 
     private fun setToolbar(){
@@ -109,37 +130,6 @@ class NearbyActivity : AppCompatActivity() {
         })
     }
 
-    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent) {
-                kodeGps     = intent.getStringExtra("kode_gps")
-                latitude    = intent.getDoubleExtra("latitude", 0.0)
-                longitude   = intent.getDoubleExtra("longitude", 0.0)
-                if (kodeGps != null) {
-                    if (kodeGps == "false") {
-                        shimmer_view_container.stopShimmerAnimation()
-                        shimmer_view_container.visibility = View.GONE
-                        rv_nearby.visibility = View.GONE
-                        ll_gps.visibility = View.VISIBLE
-                        btn_ok.setOnClickListener { startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
-                    } else if (kodeGps == "true") {
-                        shimmer_view_container.startShimmerAnimation()
-                        shimmer_view_container.visibility = View.VISIBLE
-                        rv_nearby.visibility = View.VISIBLE
-                        ll_gps.visibility = View.GONE
-                    }
-                }
-                if (latitude != 0.0 && longitude != 0.0) {
-                    InternetCheck(object : InternetCheck.Consumer {
-                        override fun accept(internet: Boolean?) {
-                            if (internet!!){
-                                nearbyPresenter!!.getNearby(latitude.toString(),longitude.toString())
-                            }
-                        }
-                    })
-                }
-            }
-        }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home){
             onBackPressed()
@@ -149,5 +139,84 @@ class NearbyActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return true
+    }
+    override fun onLocationChanged(location: Location?) {
+        latitude    = location!!.latitude
+        longitude   = location.longitude
+
+
+        if (mGoogleApiClient != null){
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
+            mGoogleApiClient!!.connect()
+        }
+        nearbyPresenter!!.getNearby(latitude.toString(),longitude.toString())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (mGoogleApiClient != null && mGoogleApiClient!!.isConnected) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient,
+                this
+            )
+            mGoogleApiClient!!.disconnect()
+        }
+    }
+
+    override fun onConnected(p0: Bundle?) {
+        val locationRequest             = LocationRequest()
+        locationRequest.interval        = 1000
+        locationRequest.fastestInterval = 1000
+        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,locationRequest,this)
+        }
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+        Log.d("connectionSuspended","$p0 ")
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        Log.d("connectionFailed","$p0 ")
+    }
+
+    private fun buildGoogleApiClient() {
+        mGoogleApiClient = GoogleApiClient.Builder(this)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(LocationServices.API)
+            .build()
+        mGoogleApiClient!!.connect()
+
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            App.My_Permissions_Request_Location -> {
+                if (grantResults.isNotEmpty()
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    val permission = ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                    if (permission == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        if (mGoogleApiClient == null) {
+                            buildGoogleApiClient()
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        this,
+                        "permission denied",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 }

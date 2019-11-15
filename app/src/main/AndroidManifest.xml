@@ -75,12 +75,12 @@
             android:name=".login.activity.OpsiLogin"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".login.activity.Login"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".createAccount.CreateAccount"
+            android:name=".register.CreateAccount"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

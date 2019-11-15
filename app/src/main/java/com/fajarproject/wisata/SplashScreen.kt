@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import com.fajarproject.wisata.login.activity.OpsiLogin
+import com.fajarproject.wisata.preference.AppPreference
 
 
 /**
@@ -21,17 +22,17 @@ class SplashScreen : AppCompatActivity() {
 
     lateinit var handler : Handler
 
+    companion object{
+        const val SPLASH_TIME_OUT       = 2000
+        const val SPLASH_TIME_OUT_HALF  = 500
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
         hideSystemUI()
         handler = Handler()
-        handler.postDelayed({
-            startActivity(Intent(applicationContext, OpsiLogin::class.java))
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-            finish()
-        }, 1000)
-
+        checkUser()
     }
 
     private fun hideSystemUI(){
@@ -52,6 +53,21 @@ class SplashScreen : AppCompatActivity() {
             )
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+    }
+    private fun checkUser(){
+        if (AppPreference.getStringPreferenceByName(this,"user").equals("")){
+            handler.postDelayed({
+                startActivity(Intent(applicationContext, OpsiLogin::class.java))
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+                finish()
+            }, SPLASH_TIME_OUT.toLong())
+        }else{
+            handler.postDelayed({
+                startActivity(Intent(applicationContext, MainActivity::class.java))
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+                finish()
+            }, SPLASH_TIME_OUT_HALF.toLong())
         }
     }
 }

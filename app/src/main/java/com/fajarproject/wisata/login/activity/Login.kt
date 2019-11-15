@@ -10,15 +10,24 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.fajarproject.wisata.R
+import com.fajarproject.wisata.login.model.LoginModel
+import com.fajarproject.wisata.login.presenter.LoginPresenter
 import com.fajarproject.wisata.util.Util
 import kotlinx.android.synthetic.main.activity_login.*
 
+/**
+ * Created by Fajar Adi Prasetyo on 09/10/19.
+ */
+
 class Login : AppCompatActivity() {
+
+    private var loginPresenter : LoginPresenter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         setToolbar()
+        loginPresenter = LoginPresenter(this)
         setUI()
     }
 
@@ -40,6 +49,7 @@ class Login : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 enableButton()
+                error_email.visibility = View.GONE
             }
         })
 
@@ -54,6 +64,7 @@ class Login : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 enableButton()
+                error_password.visibility = View.GONE
             }
         })
 
@@ -65,6 +76,12 @@ class Login : AppCompatActivity() {
                 password.transformationMethod = PasswordTransformationMethod()
                 show_hide_password.text = getString(R.string.show)
             }
+        }
+        btn_masuk.setOnClickListener {
+            error_password.visibility   = View.GONE
+            error_email.visibility      = View.GONE
+            val loginModel = LoginModel(email.text.toString(),password.text.toString())
+            loginPresenter!!.loginWisata(loginModel)
         }
     }
 

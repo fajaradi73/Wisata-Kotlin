@@ -12,10 +12,10 @@ class TravelPresenter(private val context: TravelDetails) {
     private val wisataRepository : WisataRepository = WisataRepository()
 
     fun getTravelDetails(id_wisata : String?){
-        Util.showLoadingGIF(context)
+        Util.showLoading(context)
         wisataRepository.getDetailWisata(id_wisata)?.enqueue(object : Callback<DetailWisataResponse?>{
             override fun onResponse(call: Call<DetailWisataResponse?>, response: Response<DetailWisataResponse?>) {
-                Util.hideLoadingGIF()
+                Util.hideLoading()
                 if (response.isSuccessful && response.code() == 200){
                     if (response.body()?.status == 1){
                         context.setDetailWisata(response.body()?.data!!)
@@ -25,7 +25,7 @@ class TravelPresenter(private val context: TravelDetails) {
 
             override fun onFailure(call: Call<DetailWisataResponse?>, t: Throwable) {
                 t.printStackTrace()
-                Util.hideLoadingGIF()
+                Util.hideLoading()
             }
         })
     }

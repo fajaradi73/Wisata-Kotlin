@@ -3,8 +3,6 @@ package com.fajarproject.wisata.login.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +13,7 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.fajarproject.wisata.R
-import com.fajarproject.wisata.createAccount.CreateAccount
+import com.fajarproject.wisata.register.CreateAccount
 import com.fajarproject.wisata.login.presenter.LoginPresenter
 import com.fajarproject.wisata.util.Util
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -125,7 +123,7 @@ class OpsiLogin : AppCompatActivity() {
         }
     }
 
-    private fun loadingGoogle(isShow : Boolean){
+    fun loadingGoogle(isShow : Boolean){
         if(isShow){
             loading_google.visibility   = View.VISIBLE
             Util.changeEnabledStatus(views,false)

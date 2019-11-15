@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Resources.NotFoundException
 import android.graphics.Color
 import android.graphics.PorterDuff.Mode
+import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.fajarproject.wisata.App
 import com.fajarproject.wisata.R
@@ -24,6 +26,7 @@ import com.fajarproject.wisata.util.Constant
 import com.fajarproject.wisata.util.Util
 import com.google.android.ads.nativetemplates.NativeTemplateStyle
 import com.google.android.ads.nativetemplates.TemplateView
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.formats.UnifiedNativeAd
@@ -53,6 +56,7 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
         travelPresenter = TravelPresenter(this)
         id_wisata       = intent.getStringExtra(Constant.IdWisata)
         setNativeAds()
+
     }
 
     private fun setNativeAds(){
@@ -61,10 +65,18 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
         )
 
         builder.forUnifiedNativeAd { unifiedNativeAd ->
-
+            val styles: NativeTemplateStyle? =
+                NativeTemplateStyle.Builder()
+                    .withMainBackgroundColor(ColorDrawable(ContextCompat.getColor(this,R.color.white))).build()
+            adsNative.setStyles(styles)
             adsNative.setNativeAd(unifiedNativeAd)
         }
-
+        builder.withAdListener(object : AdListener() {
+            override fun onAdFailedToLoad(errorCode: Int) {
+                Log.d("errorCode","$errorCode ")
+                adsNative.visibility = View.GONE
+            }
+        })
         val adLoader: AdLoader = builder.build()
         adLoader.loadAd(AdRequest.Builder().addTestDevice("828CDDB6B368965E6B6BB3B6C5321FD6").build())
     }
@@ -84,6 +96,7 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
+
     }
 
     private fun init(){

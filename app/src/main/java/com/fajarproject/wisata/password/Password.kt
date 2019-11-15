@@ -12,6 +12,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.fajarproject.wisata.MainActivity
 import com.fajarproject.wisata.R
+import com.fajarproject.wisata.register.model.RegisterModel
+import com.fajarproject.wisata.register.presenter.RegisterPresenter
+import com.fajarproject.wisata.util.Constant
 import com.fajarproject.wisata.util.Util
 import kotlinx.android.synthetic.main.activity_password.*
 
@@ -20,23 +23,37 @@ import kotlinx.android.synthetic.main.activity_password.*
  * Created by Fajar Adi Prasetyo on 27/10/19.
  */
 
+@SuppressLint("SetTextI18n")
 class Password : AppCompatActivity() {
     lateinit var list: MutableList<String?>
     private var isError : Boolean? = false
+    private var registerPresenter : RegisterPresenter? = null
+    private var username : String? = ""
+    private var fullname : String? = ""
+    private var email    : String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password)
         setToolbar()
         setUI()
+        registerPresenter = RegisterPresenter(this)
+        getDataIntent()
+        setUI()
     }
+
     private fun setToolbar(){
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 //        Util.setColorFilter(toolbar.navigationIcon!!,R.color.white)
     }
 
-    @SuppressLint("SetTextI18n")
+    private fun getDataIntent(){
+        username    = intent.getStringExtra(Constant.userName)
+        fullname    = intent.getStringExtra(Constant.fullName)
+        email       = intent.getStringExtra(Constant.Email)
+    }
+
     private fun setUI(){
         password.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {
@@ -54,25 +71,17 @@ class Password : AppCompatActivity() {
         })
         fab.setOnClickListener {
             list = arrayListOf()
-            if (password.length() == 0){
-                isError = true
+            error_password.visibility = View.GONE
+            if (!checkMandatory()!!){
                 error_password.visibility = View.VISIBLE
-                error_password.text = "Harap untuk memasukkan kata sandi"
-            }else if (!Util.isValidPassword(password.text.toString(),list,this)){
-                error_password.visibility = View.VISIBLE
-                isError = true
-                var string = ""
-                for (error in list) {
-                    string += "- $error\n"
-                }
-                error_password.text = string
             }else {
-                startActivity(Intent(this, MainActivity::class.java))
+                val registerModel = RegisterModel(username!!,fullname!!,email!!,password.text.toString(),"Email")
+                registerPresenter!!.registerWisata(registerModel)
             }
         }
 
-        show_hide_password.setOnClickListener { v: View? ->
-            if (show_hide_password.text == "Tampilkan"){
+        show_hide_password.setOnClickListener {
+            if (show_hide_password.text == getString(R.string.show)){
                 password.transformationMethod = null
                 show_hide_password.text = getString(R.string.hide)
                 showError(isError!!)
@@ -83,6 +92,7 @@ class Password : AppCompatActivity() {
             }
         }
     }
+
     private fun showError(isError : Boolean){
         if (isError){
             error_password.visibility = View.VISIBLE
@@ -100,5 +110,25 @@ class Password : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return true
+    }
+
+    private fun checkMandatory() : Boolean?{
+        var isValid = true
+        if (password.length() == 0){
+            isError = true
+            error_password.text = "Harap untuk memasukkan kata sandi"
+            isValid = false
+        }
+        if (!Util.isValidPassword(password.text.toString(),list,this)) {
+
+            isError = true
+            var string = ""
+            for (error in list) {
+                string += "- $error\n"
+            }
+            error_password.text = string
+            isValid = false
+        }
+        return isValid
     }
 }

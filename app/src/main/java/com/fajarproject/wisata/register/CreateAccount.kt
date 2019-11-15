@@ -1,4 +1,4 @@
-package com.fajarproject.wisata.createAccount
+package com.fajarproject.wisata.register
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.fajarproject.wisata.R
 import com.fajarproject.wisata.password.Password
+import com.fajarproject.wisata.util.Constant
 import com.fajarproject.wisata.util.Util
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_account.*
@@ -38,7 +39,11 @@ class CreateAccount : AppCompatActivity() {
             if (!checkMandatory()!!){
                 Snackbar.make(v!!,"Harap untuk mengisi semua field yang ada",Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }else{
-                startActivity(Intent(this,Password::class.java))
+                val intent = Intent(this,Password::class.java)
+                intent.putExtra(Constant.userName,userName.text.toString())
+                intent.putExtra(Constant.fullName,fullName.text.toString())
+                intent.putExtra(Constant.Email,email.text.toString())
+                startActivity(intent)
             }
         }
     }

@@ -125,5 +125,12 @@
             android:id="@+id/rv_nearby">
 
         </androidx.recyclerview.widget.RecyclerView>
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fitsSystemWindows="true"
+            android:id="@+id/maps_nearby"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+
     </LinearLayout>
 </LinearLayout>

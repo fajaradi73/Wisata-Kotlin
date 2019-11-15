@@ -1,5 +1,6 @@
 package com.fajarproject.wisata.mapsTravels
 
+import android.Manifest
 import android.Manifest.permission
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,6 +16,7 @@ import android.view.View.OnClickListener
 import android.view.WindowManager.LayoutParams
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.akexorcist.googledirection.GoogleDirection
 import com.akexorcist.googledirection.config.GoogleDirectionConfiguration
@@ -25,11 +27,9 @@ import com.akexorcist.googledirection.model.Direction
 import com.akexorcist.googledirection.model.Leg
 import com.akexorcist.googledirection.model.Route
 import com.akexorcist.googledirection.util.DirectionConverter
+import com.fajarproject.wisata.App.Companion.My_Permissions_Request_Location
 import com.fajarproject.wisata.R
-import com.fajarproject.wisata.mapsTravels.adapter.IconMenuAdapter
-import com.fajarproject.wisata.mapsTravels.model.IconPowerMenuItem
 import com.fajarproject.wisata.util.Constant
-import com.fajarproject.wisata.util.PowerMenuUtil
 import com.fajarproject.wisata.util.Util
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.InterstitialAd
@@ -45,7 +45,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
-import com.skydoves.powermenu.*
 import kotlinx.android.synthetic.main.activity_maps_travels.*
 import com.akexorcist.googledirection.DirectionCallback as DirectionCallback1
 
@@ -92,6 +91,11 @@ class MapsTravels : AppCompatActivity(),OnMapReadyCallback,LocationListener,
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            Util.checkLocationPermission(this)
+        }
+
         //show error dialog if Google Play Services not available
         if (!Util.checkGooglePlayServicesAvailable(this)){
             Log.d("onCreate", "Google Play Services not available. Ending Test case.")
@@ -99,6 +103,7 @@ class MapsTravels : AppCompatActivity(),OnMapReadyCallback,LocationListener,
         }else{
             Log.d("onCreate", "Google Play Services available. Continuing.")
         }
+
         btn_close.setOnClickListener { finish() }
         btn_current.setOnClickListener{
             val location : Location = mapsTravels!!.myLocation
@@ -231,11 +236,11 @@ class MapsTravels : AppCompatActivity(),OnMapReadyCallback,LocationListener,
     }
 
     override fun onConnectionSuspended(p0: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d("connectionSuspended","$p0 ")
     }
 
     override fun onConnectionFailed(p0: ConnectionResult) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d("connectionFailed","$p0 ")
     }
 
     private fun buildGoogleApiClient() {
@@ -275,5 +280,37 @@ class MapsTravels : AppCompatActivity(),OnMapReadyCallback,LocationListener,
             setDirection(btn_direction)
         }
 
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            My_Permissions_Request_Location -> {
+                if (grantResults.isNotEmpty()
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    val permission = ContextCompat.checkSelfPermission(this,
+                        permission.ACCESS_FINE_LOCATION)
+                    if (permission == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        if (mGoogleApiClient == null) {
+                            buildGoogleApiClient()
+                        }
+                        mapsTravels!!.isMyLocationEnabled = true
+                    }
+                } else {
+                    Toast.makeText(
+                        this,
+                        "permission denied",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 }

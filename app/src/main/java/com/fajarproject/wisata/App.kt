@@ -29,6 +29,7 @@ class App : Application() {
         const val API           = "http://montechnology.tech/wisatas/"
         const val BASE_IMAGE    = "http://montechnology.tech/wisatas/assets/images/"
         const val BASE_FILE     = "Travels"
+        const val My_Permissions_Request_Location = 99
     }
 
     fun getContext(): Context? {

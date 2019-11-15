@@ -55,10 +55,15 @@
     <string name="namaUser">Username</string>
     <string name="namaFull">Fullname</string>
     <string name="maps_default">Default</string>
-    <string name="maps_satelite">Satelite</string>
+    <string name="maps_satelite">Satellite</string>
     <string name="maps_terrain">Medan</string>
     <string name="jenis_peta">Jenis Peta</string>
     <string name="detail_peta">Detail Peta</string>
     <string name="masuk">Masuk</string>
+    <string name="no">No</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="popular">Popular</string>
+    <string name="user">User</string>
 
 </resources>

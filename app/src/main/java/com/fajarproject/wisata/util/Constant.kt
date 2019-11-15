@@ -8,4 +8,6 @@ object Constant {
     const val typeLogin         = "type_login"
     const val Name              = "NAME"
     const val Email             = "Email"
+    const val userName          = "username"
+    const val fullName          = "fullname"
 }

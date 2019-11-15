@@ -1,10 +1,10 @@
 package com.fajarproject.wisata.util
 
+import android.Manifest
 import android.Manifest.permission
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -25,28 +25,31 @@ import android.text.style.ImageSpan
 import android.util.Base64
 import android.util.Log
 import android.util.Patterns
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.ViewParent
-import android.view.Window
 import android.view.WindowManager.LayoutParams
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
 import com.akexorcist.googledirection.model.Route
 import com.bumptech.glide.Glide
 import com.fajarproject.wisata.App
+import com.fajarproject.wisata.App.Companion.My_Permissions_Request_Location
 import com.fajarproject.wisata.BuildConfig
 import com.fajarproject.wisata.R
+import com.fajarproject.wisata.login.model.User
+import com.fajarproject.wisata.preference.AppPreference
+import com.fajarproject.wisata.view.DialogNoListener
+import com.fajarproject.wisata.view.DialogYesListener
 import com.fajarproject.wisata.widget.ImageLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -59,6 +62,8 @@ import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.InstanceIdResult
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -66,9 +71,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
 import retrofit2.Retrofit.Builder
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.*
+import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
@@ -87,12 +94,22 @@ import java.util.regex.Pattern
  */
 
 
+@SuppressLint("StaticFieldLeak")
 object Util {
     fun getDefaultRetrofit(): Retrofit? {
         return Builder()
             .baseUrl(App.API)
             .client(getOkHttp())
             .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    fun getRetrofitRxJava2() : Retrofit?{
+        return Builder()
+            .baseUrl(App.API)
+            .client(getOkHttp())
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
     }
 
@@ -114,10 +131,14 @@ object Util {
     }
 
     fun getOkHttp(): OkHttpClient {
+        val interceptor =
+            HttpLoggingInterceptor()
+        interceptor.level = Level.BODY
         return OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS).build()
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(interceptor).build()
     }
 
     fun okHttpDownload(): OkHttpClient {
@@ -130,12 +151,11 @@ object Util {
             .writeTimeout(5, TimeUnit.MINUTES)
             .addInterceptor(interceptor).build()
     }
-    private var dialog : ProgressDialog? = null
+    private var dialog : Dialog? = null
 
     private fun progressBar(context : Context){
-        dialog = ProgressDialog(context)
+        dialog = Dialog(context)
         dialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog!!.isIndeterminate = true
         dialog!!.setCancelable(false)
     }
 
@@ -733,12 +753,12 @@ object Util {
         }
         return result
     }
-//    fun getUserToken(context: Context): User {
-//        val type: Type? =
-//            object : TypeToken<User?>() {}.type
-//        return Gson()
-//            .fromJson(AppPreference.getStringPreferenceByName(context, "user"), type)
-//    }
+    fun getUserToken(context: Context): User {
+        val type: Type? =
+            object : TypeToken<User?>() {}.type
+        return Gson()
+            .fromJson(AppPreference.getStringPreferenceByName(context, "user"), type)
+    }
 
     fun getAppVersion() : String? {
         val tmpVersionName: String = BuildConfig.VERSION_NAME
@@ -770,4 +790,83 @@ object Util {
         loadingdialog!!.dismiss()
     }
 
+    private var alertDialog : AlertDialog? = null
+    private var btnYes : Button? = null
+    private var btnNo : Button? = null
+    private fun initShowDialog(activity: Activity,title : String, message : String, isTwoButton : Boolean){
+        if (alertDialog != null && alertDialog!!.isShowing  || activity.isFinishing){
+            // A dialog is already open, wait for it to be dismissed, do nothing
+            println("alert dialog is not null or alert dialog is showing or context (activity) is finishing")
+        }else{
+            alertDialog         = AlertDialog.Builder(activity).create()
+            val inflater        = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewDialog      = inflater.inflate(R.layout.alert_dialog,null)
+            val titleDialog     = viewDialog.findViewById<TextView>(R.id.title_dialog)
+            val messageDialog   = viewDialog.findViewById<TextView>(R.id.message_dialog)
+            btnYes              = viewDialog.findViewById(R.id.btn_yes)
+            btnNo               = viewDialog.findViewById(R.id.btn_no)
+            val viewLine        = viewDialog.findViewById<View>(R.id.view_line)
+            alertDialog!!.setView(viewDialog)
+            alertDialog!!.setCancelable(false)
+            titleDialog.text    = title
+            messageDialog.text  = message
+            if (message.isNotEmpty()){
+                messageDialog.visibility = View.VISIBLE
+            }
+            if (title.isEmpty()){
+                titleDialog.visibility = View.GONE
+            }
+            if (isTwoButton){
+                btnNo!!.visibility       = View.VISIBLE
+                viewLine.visibility    = View.VISIBLE
+                btnYes!!.text = activity.resources.getString(R.string.yes)
+            }
+            alertDialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alertDialog!!.show()
+        }
+    }
+
+    fun showRoundedDialog(activity: Activity,title : String,message: String,isTwoButton: Boolean,dialogYesListener: DialogYesListener,dialogNoListener: DialogNoListener){
+        initShowDialog(activity,title,message,isTwoButton)
+        btnYes!!.setOnClickListener {
+            alertDialog!!.dismiss()
+            dialogYesListener.onYes()
+        }
+        btnNo!!.setOnClickListener {
+            alertDialog!!.dismiss()
+            dialogNoListener.onNo()
+        }
+    }
+    fun showRoundedDialog(activity: Activity,title : String,message: String,isTwoButton: Boolean){
+        initShowDialog(activity,title,message,isTwoButton)
+        btnYes!!.setOnClickListener {
+            alertDialog!!.dismiss()
+        }
+        btnNo!!.setOnClickListener {
+            alertDialog!!.dismiss()
+        }
+    }
+
+    fun checkLocationPermission(context: Activity) {
+        val permission = ContextCompat.checkSelfPermission(context,
+            permission.ACCESS_FINE_LOCATION)
+        if (permission != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
+                ActivityCompat.requestPermissions(
+                    context,
+                    arrayOf<String?>(Manifest.permission.ACCESS_FINE_LOCATION),My_Permissions_Request_Location
+                )
+            } else {
+                ActivityCompat.requestPermissions(
+                    context,
+                    arrayOf<String?>(Manifest.permission.ACCESS_FINE_LOCATION),My_Permissions_Request_Location
+                )
+            }
+        }
+    }
 }

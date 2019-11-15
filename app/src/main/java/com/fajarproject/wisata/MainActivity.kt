@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.facebook.login.LoginManager
 import com.fajarproject.wisata.login.activity.OpsiLogin
 import com.fajarproject.wisata.nearbyTour.activity.NearbyActivity
+import com.fajarproject.wisata.preference.AppPreference
 import com.fajarproject.wisata.service.MyService
 import com.fajarproject.wisata.tour.activity.WisataActivity
 import com.fajarproject.wisata.util.Constant
@@ -35,26 +36,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun init(){
         btn_nearby.setOnClickListener{ view ->
-            val permissionlistener: PermissionListener =
-                object : PermissionListener {
-                    override fun onPermissionGranted() {
-                        startActivity(Intent(this@MainActivity,
-                            NearbyActivity::class.java))
-                    }
-
-                    override fun onPermissionDenied(deniedPermissions: List<String?>) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Permission Denied\n$deniedPermissions",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            TedPermission.with(this@MainActivity).setPermissionListener(permissionlistener)
-                .setDeniedMessage("Jika Anda menolak izin, Anda tidak dapat menggunakan layanan ini\n\nSilakan aktifkan izin di [Pengaturan] > [Izin]")
-                .setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
-                .check()
-
+            startActivity(Intent(this@MainActivity,
+                NearbyActivity::class.java))
         }
         btn_bukit.setOnClickListener{ view ->
             val intent = Intent(this,WisataActivity::class.java)
@@ -82,11 +65,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         btn_penginapan.setOnClickListener{ view ->
-            startActivity(Intent(this, OpsiLogin::class.java))
+            AppPreference.writePreference(this,"user","")
             /////// Logout Facebook
             LoginManager.getInstance().logOut()
             ///// Google Logout
             FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(this, OpsiLogin::class.java))
+            finish()
         }
 
     }

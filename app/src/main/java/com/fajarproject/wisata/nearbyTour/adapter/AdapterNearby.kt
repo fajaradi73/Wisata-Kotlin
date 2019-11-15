@@ -11,6 +11,7 @@ import com.fajarproject.wisata.App
 import com.fajarproject.wisata.R
 import com.fajarproject.wisata.ResponseApi.DataTour
 import com.fajarproject.wisata.view.OnItemClickListener
+import com.fajarproject.wisata.widget.ImageLoader
 import kotlinx.android.synthetic.main.adapter_nearby.view.*
 
 /**
@@ -45,7 +46,8 @@ class AdapterNearby(private val list:List<DataTour>, val context : Context) : Re
         val nearby = list[position]
         holder.itemView.title_wisata.text = nearby.nama_wisata
         holder.itemView.jarak_wisata.text = "Jarak > " + String.format("%.2f", nearby.distance.toDouble()) + "Km"
-        Glide.with(context).load(App.BASE_IMAGE + nearby.image_wisata).into(holder.itemView.image_wisata)
+        ImageLoader.with(context).load(holder.itemView.image_wisata,App.BASE_IMAGE + nearby.image_wisata)
+//        Glide.with(context).load(App.BASE_IMAGE + nearby.image_wisata).into(holder.itemView.image_wisata)
     }
 
     class NearbyHolder(itemView: View,onItemClickListener: OnItemClickListener?) : RecyclerView.ViewHolder(itemView),View.OnClickListener {
