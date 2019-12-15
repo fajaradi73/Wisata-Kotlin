@@ -6,14 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
 import com.fajarproject.travels.ResponseApi.DataTour
+import com.fajarproject.travels.tour.model.WisataModel
+import com.fajarproject.travels.tour.presenter.TourPresenter
+import com.fajarproject.travels.util.Util
 import com.fajarproject.travels.view.OnItemClickListener
 import com.fajarproject.travels.widget.ImageLoader
+import com.like.LikeButton
+import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.adapter_wisata.view.*
 
-class AdapterWisata(private val list: List<DataTour>, private val context : Context) :
+class AdapterWisata(private val list: List<WisataModel>, private val context : Context, private val presenter: TourPresenter) :
     RecyclerView.Adapter<AdapterWisata.WisataHolder>() {
 
     private var onItemClickListener : OnItemClickListener? = null
@@ -38,12 +44,23 @@ class AdapterWisata(private val list: List<DataTour>, private val context : Cont
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: WisataHolder, position: Int) {
         val tour = list[position]
-        holder.itemView.title_wisata.text   = tour.nama_wisata
-        holder.itemView.jam_wisata.text     = tour.jam_buka + " - " + tour.jam_tutup
-        holder.itemView.alamat_wisata.text  = tour.alamat_wisata
+        holder.itemView.title_wisata.text   = tour.namaWisata
+        holder.itemView.jam_wisata.text     = Util.milisecondTotimes(tour.jamBuka!!) + " - " + Util.milisecondTotimes(tour.jamTutup!!)
+        holder.itemView.alamat_wisata.text  = tour.alamatWisata
 
-        ImageLoader.with(context).load(holder.itemView.image_wisata,App.BASE_IMAGE + tour.image_wisata)
-//        Glide.with(context).load(App.BASE_IMAGE + tour.image_wisata).into(holder.itemView.image_wisata)
+//        ImageLoader.with(context).load(holder.itemView.image_wisata,App.BASE_IMAGE + tour.imageWisata)
+        Glide.with(context).load(App.BASE_IMAGE + tour.imageWisata).into(holder.itemView.image_wisata)
+        holder.itemView.whitelist.isLiked = tour.favorite!!
+        holder.itemView.whitelist.setOnLikeListener(object : OnLikeListener{
+            override fun liked(likeButton: LikeButton?) {
+                presenter.saveFavorite(tour.idWisata,likeButton)
+            }
+
+            override fun unLiked(likeButton: LikeButton?) {
+                presenter.saveFavorite(tour.idWisata,likeButton)
+            }
+
+        })
     }
 
     class WisataHolder(itemView: View,onItemClickListener: OnItemClickListener?) : RecyclerView.ViewHolder(itemView),View.OnClickListener {
@@ -55,7 +72,6 @@ class AdapterWisata(private val list: List<DataTour>, private val context : Cont
         init {
             itemView.setOnClickListener(this)
             this.onItemClickListener = onItemClickListener
-
         }
     }
 }

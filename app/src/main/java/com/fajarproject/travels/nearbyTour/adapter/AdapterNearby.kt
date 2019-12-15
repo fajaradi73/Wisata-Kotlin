@@ -6,19 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
-import com.fajarproject.travels.ResponseApi.DataTour
+import com.fajarproject.travels.nearbyTour.model.NearbyModel
+import com.fajarproject.travels.nearbyTour.presenter.NearbyPresenter
+import com.fajarproject.travels.travelDetails.presenter.TravelPresenter
 import com.fajarproject.travels.view.OnItemClickListener
 import com.fajarproject.travels.widget.ImageLoader
+import com.like.LikeButton
+import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.adapter_nearby.view.*
+import kotlinx.android.synthetic.main.adapter_nearby.view.image_wisata
+import kotlinx.android.synthetic.main.adapter_nearby.view.title_wisata
 
 /**
  * Created by Fajar Adi Prasetyo on 09/10/19.
  */
 
 
-class AdapterNearby(private val list:List<DataTour>, val context : Context) : RecyclerView.Adapter<AdapterNearby.NearbyHolder>() {
+class AdapterNearby(private val list:List<NearbyModel>, val context : Context,val presenter: NearbyPresenter)
+    : RecyclerView.Adapter<AdapterNearby.NearbyHolder>() {
 
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -43,10 +51,21 @@ class AdapterNearby(private val list:List<DataTour>, val context : Context) : Re
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: NearbyHolder, position: Int) {
         val nearby = list[position]
-        holder.itemView.title_wisata.text = nearby.nama_wisata
-        holder.itemView.jarak_wisata.text = "Jarak > " + String.format("%.2f", nearby.distance.toDouble()) + "Km"
-        ImageLoader.with(context).load(holder.itemView.image_wisata,App.BASE_IMAGE + nearby.image_wisata)
-//        Glide.with(context).load(App.BASE_IMAGE + nearby.image_wisata).into(holder.itemView.image_wisata)
+        holder.itemView.title_wisata.text = nearby.namaWisata
+        holder.itemView.jarak_wisata.text = "Jarak > " + String.format("%.2f", nearby.distance!!) + "Km"
+//        ImageLoader.with(context).load(holder.itemView.image_wisata,App.BASE_IMAGE + nearby.imageWisata)
+        Glide.with(context).load(App.BASE_IMAGE + nearby.imageWisata).into(holder.itemView.image_wisata)
+        holder.itemView.whitelist.isLiked = nearby.favorite!!
+        holder.itemView.whitelist.setOnLikeListener(object : OnLikeListener {
+            override fun liked(likeButton: LikeButton?) {
+                presenter.saveFavorite(nearby.idWisata,likeButton)
+            }
+
+            override fun unLiked(likeButton: LikeButton?) {
+                presenter.saveFavorite(nearby.idWisata,likeButton)
+            }
+
+        })
     }
 
     class NearbyHolder(itemView: View,onItemClickListener: OnItemClickListener?) : RecyclerView.ViewHolder(itemView),View.OnClickListener {

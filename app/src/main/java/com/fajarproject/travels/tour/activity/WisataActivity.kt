@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.fajarproject.travels.R
 import com.fajarproject.travels.ResponseApi.DataTour
 import com.fajarproject.travels.tour.adapter.AdapterWisata
+import com.fajarproject.travels.tour.model.WisataModel
 import com.fajarproject.travels.tour.presenter.TourPresenter
 import com.fajarproject.travels.travelDetails.TravelDetails
 import com.fajarproject.travels.util.Constant
@@ -19,28 +20,28 @@ import kotlinx.android.synthetic.main.activity_wisata.*
 
 class WisataActivity : AppCompatActivity() {
 
-    private var typeId : String? = ""
+    private var typeId : Int? = 0
     private var tourPresenter : TourPresenter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wisata)
-        typeId = intent.getStringExtra(Constant.typeID)
+        typeId = intent.getIntExtra(Constant.typeID,0)
         setToolbar(typeId)
         tourPresenter = TourPresenter(this)
         Util.setAds(adView)
 
     }
 
-    private fun setToolbar(type_id : String?){
+    private fun setToolbar(type_id : Int?){
         setSupportActionBar(toolbar_wisata)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         when (type_id) {
-            "1" -> title = "Wisata Candi"
-            "2" -> title = "Wisata Kawah"
-            "3" -> title = "Wisata Telaga"
-            "4" -> title = "Bukit & Gunung"
-            "5" -> title = "Air Terjun"
+            1 -> title = "Wisata Candi"
+            2 -> title = "Wisata Kawah"
+            3 -> title = "Wisata Telaga"
+            4 -> title = "Bukit & Gunung"
+            5 -> title = "Air Terjun"
         }
     }
 
@@ -71,16 +72,16 @@ class WisataActivity : AppCompatActivity() {
         }
     }
 
-    fun setRecycleView(list : List<DataTour>){
+    fun setRecycleView(list : List<WisataModel>){
         val linearLayoutManager         = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         rv_wisata.layoutManager         = linearLayoutManager
-        val adapterWisata               = AdapterWisata(list,this)
+        val adapterWisata               = AdapterWisata(list,this,tourPresenter!!)
         rv_wisata.adapter               = adapterWisata
         adapterWisata.setOnItemClickListener(object : OnItemClickListener{
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(this@WisataActivity, TravelDetails::class.java)
-                intent.putExtra(Constant.IdWisata, list[position].id_wisata)
+                intent.putExtra(Constant.IdWisata, list[position].idWisata)
                 startActivity(intent)
             }
         })

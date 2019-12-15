@@ -13,4 +13,5 @@
     <color name="default_textHint">#afafaf</color>
     <color name="red">#FF0000</color>
     <color name="colorRed">#bc1b1b</color>
+    <color name="golden">#FFD700</color>
 </resources>

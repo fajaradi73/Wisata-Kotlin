@@ -37,27 +37,27 @@ class MainActivity : AppCompatActivity() {
         }
         btn_bukit.setOnClickListener{ view ->
             val intent = Intent(this,WisataActivity::class.java)
-            intent.putExtra(Constant.typeID,"4")
+            intent.putExtra(Constant.typeID,4)
             startActivity(intent)
         }
         btn_candi.setOnClickListener{ view ->
             val intent = Intent(this,WisataActivity::class.java)
-            intent.putExtra(Constant.typeID,"1")
+            intent.putExtra(Constant.typeID,1)
             startActivity(intent)
         }
         btn_kawah.setOnClickListener{ view ->
             val intent = Intent(this,WisataActivity::class.java)
-            intent.putExtra(Constant.typeID,"2")
+            intent.putExtra(Constant.typeID,2)
             startActivity(intent)
         }
         btn_telaga.setOnClickListener{ view ->
             val intent = Intent(this,WisataActivity::class.java)
-            intent.putExtra(Constant.typeID,"3")
+            intent.putExtra(Constant.typeID,3)
             startActivity(intent)
         }
         btn_waterfall.setOnClickListener{ view ->
             val intent = Intent(this,WisataActivity::class.java)
-            intent.putExtra(Constant.typeID,"5")
+            intent.putExtra(Constant.typeID,5)
             startActivity(intent)
         }
         btn_penginapan.setOnClickListener{ view ->

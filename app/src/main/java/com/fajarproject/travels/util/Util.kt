@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
@@ -35,6 +36,7 @@ import android.view.animation.ScaleAnimation
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
@@ -46,6 +48,7 @@ import com.fajarproject.travels.App
 import com.fajarproject.travels.App.Companion.My_Permissions_Request_Location
 import com.fajarproject.travels.BuildConfig
 import com.fajarproject.travels.R
+import com.fajarproject.travels.login.activity.OpsiLogin
 import com.fajarproject.travels.login.model.User
 import com.fajarproject.travels.preference.AppPreference
 import com.fajarproject.travels.view.DialogNoListener
@@ -82,6 +85,8 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ThreadFactory
@@ -868,5 +873,139 @@ object Util {
                 )
             }
         }
+    }
+    @SuppressLint("DefaultLocale")
+    fun milisecondTotimes(millis: Long): String? {
+        return String.format(
+            "%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+            TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(
+                TimeUnit.MILLISECONDS.toHours(millis)
+            ),
+            TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(
+                TimeUnit.MILLISECONDS.toMinutes(millis)
+            )
+        )
+    }
+    var days =
+        arrayOf("Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu")
+    var months = arrayOf(
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember"
+    )
+    var hourFormat =
+        SimpleDateFormat("HH:mm", Locale.ENGLISH)
+
+    fun showDateFormat(start: Date, end: Date): String? {
+        var builder =
+            days[start.day] + ", " + start.date + " " + months[start.month] + " " + (1900 + start.year) + " " + hourFormat.format(
+                start
+            )
+        builder =
+            builder + " - " + days[end.day] + ", " + end.date + " " + months[end.month] + " " + (1900 + end.year) + " " + hourFormat.format(
+                end
+            )
+        return builder
+    }
+
+    fun showDate(date: Date): String? {
+        return days[date.day] + ", " + date.date + " " + months[date.month] + " " + (1900 + date.year)
+    }
+
+    fun showDateWithHour(date: Date): String? {
+        return days[date.day] + ", " + date.date + " " + months[date.month] + " " + (1900 + date.year) + " " + hourFormat.format(
+            date
+        ) + " wib"
+    }
+
+    fun getOneDayMillis(): Long {
+        return 24 * 60 * 60 * 1000
+    }
+    fun epochToTime(epoch: Long): String? {
+        val date = Date(epoch)
+        val df =
+            SimpleDateFormat("dd-MMM-yyyy hh:mm", Locale.US)
+        return df.format(date)
+    }
+
+    fun epochToTimeFormat(epoch: Long?): String? {
+        val date = Date(epoch!!)
+        val df =
+            SimpleDateFormat("hh:mm a", Locale.US)
+        return df.format(date)
+    }
+
+    fun epochToTimeTwentyFourHours(epoch: String): String? {
+        val date = Date(epoch.toLong())
+        val df =
+            SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.US)
+        return df.format(date)
+    }
+
+    fun epochToDate(epoch: String): String? {
+        val date = Date(epoch.toLong())
+        val df =
+            SimpleDateFormat("dd-MMM-yyyy", Locale.US)
+        return df.format(date)
+    }
+
+    fun epochToDateFromDate(
+        epoch: String?,
+        oldFormatDate: String?,
+        newFormatDate: String?
+    ): String? {
+        var dateString: String? = null
+        try {
+            val dateFormatOld: DateFormat =
+                SimpleDateFormat(oldFormatDate!!, Locale.US)
+            val dateFormatNew: DateFormat =
+                SimpleDateFormat(newFormatDate!!, Locale.US)
+            val date = dateFormatOld.parse(epoch!!)
+            dateString = dateFormatNew.format(date!!)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return dateString
+    }
+
+    fun dateTimetoMilis(dateString: String?): Long {
+        var sec: Long = 0
+        val df = SimpleDateFormat("dd-MMMM-yyyy hh:mm:ss", Locale.US)
+        try {
+            val time = df.parse(dateString!!)
+            val millis = time!!.time
+            sec = TimeUnit.MILLISECONDS.toSeconds(millis)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return sec
+    }
+
+    fun getDateTimeDeltatoSecond(dateString: String?): Long {
+        val oldTime = dateTimetoMilis(dateString)
+        val currentTime: String = getCurrentDateTime()
+        val newTime = dateTimetoMilis(currentTime)
+        return newTime - oldTime
+    }
+    fun sessionExpired(context: Activity) {
+        AppPreference.writePreference(context, "user", "")
+        AppPreference.deletePreference(context)
+        Toast.makeText(
+            context,
+            "Session expired, Please re-login",
+            Toast.LENGTH_SHORT
+        ).show()
+        val intent = Intent(context, OpsiLogin::class.java)
+        context.startActivity(intent)
+        context.finish()
     }
 }

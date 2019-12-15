@@ -1,8 +1,15 @@
 package com.fajarproject.travels.nearbyTour.presenter
 
-import com.fajarproject.travels.Repository.WisataRepository
-import com.fajarproject.travels.ResponseApi.TourModel
+import android.view.View
+import android.widget.Toast
+import com.fajarproject.travels.ResponseApi.FavoriteModel
+import com.fajarproject.travels.repository.WisataRepository
+import com.fajarproject.travels.login.model.User
 import com.fajarproject.travels.nearbyTour.activity.NearbyActivity
+import com.fajarproject.travels.nearbyTour.model.NearbyModel
+import com.fajarproject.travels.util.Util
+import com.google.android.material.snackbar.Snackbar
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,25 +21,47 @@ import retrofit2.Response
 
 class NearbyPresenter(val context: NearbyActivity) {
     private val wisataRepository: WisataRepository = WisataRepository()
+    private val user : User = Util.getUserToken(context)
 
-    fun getNearby(latitude : String?, longitude : String?){
+    fun getNearby(latitude : Double?, longitude : Double?){
         context.showShimmer(true)
-        wisataRepository.getNearbyWisata(latitude,longitude)?.enqueue(object : Callback<TourModel?>{
-            override fun onResponse(call: Call<TourModel?>, response: Response<TourModel?>) {
+        wisataRepository.getNearbyWisata(user,latitude,longitude)?.enqueue(object : Callback<List<NearbyModel>?>{
+            override fun onResponse(call: Call<List<NearbyModel>?>, response: Response<List<NearbyModel>?>) {
                 context.showShimmer(false)
                 if (response.isSuccessful && response.code() == 200 ){
-                    if (response.body()!!.data.isNotEmpty()){
-                        context.setRecycleView(response.body()!!.data)
+                    if (response.body()!!.isNotEmpty()){
+                        context.setRecycleView(response.body()!!)
                     }
+                }else if (response.code() == 401){
+                    Util.sessionExpired(context)
                 }
             }
 
-            override fun onFailure(call: Call<TourModel?>, t: Throwable) {
+            override fun onFailure(call: Call<List<NearbyModel>?>, t: Throwable) {
                 t.printStackTrace()
                 context.showShimmer(false)
             }
         })
-
     }
 
+    fun saveFavorite(id_wisata : Int?,view: View?){
+        wisataRepository.postFavorite(user,id_wisata)?.enqueue(object : Callback<FavoriteModel?>{
+            override fun onResponse(call: Call<FavoriteModel?>, response: Response<FavoriteModel?>) {
+                if (response.isSuccessful && response.code() == 200){
+                    val message = response.body()!!.message
+                    Snackbar.make(view!!,message, Snackbar.LENGTH_LONG).show()
+                }else if (response.code() == 500){
+                    val jsonObject = JSONObject(response.errorBody()?.string()!!)
+                    val message = jsonObject.getString("message")
+                    Snackbar.make(view!!,message, Snackbar.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(context,"Response code ${response.code()}", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<FavoriteModel?>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
 }

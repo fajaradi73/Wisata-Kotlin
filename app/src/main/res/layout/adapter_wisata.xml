@@ -78,6 +78,16 @@
                 android:elevation="10dp"
                 android:textColor="@color/white" />
         </LinearLayout>
-
+        <com.like.LikeButton
+            app:icon_type="heart"
+            app:icon_size="24dp"
+            android:id="@+id/whitelist"
+            android:layout_gravity="center"
+            app:unlike_drawable="@drawable/ic_unlike_white"
+            app:like_drawable="@drawable/ic_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

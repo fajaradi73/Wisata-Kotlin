@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/itemBetweenMargin"
+    android:layout_margin="@dimen/itemBetweenMarginMedium">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:id="@+id/ratting_ulasan"
+            android:layout_margin="@dimen/itemBetweenMargin"
+            android:numStars="5"
+            android:isIndicator="true"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:progressTint="@color/golden"
+            android:indeterminateTint="@color/golden"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/nama_pengirim"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/nama_pengirim"
+            android:text="Oleh Fajar Adi Prasetyo"
+            android:textSize="14sp"
+            android:layout_margin="@dimen/itemBetweenMargin"
+            app:layout_constraintTop_toBottomOf="@id/ratting_ulasan"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tanggal_ulasan"
+            tools:text="3 Dec"
+            android:textSize="12sp"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="@dimen/itemBetweenMargin"
+            android:layout_marginEnd="@dimen/itemBetweenMargin"
+            android:textColor="@color/grey_500"
+            app:layout_constraintTop_toBottomOf="@id/nama_pengirim"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ulasan"
+            tools:text="This two images are of same size one is used for identifying selected Rating Bar and other for identifying unselected RatingBar"
+            app:layout_constraintTop_toBottomOf="@id/tanggal_ulasan"
+            android:textSize="13sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_margin="@dimen/itemBetweenMargin"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

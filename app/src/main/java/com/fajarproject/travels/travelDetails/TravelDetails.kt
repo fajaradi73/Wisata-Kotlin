@@ -15,11 +15,14 @@ import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
-import com.fajarproject.travels.ResponseApi.DataTour
 import com.fajarproject.travels.mapsTravels.MapsTravels
+import com.fajarproject.travels.nearbyTour.adapter.AdapterUlasan
+import com.fajarproject.travels.travelDetails.model.DetailWisataModel
+import com.fajarproject.travels.travelDetails.model.UlasanItem
 import com.fajarproject.travels.travelDetails.presenter.TravelPresenter
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
@@ -33,6 +36,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.appbar.AppBarLayout
+import com.like.LikeButton
+import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.activity_travel_details.*
 import kotlinx.android.synthetic.main.travel_details.*
 
@@ -42,7 +47,7 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
     private var travelPresenter : TravelPresenter? = null
     private var maps : GoogleMap? = null
     private var wisataMarker: Marker? = null
-    private var id_wisata : String? = ""
+    private var idWisata : Int? = 0
     private var menu : Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +56,7 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
         setToolbar()
         init()
         travelPresenter = TravelPresenter(this)
-        id_wisata       = intent.getStringExtra(Constant.IdWisata)
+        idWisata       = intent.getIntExtra(Constant.IdWisata,0)
         setNativeAds()
 
     }
@@ -115,7 +120,6 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
         })
         val mapFragment = supportFragmentManager.findFragmentById(R.id.maps_wisata) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
-
     }
 
     private fun setColorIcon(isShow : Boolean){
@@ -139,7 +143,7 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
 
     override fun onStart() {
         super.onStart()
-        travelPresenter?.getTravelDetails(id_wisata)
+        travelPresenter?.getTravelDetails(idWisata)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -156,12 +160,12 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
     }
 
     @SuppressLint("SetTextI18n")
-    fun setDetailWisata(dataTour: DataTour){
-        alamat_wisata.text          = dataTour.alamat_wisata
-        jam_wisata.text             = dataTour.jam_buka + " - " + dataTour.jam_tutup
-        title_wisata.text           = dataTour.nama_wisata
-        Glide.with(this).load(App.BASE_IMAGE + dataTour.image_wisata).into(image_wisata)
-        val latLng = LatLng(dataTour.latitude.toDouble(),dataTour.longitude.toDouble())
+    fun setDetailWisata(dataTour: DetailWisataModel){
+        alamat_wisata.text          = dataTour.alamatWisata
+        jam_wisata.text             = Util.milisecondTotimes(dataTour.jamBuka!!) + " - " + Util.milisecondTotimes(dataTour.jamTutup!!)
+        title_wisata.text           = dataTour.namaWisata
+        Glide.with(this).load(App.BASE_IMAGE + dataTour.imageWisata).into(image_wisata)
+        val latLng = LatLng(dataTour.latitude!!,dataTour.longitude!!)
         val cameraPosition : CameraPosition = CameraPosition.builder().target(latLng).zoom(15F).build()
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
@@ -170,10 +174,25 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
         maps!!.addMarker(markerOptions)
         maps!!.setOnMapClickListener {
             val intent = Intent(this,MapsTravels::class.java)
-            intent.putExtra(Constant.latitudeTravels,dataTour.latitude.toDouble())
-            intent.putExtra(Constant.longitudeTravels,dataTour.longitude.toDouble())
+            intent.putExtra(Constant.latitudeTravels,dataTour.latitude)
+            intent.putExtra(Constant.longitudeTravels,dataTour.longitude)
             startActivity(intent)
         }
+        whitelist.isLiked = dataTour.favorite!!
+        whitelist.setOnLikeListener(object : OnLikeListener{
+            override fun liked(likeButton: LikeButton?) {
+                travelPresenter!!.saveFavorite(dataTour.idWisata!!,likeButton)
+            }
+
+            override fun unLiked(likeButton: LikeButton?) {
+                travelPresenter!!.saveFavorite(dataTour.idWisata!!,likeButton)
+            }
+        })
+        text_rating.text        = dataTour.ratting.toString()
+        text_rating_ulasan.text = dataTour.ratting.toString()
+        text_ulasan.text        = "( " + dataTour.jumlahRatting.toString() + " ulasan )"
+        text_ulasan_view.text   = "( " + dataTour.jumlahRatting.toString() + " ulasan )"
+        setListUlasan(dataTour.ulasan!!)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -183,6 +202,13 @@ class TravelDetails : AppCompatActivity(),OnMapReadyCallback{
         maps!!.uiSettings.setAllGesturesEnabled(false)
         maps!!.uiSettings.isMapToolbarEnabled       = false
         Util.setStyleMaps(maps,this)
+    }
 
+    private fun setListUlasan(list: List<UlasanItem?>){
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        list_ulasan.layoutManager = linearLayoutManager
+        val adapter = AdapterUlasan(list,this)
+        list_ulasan.adapter = adapter
     }
 }

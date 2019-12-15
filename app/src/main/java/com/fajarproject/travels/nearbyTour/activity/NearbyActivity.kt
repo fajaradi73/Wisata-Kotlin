@@ -20,6 +20,7 @@ import com.fajarproject.travels.App
 import com.fajarproject.travels.R
 import com.fajarproject.travels.ResponseApi.DataTour
 import com.fajarproject.travels.nearbyTour.adapter.AdapterNearby
+import com.fajarproject.travels.nearbyTour.model.NearbyModel
 import com.fajarproject.travels.nearbyTour.presenter.NearbyPresenter
 import com.fajarproject.travels.travelDetails.TravelDetails
 import com.fajarproject.travels.util.Constant
@@ -110,16 +111,16 @@ class NearbyActivity : AppCompatActivity(),LocationListener,
         }
     }
 
-    fun setRecycleView(list: List<DataTour>){
+    fun setRecycleView(list: List<NearbyModel>){
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         rv_nearby.layoutManager = linearLayoutManager
-        val nearbyAdapter = AdapterNearby(list, this)
+        val nearbyAdapter = AdapterNearby(list, this,nearbyPresenter!!)
         rv_nearby.adapter = nearbyAdapter
         nearbyAdapter.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(this@NearbyActivity,TravelDetails::class.java)
-                intent.putExtra(Constant.IdWisata, list[position].id_wisata)
+                intent.putExtra(Constant.IdWisata, list[position].idWisata)
                 startActivity(intent)
             }
         })
@@ -144,7 +145,7 @@ class NearbyActivity : AppCompatActivity(),LocationListener,
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
             mGoogleApiClient!!.connect()
         }
-        nearbyPresenter!!.getNearby(latitude.toString(),longitude.toString())
+        nearbyPresenter!!.getNearby(latitude,longitude)
     }
 
     override fun onPause() {
