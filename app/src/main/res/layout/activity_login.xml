@@ -55,7 +55,7 @@
             android:id="@+id/email"
             style="@style/TextLabelWhite"
             android:textSize="16sp"
-            android:inputType="textEmailAddress"
+            android:inputType="textWebEmailAddress"
             android:background="@drawable/edt_bg_selector_white"
             android:paddingBottom="6dp"
             android:textColor="@color/white"
@@ -156,4 +156,20 @@
             android:textColor="@android:color/white"
             android:textSize="16sp" />
     </androidx.cardview.widget.CardView>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/loadingOverlay"
+        android:visibility="gone"
+        android:background="@color/greyTransparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/customProgress"/>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

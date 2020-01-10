@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1037036133695-hnccudm9roja8vv797587t399qskfp48.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fajarproject.wisata",
+            "certificate_hash": "128fa87d6d5fc3dc411555bf944f4dc398c0afb2"
+          }
+        },
+        {
           "client_id": "1037036133695-4l29kfhp42rt8f4md87gnm6bvqkjf6o4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

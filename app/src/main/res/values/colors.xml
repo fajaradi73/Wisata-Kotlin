@@ -14,4 +14,25 @@
     <color name="red">#FF0000</color>
     <color name="colorRed">#bc1b1b</color>
     <color name="golden">#FFD700</color>
+    <color name="colorLightGrayCard">#EBEBEB</color>
+    <color name="colorWhitePressed">#e6e6e6</color>
+    <color name="shadowPrimary">#9900E3FF</color>
+    <color name="greyTransparent">#77BBBBBB</color>
+    <color name="transparent">#00FFFFFF</color>
+
+    <color name="address">#2F7092</color>
+    <color name="followers">#0D5D98</color>
+    <color name="headings">#3797CF</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="circleBorder">#50FFFFFF</color>
+    <color name="gradEnd">#67EFC8</color>
+    <color name="gradStart">#63C9FF</color>
+    <color name="followersBg">#65DCE5</color>
+    <color name="followingBg">#49BEFF</color>
+    <color name="grey">#E5E5E5</color>
+
+    <color name="yellow">#F8BA0F</color>
+    <color name="goodgrey">#535353</color>
+    <color name="blue">#293859</color>
+    <color name="lightgrey">#EEEEEE</color>
 </resources>

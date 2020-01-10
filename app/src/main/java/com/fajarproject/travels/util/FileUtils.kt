@@ -16,6 +16,10 @@ import android.provider.MediaStore.Images.Media
 import java.io.*
 import java.lang.Long
 
+/**
+ * Created by Fajar Adi Prasetyo on 09/10/19.
+ */
+
 
 object FileUtils {
     fun isLocal(url: String?): Boolean {

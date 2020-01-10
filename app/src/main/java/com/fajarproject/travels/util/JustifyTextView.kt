@@ -10,6 +10,10 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import kotlin.math.ceil
 
+/**
+ * Created by Fajar Adi Prasetyo on 09/10/19.
+ */
+
 
 public class JustifyTextView(
     context: Context?,

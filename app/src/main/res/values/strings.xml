@@ -3,7 +3,7 @@
     <string name="network_not_enabled">Gps Tidak Aktif</string>
     <string name="open_location_settings">Harap mengaktifkan lokasi anda untuk melihat wisata terdekat dengan anda</string>
     <string name="direction">Tidak ada data untuk akses ketempat, apakah anda mau menggunakan direction untuk mengetahui akses ketempat ini</string>
-    <string name="yes">Buka Pengaturan Lokasi</string>
+    <string name="yes">Iya</string>
     <string name="cancel">Batal</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -65,5 +65,18 @@
     <string name="favorite">Favorite</string>
     <string name="popular">Popular</string>
     <string name="user">User</string>
+    <string name="titleRegister">Siapa Anda?</string>
+    <string name="phone">Nomor HP</string>
+    <string name="ulasan">Ulasan</string>
+    <string name="jenis_kelamin">Jenis Kelamin</string>
+    <string name="birth"><![CDATA[Tempat & Tanggal Lahir]]></string>
+    <string name="lastLogin">Terakhir Login</string>
+    <string name="changePassword">Ubah Kata Sandi</string>
+    <string name="edit_profile">Edit Profil</string>
+    <string name="logout">Logout</string>
+    <string name="akun">Akun</string>
+    <string name="profile">Profil</string>
+    <string name="nearby">Terdekat</string>
+    <string name="_yearBuild">2019</string>
 
 </resources>

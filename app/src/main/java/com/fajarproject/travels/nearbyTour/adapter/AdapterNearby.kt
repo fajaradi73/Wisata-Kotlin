@@ -11,9 +11,7 @@ import com.fajarproject.travels.App
 import com.fajarproject.travels.R
 import com.fajarproject.travels.nearbyTour.model.NearbyModel
 import com.fajarproject.travels.nearbyTour.presenter.NearbyPresenter
-import com.fajarproject.travels.travelDetails.presenter.TravelPresenter
-import com.fajarproject.travels.view.OnItemClickListener
-import com.fajarproject.travels.widget.ImageLoader
+import com.fajarproject.travels.base.view.OnItemClickListener
 import com.like.LikeButton
 import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.adapter_nearby.view.*

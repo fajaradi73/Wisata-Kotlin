@@ -2,7 +2,6 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -12,7 +11,7 @@
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -194,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/itemBetweenMarginMedium"
                 android:id="@+id/email_wisata"
-                android:drawableStart="@drawable/ic_mail"
+                android:drawableStart="@drawable/ic_mail_primary"
                 android:drawablePadding="@dimen/itemBetweenMargin"
                 android:text="Email"
                 android:textSize="13sp"

@@ -8,10 +8,10 @@
         android:title="@string/home"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_favorite"
+        android:id="@+id/action_nearby"
         android:enabled="true"
-        android:icon="@drawable/ic_like"
-        android:title="@string/favorite"
+        android:icon="@drawable/ic_nearby"
+        android:title="@string/nearby"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_popular"
@@ -23,6 +23,6 @@
         android:id="@+id/action_user"
         android:enabled="true"
         android:icon="@drawable/ic_user"
-        android:title="@string/user"
+        android:title="@string/akun"
         app:showAsAction="ifRoom" />
 </menu>

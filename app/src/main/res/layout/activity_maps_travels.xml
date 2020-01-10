@@ -38,28 +38,19 @@
                 android:padding="10dp"
                 tools:ignore="ContentDescription" />
         </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/btn_current"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
+            app:backgroundTint="@color/white"
+            android:src="@drawable/ic_gps"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_gravity="bottom|end"
             android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/fab_margin"
-            app:cardCornerRadius="25dp"
             android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginBottom="100dp"
-            android:focusable="true">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_gps"
-                android:padding="12dp"
-                tools:ignore="ContentDescription" />
-        </androidx.cardview.widget.CardView>
+            android:layout_marginBottom="100dp"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/btn_direction"

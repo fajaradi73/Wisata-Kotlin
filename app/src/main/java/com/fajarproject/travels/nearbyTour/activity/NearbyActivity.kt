@@ -18,14 +18,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
-import com.fajarproject.travels.ResponseApi.DataTour
+import com.fajarproject.travels.feature.detailWisata.DetailWisataActivity
 import com.fajarproject.travels.nearbyTour.adapter.AdapterNearby
 import com.fajarproject.travels.nearbyTour.model.NearbyModel
 import com.fajarproject.travels.nearbyTour.presenter.NearbyPresenter
-import com.fajarproject.travels.travelDetails.TravelDetails
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
-import com.fajarproject.travels.view.OnItemClickListener
+import com.fajarproject.travels.base.view.OnItemClickListener
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
@@ -119,11 +118,12 @@ class NearbyActivity : AppCompatActivity(),LocationListener,
         rv_nearby.adapter = nearbyAdapter
         nearbyAdapter.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
-                val intent = Intent(this@NearbyActivity,TravelDetails::class.java)
+                val intent = Intent(this@NearbyActivity,DetailWisataActivity::class.java)
                 intent.putExtra(Constant.IdWisata, list[position].idWisata)
                 startActivity(intent)
             }
         })
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

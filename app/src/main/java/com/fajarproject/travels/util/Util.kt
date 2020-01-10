@@ -26,15 +26,17 @@ import android.text.style.ImageSpan
 import android.util.Base64
 import android.util.Log
 import android.util.Patterns
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.ViewParent
 import android.view.WindowManager.LayoutParams
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -42,21 +44,24 @@ import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.akexorcist.googledirection.model.Route
-import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.App.Companion.My_Permissions_Request_Location
 import com.fajarproject.travels.BuildConfig
 import com.fajarproject.travels.R
-import com.fajarproject.travels.login.activity.OpsiLogin
-import com.fajarproject.travels.login.model.User
+import com.fajarproject.travels.base.view.DialogNoListener
+import com.fajarproject.travels.base.view.DialogYesListener
+import com.fajarproject.travels.base.widget.ImageLoader
+import com.fajarproject.travels.feature.opsiLogin.OpsiLoginActivity
+import com.fajarproject.travels.models.UserModel
 import com.fajarproject.travels.preference.AppPreference
-import com.fajarproject.travels.view.DialogNoListener
-import com.fajarproject.travels.view.DialogYesListener
-import com.fajarproject.travels.widget.ImageLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -74,7 +79,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
 import retrofit2.Retrofit.Builder
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.*
@@ -86,6 +91,7 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.DateFormat
+import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -93,6 +99,9 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
+import kotlin.math.floor
+import kotlin.math.log10
+import kotlin.math.pow
 
 /**
  * Created by Fajar Adi Prasetyo on 09/10/19.
@@ -111,10 +120,10 @@ object Util {
 
     fun getRetrofitRxJava2() : Retrofit?{
         return Builder()
-            .baseUrl(App.API)
+            .baseUrl(App.BASE_URL)
             .client(getOkHttp())
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .build()
     }
 
@@ -450,14 +459,14 @@ object Util {
             email.toString()
         ).matches()
     }
-    fun isValidPassword(passwordhere: String, confirmhere: String, errorList: MutableList<String?>,context: Context): Boolean {
+    fun isValidPassword(passwordhere: String, confirmed: String, errorList: MutableList<String?>, context: Context): Boolean {
         val specailCharPatten: Pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE)
-        val UpperCasePatten: Pattern = Pattern.compile("[A-Z ]")
+        val upperCasePatten: Pattern = Pattern.compile("[A-Z ]")
         val lowerCasePatten: Pattern = Pattern.compile("[a-z ]")
         val digitCasePatten: Pattern = Pattern.compile("[0-9 ]")
         errorList.clear()
         var flag = true
-        if (passwordhere != confirmhere) {
+        if (passwordhere != confirmed) {
             errorList.add(context.getString(R.string.password_confirm))
             flag = false
         }
@@ -469,7 +478,7 @@ object Util {
             errorList.add(context.getString(R.string.password_special_karakter))
             flag = false
         }
-        if (!UpperCasePatten.matcher(passwordhere).find()) {
+        if (!upperCasePatten.matcher(passwordhere).find()) {
             errorList.add(context.getString(R.string.password_uppercase))
             flag = false
         }
@@ -483,30 +492,30 @@ object Util {
         }
         return flag
     }
-    fun isValidPassword(passwordhere: String, errorList: MutableList<String?>,context: Context): Boolean {
-        val specailCharPatten: Pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE)
-        val UpperCasePatten: Pattern = Pattern.compile("[A-Z ]")
+    fun isValidPassword(password: String, errorList: MutableList<String?>, context: Context): Boolean {
+        val specialCharPatten: Pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE)
+        val upperCasePatten: Pattern = Pattern.compile("[A-Z ]")
         val lowerCasePatten: Pattern = Pattern.compile("[a-z ]")
         val digitCasePatten: Pattern = Pattern.compile("[0-9 ]")
         errorList.clear()
         var flag = true
-        if (passwordhere.length < 8) {
+        if (password.length < 8) {
             errorList.add(context.getString(R.string.password_8_karakter))
             flag = false
         }
-        if (!specailCharPatten.matcher(passwordhere).find()) {
+        if (!specialCharPatten.matcher(password).find()) {
             errorList.add(context.getString(R.string.password_special_karakter))
             flag = false
         }
-        if (!UpperCasePatten.matcher(passwordhere).find()) {
+        if (!upperCasePatten.matcher(password).find()) {
             errorList.add(context.getString(R.string.password_uppercase))
             flag = false
         }
-        if (!lowerCasePatten.matcher(passwordhere).find()) {
+        if (!lowerCasePatten.matcher(password).find()) {
             errorList.add(context.getString(R.string.password_lowercase))
             flag = false
         }
-        if (!digitCasePatten.matcher(passwordhere).find()) {
+        if (!digitCasePatten.matcher(password).find()) {
             errorList.add(context.getString(R.string.passwrod_number))
             flag = false
         }
@@ -758,9 +767,9 @@ object Util {
         }
         return result
     }
-    fun getUserToken(context: Context): User {
+    fun getUserToken(context: Context): UserModel {
         val type: Type? =
-            object : TypeToken<User?>() {}.type
+            object : TypeToken<UserModel?>() {}.type
         return Gson()
             .fromJson(AppPreference.getStringPreferenceByName(context, "user"), type)
     }
@@ -770,29 +779,6 @@ object Util {
         val versionCode: Int = BuildConfig.VERSION_CODE
         val versionName = tmpVersionName.substring(0, 3)
         return "$versionName ($versionCode)"
-    }
-    private var loadingdialog : Dialog? = null
-
-    fun showLoadingGIF(activity: Activity){
-        if (loadingdialog != null && loadingdialog!!.isShowing){
-            println("loading is show")
-        }else {
-            loadingdialog = Dialog(activity)
-            loadingdialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            loadingdialog!!.setCancelable(false)
-            loadingdialog!!.setContentView(R.layout.custom_loading)
-
-            val gifImageView: ImageView =
-                loadingdialog!!.findViewById(R.id.custom_loading_imageView)
-            Glide.with(activity)
-                .load(R.drawable.loading)
-                .placeholder(R.drawable.loading)
-                .into(gifImageView)
-            loadingdialog!!.show()
-        }
-    }
-    fun hideLoadingGIF(){
-        loadingdialog!!.dismiss()
     }
 
     private var alertDialog : AlertDialog? = null
@@ -811,8 +797,8 @@ object Util {
             btnYes              = viewDialog.findViewById(R.id.btn_yes)
             btnNo               = viewDialog.findViewById(R.id.btn_no)
             val viewLine        = viewDialog.findViewById<View>(R.id.view_line)
-            alertDialog!!.setView(viewDialog)
-            alertDialog!!.setCancelable(false)
+            alertDialog?.setView(viewDialog)
+            alertDialog?.setCancelable(false)
             titleDialog.text    = title
             messageDialog.text  = message
             if (message.isNotEmpty()){
@@ -822,33 +808,33 @@ object Util {
                 titleDialog.visibility = View.GONE
             }
             if (isTwoButton){
-                btnNo!!.visibility       = View.VISIBLE
+                btnNo?.visibility       = View.VISIBLE
                 viewLine.visibility    = View.VISIBLE
-                btnYes!!.text = activity.resources.getString(R.string.yes)
+                btnYes?.text = activity.resources.getString(R.string.yes)
             }
-            alertDialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            alertDialog!!.show()
+            alertDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alertDialog?.show()
         }
     }
 
     fun showRoundedDialog(activity: Activity,title : String,message: String,isTwoButton: Boolean,dialogYesListener: DialogYesListener,dialogNoListener: DialogNoListener){
         initShowDialog(activity,title,message,isTwoButton)
-        btnYes!!.setOnClickListener {
-            alertDialog!!.dismiss()
+        btnYes?.setOnClickListener {
+            alertDialog?.dismiss()
             dialogYesListener.onYes()
         }
-        btnNo!!.setOnClickListener {
-            alertDialog!!.dismiss()
+        btnNo?.setOnClickListener {
+            alertDialog?.dismiss()
             dialogNoListener.onNo()
         }
     }
     fun showRoundedDialog(activity: Activity,title : String,message: String,isTwoButton: Boolean){
         initShowDialog(activity,title,message,isTwoButton)
-        btnYes!!.setOnClickListener {
-            alertDialog!!.dismiss()
+        btnYes?.setOnClickListener {
+            alertDialog?.dismiss()
         }
-        btnNo!!.setOnClickListener {
-            alertDialog!!.dismiss()
+        btnNo?.setOnClickListener {
+            alertDialog?.dismiss()
         }
     }
 
@@ -933,28 +919,28 @@ object Util {
     fun epochToTime(epoch: Long): String? {
         val date = Date(epoch)
         val df =
-            SimpleDateFormat("dd-MMM-yyyy hh:mm", Locale.US)
+            SimpleDateFormat("dd-MMM-yyyy hh:mm", Locale.getDefault())
         return df.format(date)
     }
 
     fun epochToTimeFormat(epoch: Long?): String? {
         val date = Date(epoch!!)
         val df =
-            SimpleDateFormat("hh:mm a", Locale.US)
+            SimpleDateFormat("hh:mm a", Locale.getDefault())
         return df.format(date)
     }
 
     fun epochToTimeTwentyFourHours(epoch: String): String? {
         val date = Date(epoch.toLong())
         val df =
-            SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.US)
+            SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.getDefault())
         return df.format(date)
     }
 
     fun epochToDate(epoch: String): String? {
         val date = Date(epoch.toLong())
         val df =
-            SimpleDateFormat("dd-MMM-yyyy", Locale.US)
+            SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
         return df.format(date)
     }
 
@@ -966,9 +952,9 @@ object Util {
         var dateString: String? = null
         try {
             val dateFormatOld: DateFormat =
-                SimpleDateFormat(oldFormatDate!!, Locale.US)
+                SimpleDateFormat(oldFormatDate!!, Locale.getDefault())
             val dateFormatNew: DateFormat =
-                SimpleDateFormat(newFormatDate!!, Locale.US)
+                SimpleDateFormat(newFormatDate!!, Locale.getDefault())
             val date = dateFormatOld.parse(epoch!!)
             dateString = dateFormatNew.format(date!!)
         } catch (e: ParseException) {
@@ -979,7 +965,7 @@ object Util {
 
     fun dateTimetoMilis(dateString: String?): Long {
         var sec: Long = 0
-        val df = SimpleDateFormat("dd-MMMM-yyyy hh:mm:ss", Locale.US)
+        val df = SimpleDateFormat("dd-MMMM-yyyy hh:mm:ss", Locale.getDefault())
         try {
             val time = df.parse(dateString!!)
             val millis = time!!.time
@@ -1004,8 +990,56 @@ object Util {
             "Session expired, Please re-login",
             Toast.LENGTH_SHORT
         ).show()
-        val intent = Intent(context, OpsiLogin::class.java)
+        val intent = Intent(context, OpsiLoginActivity::class.java)
         context.startActivity(intent)
         context.finish()
     }
+
+    fun circleLoading(context: Context) : CircularProgressDrawable{
+        val circularProgressDrawable            = CircularProgressDrawable(context)
+        circularProgressDrawable.strokeWidth    = 5f
+        circularProgressDrawable.centerRadius   = 30f
+        circularProgressDrawable.start()
+        return circularProgressDrawable
+    }
+
+    fun configureGoogleSignIn(context: Context): GoogleSignInClient {
+        val mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        return GoogleSignIn.getClient(context, mGoogleSignInOptions)
+    }
+
+    fun saveUser(user: UserModel, context: Context){
+        val type: Type? = object : TypeToken<UserModel?>() {}.type
+        val json: String? = Gson().toJson(user, type)
+        AppPreference.writePreference(context,"user",json!!)
+    }
+
+    fun getDateWithTime(timestamp: Long) :String {
+        val calendar = Calendar.getInstance(Locale.getDefault())
+        calendar.timeInMillis = timestamp * 1000L
+        return android.text.format.DateFormat.format("dd MMMM yyyy HH:mm:dd", calendar).toString()
+    }
+    fun getDate(timestamp: Long) :String {
+        val calendar = Calendar.getInstance(Locale.getDefault())
+        calendar.timeInMillis = timestamp * 1000L
+        return android.text.format.DateFormat.format("dd MMMM yyyy", calendar).toString()
+    }
+
+    fun prettyCount(number: Int): String? {
+        val suffix = charArrayOf(' ', 'k', 'M', 'B', 'T', 'P', 'E')
+        val numValue: Long = number.toLong()
+        val value = floor(log10(numValue.toDouble())).toInt()
+        val base = value / 3
+        return if (value >= 3 && base < suffix.size) {
+            DecimalFormat("#0.0").format(
+                numValue / 10.0.pow(base * 3.toDouble())
+            ) + suffix[base]
+        } else {
+            DecimalFormat("#,##0").format(numValue)
+        }
+    }
+
 }

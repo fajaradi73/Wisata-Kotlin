@@ -8,8 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.fajarproject.travels.R
-import com.fajarproject.travels.mapsTravels.adapter.IconMenuAdapter
+import com.fajarproject.travels.base.widget.powerMenu.adapter.IconMenuAdapter
 import com.skydoves.powermenu.*
+
+/**
+ * Created by Fajar Adi Prasetyo on 09/10/19.
+ */
 
 
 object PowerMenuUtil {

@@ -30,10 +30,10 @@ class App : Application() {
 //        const val API           = "http://montechnology.tech/wisatas/"
 //        const val BASE_IMAGE    = "http://montechnology.tech/wisatas/assets/images/"
         //// Server Hostinger
-        const val API                   = "https://fajar-productions.com/wisatas/"
-        const val BASE_IMAGE            = "https://fajar-productions.com/wisatas/assets/images/"
-        const val BASE_IMAGE_PROFILE    = "https://fajar-productions.com/wisatas/assets/images/profile/"
-        const val BASE_IMAGE_WISATA     = "https://fajar-productions.com/wisatas/assets/images/wisata/"
+        const val API                   = "http://travels.fajar-productions.com/api/"
+        const val BASE_URL              = "http://travels.fajar-productions.com/api/"
+        const val BASE_IMAGE            = "http://travels.fajar-productions.com/assets/images/wisata/"
+        const val BASE_IMAGE_PROFILE    = "http://travels.fajar-productions.com/assets/images/profile/"
 
         const val BASE_FILE     = "Travels"
         const val My_Permissions_Request_Location = 99

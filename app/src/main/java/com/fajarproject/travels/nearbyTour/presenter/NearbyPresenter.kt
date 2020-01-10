@@ -2,9 +2,9 @@ package com.fajarproject.travels.nearbyTour.presenter
 
 import android.view.View
 import android.widget.Toast
-import com.fajarproject.travels.ResponseApi.FavoriteModel
+import com.fajarproject.travels.models.SaveFavoriteModel
 import com.fajarproject.travels.repository.WisataRepository
-import com.fajarproject.travels.login.model.User
+import com.fajarproject.travels.models.UserModel
 import com.fajarproject.travels.nearbyTour.activity.NearbyActivity
 import com.fajarproject.travels.nearbyTour.model.NearbyModel
 import com.fajarproject.travels.util.Util
@@ -21,7 +21,7 @@ import retrofit2.Response
 
 class NearbyPresenter(val context: NearbyActivity) {
     private val wisataRepository: WisataRepository = WisataRepository()
-    private val user : User = Util.getUserToken(context)
+    private val user : UserModel = Util.getUserToken(context)
 
     fun getNearby(latitude : Double?, longitude : Double?){
         context.showShimmer(true)
@@ -45,8 +45,8 @@ class NearbyPresenter(val context: NearbyActivity) {
     }
 
     fun saveFavorite(id_wisata : Int?,view: View?){
-        wisataRepository.postFavorite(user,id_wisata)?.enqueue(object : Callback<FavoriteModel?>{
-            override fun onResponse(call: Call<FavoriteModel?>, response: Response<FavoriteModel?>) {
+        wisataRepository.postFavorite(user,id_wisata)?.enqueue(object : Callback<SaveFavoriteModel?>{
+            override fun onResponse(call: Call<SaveFavoriteModel?>, response: Response<SaveFavoriteModel?>) {
                 if (response.isSuccessful && response.code() == 200){
                     val message = response.body()!!.message
                     Snackbar.make(view!!,message, Snackbar.LENGTH_LONG).show()
@@ -59,7 +59,7 @@ class NearbyPresenter(val context: NearbyActivity) {
                 }
             }
 
-            override fun onFailure(call: Call<FavoriteModel?>, t: Throwable) {
+            override fun onFailure(call: Call<SaveFavoriteModel?>, t: Throwable) {
                 t.printStackTrace()
             }
         })

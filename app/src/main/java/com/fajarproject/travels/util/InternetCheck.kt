@@ -5,6 +5,10 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 
+/**
+ * Created by Fajar Adi Prasetyo on 09/10/19.
+ */
+
 internal class InternetCheck(private val mConsumer: Consumer) : AsyncTask<Void, Void, Boolean>() {
     interface Consumer {
         fun accept(internet: Boolean?)

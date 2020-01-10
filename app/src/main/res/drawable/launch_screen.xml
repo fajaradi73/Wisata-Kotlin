@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_gradient"/>
+    <item
+        android:top="@dimen/height_icon"
+        android:bottom="200dp">
+        <bitmap android:src="@drawable/travels_logo"
+            android:gravity="center" />
+    </item>
+    <item android:gravity="bottom"
+        android:bottom="-100dp">
+        <bitmap android:src="@drawable/travels_text"
+            android:gravity="bottom" />
+    </item>
+</layer-list>
