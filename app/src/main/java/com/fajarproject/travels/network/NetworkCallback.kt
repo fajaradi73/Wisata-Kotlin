@@ -23,7 +23,10 @@ abstract class NetworkCallback<M> : Subscriber<M>() {
             val httpException: HttpException = e
             val code: Int = httpException.code()
             val responseBody : ResponseBody? = httpException.response().errorBody()
-            val jsonObject = JSONObject(responseBody?.string())
+            var jsonObject = JSONObject()
+            if (code != 403){
+                jsonObject = JSONObject(responseBody?.string())
+            }
             val message: String = httpException.message()
             Log.i(TAG, "code : $code")
             onFailure(message,code,jsonObject)

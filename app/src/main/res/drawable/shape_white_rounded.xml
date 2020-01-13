@@ -3,13 +3,13 @@
 
     <item android:state_enabled="true" android:state_pressed="false">
         <shape android:shape="rectangle">
-            <corners android:radius="5dp"/>
+            <corners android:radius="@dimen/itemBetweenMarginMedium"/>
             <solid android:color="@color/white" />
         </shape>
     </item>
     <item android:state_enabled="true" android:state_pressed="true">
         <shape android:shape="rectangle">
-            <corners android:radius="5dp"/>
+            <corners android:radius="@dimen/itemBetweenMarginMedium"/>
             <solid android:color="@color/colorWhitePressed" />
         </shape>
     </item>

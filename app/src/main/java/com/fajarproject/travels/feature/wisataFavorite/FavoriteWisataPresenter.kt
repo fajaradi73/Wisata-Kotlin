@@ -1,4 +1,4 @@
-package com.fajarproject.travels.feature.favoriteWisata
+package com.fajarproject.travels.feature.wisataFavorite
 
 import android.app.Activity
 import android.content.Intent

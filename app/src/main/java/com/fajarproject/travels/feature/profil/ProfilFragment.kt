@@ -13,7 +13,7 @@ import com.fajarproject.travels.api.UserApi
 import com.fajarproject.travels.base.mvp.MvpFragment
 import com.fajarproject.travels.base.view.DialogNoListener
 import com.fajarproject.travels.base.view.DialogYesListener
-import com.fajarproject.travels.feature.favoriteWisata.FavoriteWisataActivity
+import com.fajarproject.travels.feature.wisataFavorite.FavoriteWisataActivity
 import com.fajarproject.travels.feature.main.MainActivity
 import com.fajarproject.travels.models.ProfileModel
 import com.fajarproject.travels.util.Util
@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_user.*
  */
 
 class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView {
+
 
     override fun createPresenter(): ProfilPresenter {
         val userApi = Util.getRetrofitRxJava2()!!.create(UserApi::class.java)
@@ -46,7 +47,11 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter!!.getProfile()
+        presenter?.getProfile()
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = false
+            presenter?.getProfile()
+        }
     }
 
     override fun showLoading() {
@@ -100,9 +105,9 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView {
     }
 
     override fun setAction() {
-//        cvLogout.setOnClickListener {
-//            showDialogLogout()
-//        }
+        cvLogout.setOnClickListener {
+            showDialogLogout()
+        }
         clFavorite.setOnClickListener {
             changeActivity(Intent(activity,FavoriteWisataActivity::class.java))
         }

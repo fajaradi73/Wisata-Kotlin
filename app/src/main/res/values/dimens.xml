@@ -59,7 +59,7 @@
     <dimen name="inputBottomEasy">12dp</dimen>
     <dimen name="padding_10">10dp</dimen>
     <dimen name="padding_20">20dp</dimen>
-    <dimen name="height_icon">45dp</dimen>
+    <dimen name="height_icon">40dp</dimen>
 
     <!--BottomNavigation-->
 <!--    <dimen name="design_bottom_navigation_item_max_width" tools:override="true">600dp</dimen>-->
@@ -71,5 +71,7 @@
     <!--Text Size-->
     <dimen name="text_menu">12sp</dimen>
     <dimen name="height_200">200dp</dimen>
+    <dimen name="size_100">100dp</dimen>
+    <dimen name="height_image">125dp</dimen>
 
 </resources>

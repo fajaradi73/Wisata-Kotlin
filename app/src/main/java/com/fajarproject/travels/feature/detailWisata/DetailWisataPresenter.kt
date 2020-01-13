@@ -8,6 +8,7 @@ import com.fajarproject.travels.models.SaveFavoriteModel
 import com.fajarproject.travels.models.UserModel
 import com.fajarproject.travels.network.NetworkCallback
 import com.fajarproject.travels.models.DetailWisataModel
+import com.fajarproject.travels.models.WisataDetailModel
 import com.fajarproject.travels.util.Util
 import org.json.JSONObject
 
@@ -25,8 +26,8 @@ class DetailWisataPresenter(view: DetailWisataView, val context: Activity,
 
     fun getDetailWisata(idWisata : Int?){
         view!!.showLoading()
-        addSubscribe(apiStores.getDetailWisata(user.token,idWisata),object : NetworkCallback<DetailWisataModel>(){
-            override fun onSuccess(model: DetailWisataModel) {
+        addSubscribe(apiStores.getDetailWisata(user.token,idWisata),object : NetworkCallback<WisataDetailModel>(){
+            override fun onSuccess(model: WisataDetailModel) {
                 view!!.getDataSuccess(model)
             }
 

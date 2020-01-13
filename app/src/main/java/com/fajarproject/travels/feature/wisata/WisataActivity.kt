@@ -43,11 +43,15 @@ class WisataActivity : MvpActivity<WisataPresenter>(),WisataView{
         titleWisata = intent.getStringExtra(Constant.titleWisata)
         setToolbar()
         Util.setAds(adView)
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = false
+            presenter?.getWisata(typeId!!)
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        presenter!!.getWisata(typeId!!)
+        presenter?.getWisata(typeId!!)
     }
 
     override fun onResume() {
@@ -82,14 +86,22 @@ class WisataActivity : MvpActivity<WisataPresenter>(),WisataView{
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         rv_wisata.layoutManager         = linearLayoutManager
         rv_wisata.itemAnimator = DefaultItemAnimator()
+
     }
 
     override fun showLoading() {
-        loadingOverlay.visibility = View.VISIBLE
+//        loadingOverlay.visibility = View.VISIBLE
+        shimmerView.visibility  = View.VISIBLE
+        shimmerView.duration    = 1150
+        shimmerView.startShimmerAnimation()
+        swipeRefresh.visibility = View.GONE
     }
 
     override fun hideLoading() {
-        loadingOverlay.visibility = View.GONE
+//        loadingOverlay.visibility = View.GONE
+        shimmerView.stopShimmerAnimation()
+        shimmerView.visibility  = View.GONE
+        swipeRefresh.visibility = View.VISIBLE
     }
 
     override fun getDataSuccess(model: List<WisataModel>) {
@@ -104,9 +116,10 @@ class WisataActivity : MvpActivity<WisataPresenter>(),WisataView{
             rv_wisata.adapter = adapter
             adapter?.setOnItemClickListener(object : OnItemClickListener{
                 override fun onItemClick(view: View?, position: Int) {
-                    presenter!!.getItem(list!![position])
+                    presenter?.getItem(list!![position])
                 }
             })
+
         }else{
             showData(false)
         }

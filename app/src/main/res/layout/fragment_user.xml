@@ -17,6 +17,7 @@
             android:scrollbars="none">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
+                android:id="@+id/clView"
                 android:layout_height="match_parent">
                 <androidx.coordinatorlayout.widget.CoordinatorLayout
                     android:layout_width="match_parent"
@@ -254,10 +255,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/padding_10"
+                    android:id="@+id/clInfo"
                     app:layout_constraintTop_toBottomOf="@id/clAction"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintBottom_toTopOf="@id/cvLogout">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -416,6 +418,44 @@
                             app:layout_constraintBottom_toBottomOf="parent"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.cardview.widget.CardView
+                    style="@style/CardViewButtonWhite"
+                    android:id="@+id/cvLogout"
+                    android:layout_marginTop="@dimen/padding_20"
+                    android:layout_marginBottom="@dimen/padding_20"
+                    android:layout_marginLeft="@dimen/size_100"
+                    android:layout_marginRight="@dimen/size_100"
+                    app:layout_constraintTop_toBottomOf="@id/clInfo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_logout"
+                            android:id="@+id/ivLogout"
+                            android:padding="@dimen/padding_10"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:text="@string/logout"
+                            android:gravity="center"
+                            android:textSize="18sp"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:background="@drawable/ic_gradient"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toRightOf="@id/ivLogout"
+                            app:layout_constraintRight_toRightOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

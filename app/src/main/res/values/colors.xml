@@ -35,4 +35,8 @@
     <color name="goodgrey">#535353</color>
     <color name="blue">#293859</color>
     <color name="lightgrey">#EEEEEE</color>
+    <color name="blackTransparent">#4D000000</color>
+    <color name="blackTransparent_50">#66000000</color>
+    <color name="shimmerBG">#dddddd</color>
+
 </resources>

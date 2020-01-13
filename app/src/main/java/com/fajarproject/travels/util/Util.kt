@@ -22,15 +22,13 @@ import android.os.Build
 import android.os.Process
 import android.telephony.TelephonyManager
 import android.text.*
+import android.text.method.LinkMovementMethod
 import android.text.style.ImageSpan
 import android.util.Base64
 import android.util.Log
 import android.util.Patterns
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.ViewParent
 import android.view.WindowManager.LayoutParams
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -53,6 +51,7 @@ import com.fajarproject.travels.R
 import com.fajarproject.travels.base.view.DialogNoListener
 import com.fajarproject.travels.base.view.DialogYesListener
 import com.fajarproject.travels.base.widget.ImageLoader
+import com.fajarproject.travels.base.widget.Spannable
 import com.fajarproject.travels.feature.opsiLogin.OpsiLoginActivity
 import com.fajarproject.travels.models.UserModel
 import com.fajarproject.travels.preference.AppPreference
@@ -1041,5 +1040,83 @@ object Util {
             DecimalFormat("#,##0").format(numValue)
         }
     }
+    private fun addClickablePartTextViewResizable(
+        strSpanned: Spanned, tv: TextView,
+        maxLine: Int, spannableText: String, viewMore: Boolean
+    ): SpannableStringBuilder? {
+        val str = strSpanned.toString()
+        val ssb = SpannableStringBuilder(strSpanned)
+        if (str.contains(spannableText)) {
+            ssb.setSpan(object : Spannable(false) {
+                override fun onClick(widget: View) {
+                    tv.layoutParams = tv.layoutParams
+                    tv.setText(tv.tag.toString(), TextView.BufferType.SPANNABLE)
+                    tv.invalidate()
+                    if (viewMore) {
+                        makeTextViewResizable(tv, -1, "", false)
+                    } else {
+                        makeTextViewResizable(tv, 3, "...Selengkapnya", true)
+                    }
+                }
+            }, str.indexOf(spannableText), str.indexOf(spannableText) + spannableText.length, 0)
+        }
+        return ssb
+    }
 
+    fun makeTextViewResizable(
+        tv: TextView,
+        maxLine: Int,
+        expandText: String,
+        viewMore: Boolean
+    ) {
+        if (tv.tag == null) {
+            tv.tag = tv.text
+        }
+        val vto: ViewTreeObserver = tv.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                val text: String
+                val lineEndIndex: Int
+                val obs: ViewTreeObserver = tv.viewTreeObserver
+                obs.removeGlobalOnLayoutListener(this)
+                if (maxLine == 0) {
+                    lineEndIndex = tv.layout.getLineEnd(0)
+                    text = tv.text.subSequence(
+                        0,
+                        lineEndIndex - expandText.length + 1
+                    ).toString() + " " + expandText
+                } else if (maxLine > 0 && tv.lineCount >= maxLine) {
+                    lineEndIndex = tv.layout.getLineEnd(maxLine - 1)
+                    text = tv.text.subSequence(
+                        0,
+                        lineEndIndex - expandText.length + 1
+                    ).toString() + " " + expandText
+                } else {
+                    lineEndIndex = tv.layout.getLineEnd(tv.layout.lineCount - 1)
+                    text = tv.text.subSequence(0, lineEndIndex).toString() + " " + expandText
+                }
+                tv.text = text
+                tv.movementMethod = LinkMovementMethod.getInstance()
+                tv.setText(
+                    addClickablePartTextViewResizable(
+                        Html.fromHtml(tv.text.toString()), tv, lineEndIndex, expandText,
+                        viewMore
+                    ), TextView.BufferType.SPANNABLE
+                )
+            }
+        })
+    }
+
+    fun longToDate(timestamp: Long): Date{
+        return Date(timestamp * 1000L)
+    }
+
+    fun getStatusBarHeight(context: Context): Int {
+        var result = 0
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimensionPixelSize(resourceId)
+        }
+        return result
+    }
 }

@@ -17,8 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:id="@+id/image_wisata"
-            android:background="@drawable/image_dieng"/>
+            android:id="@+id/image_wisata"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -16,6 +16,7 @@ import com.fajarproject.travels.base.mvp.MvpActivity
 import com.fajarproject.travels.feature.home.HomeFragment
 import com.fajarproject.travels.feature.popularWisata.PopularWisataFragment
 import com.fajarproject.travels.feature.profil.ProfilFragment
+import com.fajarproject.travels.feature.wisataTerdekat.WisataTerdekatFragment
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -72,7 +73,7 @@ class MainActivity : MvpActivity<MainPresenter>(),MainView {
                         setStatusBar(false)
                         var fragment = fragmentManager.findFragmentByTag(Constant.nearby)
                         if (fragment == null){
-                            fragment = PopularWisataFragment()
+                            fragment = WisataTerdekatFragment()
                         }
                         addFragment(fragment,Constant.nearby)
                         return true

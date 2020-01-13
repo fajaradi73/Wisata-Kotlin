@@ -1,4 +1,4 @@
-package com.fajarproject.travels.nearbyTour.adapter
+package com.fajarproject.travels.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
-import com.fajarproject.travels.nearbyTour.model.NearbyModel
-import com.fajarproject.travels.nearbyTour.presenter.NearbyPresenter
+import com.fajarproject.travels.models.NearbyModel
 import com.fajarproject.travels.base.view.OnItemClickListener
+import com.fajarproject.travels.feature.wisataTerdekat.WisataTerdekatPresenter
+import com.fajarproject.travels.util.Util
 import com.like.LikeButton
 import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.adapter_nearby.view.*
@@ -23,8 +24,8 @@ import kotlinx.android.synthetic.main.adapter_nearby.view.title_wisata
  */
 
 
-class AdapterNearby(private val list:List<NearbyModel>, val context : Context,val presenter: NearbyPresenter)
-    : RecyclerView.Adapter<AdapterNearby.NearbyHolder>() {
+class WisataTerdekatAdapter(private val list:List<NearbyModel>, val context : Context, val presenter: WisataTerdekatPresenter)
+    : RecyclerView.Adapter<WisataTerdekatAdapter.NearbyHolder>() {
 
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -38,7 +39,7 @@ class AdapterNearby(private val list:List<NearbyModel>, val context : Context,va
             LayoutInflater.from(
                 parent.context
             ).inflate(R.layout.adapter_nearby, parent, false)
-        , this.onItemClickListener
+            , this.onItemClickListener
         )
     }
 
@@ -51,15 +52,19 @@ class AdapterNearby(private val list:List<NearbyModel>, val context : Context,va
         val nearby = list[position]
         holder.itemView.title_wisata.text = nearby.namaWisata
         holder.itemView.jarak_wisata.text = "Jarak > " + String.format("%.2f", nearby.distance!!) + "Km"
-//        ImageLoader.with(context).load(holder.itemView.image_wisata,App.BASE_IMAGE + nearby.imageWisata)
-        Glide.with(context).load(App.BASE_IMAGE + nearby.imageWisata).into(holder.itemView.image_wisata)
+        Glide.with(context)
+            .load(App.BASE_IMAGE + nearby.imageWisata)
+            .error(R.drawable.image_dieng)
+            .placeholder(Util.circleLoading(context))
+            .into(holder.itemView.image_wisata)
+
         holder.itemView.whitelist.isLiked = nearby.favorite!!
         holder.itemView.whitelist.setOnLikeListener(object : OnLikeListener {
-            override fun liked(likeButton: LikeButton?) {
+            override fun liked(likeButton: LikeButton) {
                 presenter.saveFavorite(nearby.idWisata,likeButton)
             }
 
-            override fun unLiked(likeButton: LikeButton?) {
+            override fun unLiked(likeButton: LikeButton) {
                 presenter.saveFavorite(nearby.idWisata,likeButton)
             }
 

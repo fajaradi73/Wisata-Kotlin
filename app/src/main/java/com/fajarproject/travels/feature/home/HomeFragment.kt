@@ -65,11 +65,18 @@ class HomeFragment : MvpFragment<HomePresenter>(),HomeView {
         super.onSaveInstanceState(outState)
     }
     override fun showLoading() {
-        loadingOverlay.visibility = View.VISIBLE
+//        loadingOverlay.visibility = View.VISIBLE
+        shimmerView.visibility = View.VISIBLE
+        shimmerView.duration = 1150
+        shimmerView.startShimmerAnimation()
+        swipeRefresh.visibility = View.GONE
     }
 
     override fun hideLoading() {
-        loadingOverlay.visibility = View.GONE
+//        loadingOverlay.visibility = View.GONE
+        shimmerView.stopShimmerAnimation()
+        shimmerView.visibility = View.GONE
+        swipeRefresh.visibility = View.VISIBLE
     }
 
     override fun getDataSuccess(model: List<LookupDetailModel>?) {

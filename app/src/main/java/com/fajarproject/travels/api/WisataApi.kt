@@ -1,8 +1,7 @@
 package com.fajarproject.travels.api
 
 import com.fajarproject.travels.models.*
-import com.fajarproject.travels.nearbyTour.model.NearbyModel
-import retrofit2.Call
+import com.fajarproject.travels.models.NearbyModel
 import retrofit2.http.*
 import rx.Observable
 
@@ -13,16 +12,11 @@ import rx.Observable
 interface WisataApi {
 
     @GET("auth/nearby_wisata")
-    fun get_nearby_wisata(
+    fun getNearbyWisata(
         @Header("Authorization") token : String?,
         @Query("latitude") latitude: Double?,
         @Query("longitude") longitude: Double?
-    ): Call<List<NearbyModel>?>?
-
-    @FormUrlEncoded
-    @POST("auth/favorite")
-    fun saveFavorite(@Header("Authorization") token : String?,
-                     @Field("id_wisata") id_wisata: Int?) : Call<SaveFavoriteModel?>?
+    ): Observable<List<NearbyModel>>
 
     @FormUrlEncoded
     @POST("auth/favorite")
@@ -35,7 +29,7 @@ interface WisataApi {
 
     @GET("auth/detail_wisata")
     fun getDetailWisata(@Header("Authorization") token : String?,
-                        @Query("id_wisata") id_wisata: Int?): Observable<DetailWisataModel>
+                        @Query("id_wisata") id_wisata: Int?): Observable<WisataDetailModel>
 
     @GET("auth/favorite_wisata")
     fun getFavoriteWisata(@Header("Authorization") token : String?): Observable<List<FavoriteModel>>

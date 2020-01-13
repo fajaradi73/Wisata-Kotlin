@@ -16,15 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
+import com.fajarproject.travels.adapter.PictureAdapter
 import com.fajarproject.travels.api.WisataApi
 import com.fajarproject.travels.base.mvp.MvpActivity
 import com.fajarproject.travels.feature.mapsWisata.MapsWisataActivity
 import com.fajarproject.travels.adapter.UlasanAdapter
-import com.fajarproject.travels.models.DetailWisataModel
+import com.fajarproject.travels.base.view.OnItemClickListener
+import com.fajarproject.travels.feature.previewPictureWisata.PreviewPictureActivity
+import com.fajarproject.travels.models.PictureItem
 import com.fajarproject.travels.models.UlasanItem
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
-import com.fajarproject.travels.base.widget.AppBarStateChangeListener
+import com.fajarproject.travels.models.WisataDetailModel
 import com.google.android.ads.nativetemplates.NativeTemplateStyle
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
@@ -36,12 +39,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.like.LikeButton
 import com.like.OnLikeListener
-import kotlinx.android.synthetic.main.activity_wisata_detail.*
+import kotlinx.android.synthetic.main.activity_detail_wisata.*
 import kotlinx.android.synthetic.main.travel_details.*
+import org.parceler.Parcels
 
 /**
  * Created by Fajar Adi Prasetyo on 08/01/20.
@@ -63,11 +66,13 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_wisata_detail)
+        setContentView(R.layout.activity_detail_wisata)
         setToolbar()
         init()
         idWisata       = intent.getIntExtra(Constant.IdWisata,0)
         setNativeAds()
+        presenter?.getDetailWisata(idWisata)
+
     }
 
     override fun setNativeAds() {
@@ -95,6 +100,7 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
     override fun setToolbar() {
         setSupportActionBar(toolbar_wisata)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        Util.setColorFilter(toolbar_wisata.navigationIcon!!,ContextCompat.getColor(this,R.color.white))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -110,31 +116,10 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
     }
 
     override fun init() {
-        htab_appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener(){
-            override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
-                if(state?.name == "COLLAPSED"){
-                    setColorIcon(true)
-                }else if (state?.name == "EXPANDED"){
-                    setColorIcon(false)
-                }
-            }
-
-        })
         val mapFragment = supportFragmentManager.findFragmentById(R.id.maps_wisata) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
-    override fun setColorIcon(isShow : Boolean) {
-        if (isShow){
-            Util.setColorFilter(toolbar_wisata.navigationIcon!!,ContextCompat.getColor(this,R.color.black))
-            whitelist.setUnlikeDrawableRes(R.drawable.ic_unlike)
-            share.setImageResource(R.drawable.ic_share)
-        }else{
-            Util.setColorFilter(toolbar_wisata.navigationIcon!!,ContextCompat.getColor(this,R.color.white))
-            whitelist.setUnlikeDrawableRes(R.drawable.ic_unlike_white)
-            share.setImageResource(R.drawable.ic_share_white)
-        }
-    }
 
     override fun setUlasan(list: List<UlasanItem>) {
         val linearLayoutManager = LinearLayoutManager(this)
@@ -144,42 +129,28 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         list_ulasan.adapter = adapter
     }
 
-    override fun getDataSuccess(data: DetailWisataModel) {
+    override fun getDataSuccess(data: WisataDetailModel) {
         alamat_wisata.text          = data.alamatWisata
         jam_wisata.text             = Util.milisecondTotimes(data.jamBuka!!) + " - " + Util.milisecondTotimes(data.jamTutup!!)
         title_wisata.text           = data.namaWisata
+        text_rating.text            = data.ratting.toString()
+        text_rating_ulasan.text     = data.ratting.toString()
+        text_ulasan.text            = "( " + data.jumlahRatting.toString() + " ulasan )"
+        text_ulasan_view.text       = "( " + data.jumlahRatting.toString() + " ulasan )"
         Glide.with(this)
             .load(App.BASE_IMAGE + data.imageWisata)
             .error(R.drawable.image_dieng)
             .placeholder(Util.circleLoading(this)).into(image_wisata)
-        val latLng = LatLng(data.latitude!!,data.longitude!!)
-        val cameraPosition : CameraPosition = CameraPosition.builder().target(latLng).zoom(15F).build()
-        val markerOptions = MarkerOptions()
-        markerOptions.position(latLng)
-        markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_marker_48dp))
-        maps?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-        maps?.addMarker(markerOptions)
-        maps?.setOnMapClickListener {
-            val intent = Intent(this, MapsWisataActivity::class.java)
-            intent.putExtra(Constant.latitudeTravels,data.latitude)
-            intent.putExtra(Constant.longitudeTravels,data.longitude)
-            changeActivity(intent)
+        setDataMaps(data.latitude!!,data.longitude!!)
+        setDataFavorite(data.favorite!!,data.idWisata!!)
+        setUlasan(data.ulasan!!)
+        checkUlasan(data.jumlahRatting!!)
+        if (data.picture!!.isNotEmpty()){
+            showDataFoto(true)
+            setDataFoto(data.picture)
+        }else{
+            showDataFoto(false)
         }
-        whitelist.isLiked = data.favorite!!
-        whitelist.setOnLikeListener(object : OnLikeListener {
-            override fun liked(likeButton: LikeButton?) {
-                presenter?.saveFavorite(data.idWisata!!,likeButton!!)
-            }
-
-            override fun unLiked(likeButton: LikeButton?) {
-                presenter?.saveFavorite(data.idWisata!!,likeButton!!)
-            }
-        })
-        text_rating.text        = data.ratting.toString()
-        text_rating_ulasan.text = data.ratting.toString()
-        text_ulasan.text        = "( " + data.jumlahRatting.toString() + " ulasan )"
-        text_ulasan_view.text   = "( " + data.jumlahRatting.toString() + " ulasan )"
-        setUlasan(data.ulasan)
     }
 
     override fun getDataFail(message: String) {
@@ -206,6 +177,91 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         Snackbar.make(view,message, Snackbar.LENGTH_LONG).show()
     }
 
+    override fun checkUlasan(jumlah : Int) {
+        when {
+            jumlah == 0 -> {
+                showDataUlasan(false)
+                cvSemuaUlasan.visibility = View.GONE
+            }
+            jumlah < 3 -> {
+                showDataUlasan(true)
+                cvSemuaUlasan.visibility = View.GONE
+            }
+            else -> {
+                showDataUlasan(true)
+                cvSemuaUlasan.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun showDataUlasan(isShow: Boolean) {
+        if (isShow){
+            list_ulasan.visibility  = View.VISIBLE
+            clNoUlasan.visibility   = View.GONE
+        }else{
+            list_ulasan.visibility  = View.GONE
+            clNoUlasan.visibility   = View.VISIBLE
+        }
+    }
+
+    override fun showDataFoto(isShow: Boolean) {
+        if(isShow){
+            clNoFoto.visibility     = View.GONE
+            list_foto.visibility    = View.VISIBLE
+        }else{
+            clNoFoto.visibility     = View.VISIBLE
+            list_foto.visibility    = View.GONE
+        }
+    }
+
+    override fun setDataMaps(latitude : Double,longitude : Double) {
+        val latLng = LatLng(latitude,longitude)
+        val cameraPosition : CameraPosition = CameraPosition.builder().target(latLng).zoom(15F).build()
+        val markerOptions = MarkerOptions()
+        markerOptions.position(latLng)
+        markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_marker_48dp))
+        maps?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        maps?.addMarker(markerOptions)
+        maps?.setOnMapClickListener {
+            val intent = Intent(this, MapsWisataActivity::class.java)
+            intent.putExtra(Constant.latitudeTravels,latitude)
+            intent.putExtra(Constant.longitudeTravels,longitude)
+            changeActivity(intent)
+        }
+    }
+
+    override fun setDataFavorite(isFav: Boolean, idWisata: Int) {
+        whitelist.isLiked = isFav
+        whitelist.setOnLikeListener(object : OnLikeListener {
+            override fun liked(likeButton: LikeButton?) {
+                presenter?.saveFavorite(idWisata,likeButton!!)
+            }
+
+            override fun unLiked(likeButton: LikeButton?) {
+                presenter?.saveFavorite(idWisata,likeButton!!)
+            }
+        })
+
+    }
+
+    var list : List<PictureItem> = arrayListOf()
+
+    override fun setDataFoto(data: List<PictureItem>) {
+        this.list = data
+        val linearLayoutManager         = LinearLayoutManager(this)
+        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        list_foto.layoutManager         = linearLayoutManager
+        val adapter                     = PictureAdapter(data,this)
+        list_foto.adapter               = adapter
+        adapter.setOnItemClickListener(object : OnItemClickListener{
+            override fun onItemClick(view: View?, position: Int) {
+                val intent = Intent(this@DetailWisataActivity,PreviewPictureActivity::class.java)
+                intent.putExtra("pos",position)
+                intent.putExtra("data",Parcels.wrap(data))
+                changeActivity(intent)
+            }
+        })
+    }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         this.maps   = googleMap
@@ -213,11 +269,6 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         maps?.uiSettings?.isRotateGesturesEnabled   = false
         maps?.uiSettings?.setAllGesturesEnabled(false)
         maps?.uiSettings?.isMapToolbarEnabled       = false
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter?.getDetailWisata(idWisata)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -8,26 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1037036133695:android:183878f715bacb0b75078a",
+        "mobilesdk_app_id": "1:1037036133695:android:8dc900db3521d83e75078a",
         "android_client_info": {
-          "package_name": "com.fajarproject.wisata"
+          "package_name": "com.fajarproject.travels"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1037036133695-hnccudm9roja8vv797587t399qskfp48.apps.googleusercontent.com",
+          "client_id": "1037036133695-p0h56ldeqh32tc4f81rpttana1u7u5vi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.fajarproject.wisata",
+            "package_name": "com.fajarproject.travels",
             "certificate_hash": "128fa87d6d5fc3dc411555bf944f4dc398c0afb2"
-          }
-        },
-        {
-          "client_id": "1037036133695-4l29kfhp42rt8f4md87gnm6bvqkjf6o4.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.fajarproject.wisata",
-            "certificate_hash": "f95d0ef115d83d4026fce3d321e9df9f2959df60"
           }
         },
         {

@@ -1,8 +1,10 @@
-package com.fajarproject.travels.feature.favoriteWisata
+package com.fajarproject.travels.feature.wisataFavorite
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fajarproject.travels.R
@@ -12,7 +14,7 @@ import com.fajarproject.travels.base.mvp.MvpActivity
 import com.fajarproject.travels.base.view.OnItemClickListener
 import com.fajarproject.travels.models.FavoriteModel
 import com.fajarproject.travels.util.Util
-import kotlinx.android.synthetic.main.fragment_favorite.*
+import kotlinx.android.synthetic.main.activity_favorite.*
 
 /**
  * Created by Fajar Adi Prasetyo on 10/01/20.
@@ -29,7 +31,7 @@ class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_favorite)
+        setContentView(R.layout.activity_favorite)
         setToolbar()
         setRecycleView()
         swipeRefresh.setOnRefreshListener {
@@ -50,11 +52,18 @@ class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWi
     }
 
     override fun showLoading() {
-        loadingOverlay.visibility = View.VISIBLE
+//        loadingOverlay.visibility = View.VISIBLE
+        shimmerView.visibility  = View.VISIBLE
+        shimmerView.duration    = 1150
+        shimmerView.startShimmerAnimation()
+        swipeRefresh.visibility = View.GONE
     }
 
     override fun hideLoading() {
-        loadingOverlay.visibility = View.GONE
+//        loadingOverlay.visibility = View.GONE
+        shimmerView.stopShimmerAnimation()
+        shimmerView.visibility  = View.GONE
+        swipeRefresh.visibility = View.VISIBLE
     }
 
     override fun moveToDetail(intent: Intent) {
@@ -78,7 +87,7 @@ class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWi
             listFavorite.adapter = adapter
             adapter.setOnItemClickListener(object : OnItemClickListener {
                 override fun onItemClick(view: View?, position: Int) {
-                    presenter!!.getItem(list!![position])
+                    presenter?.getItem(list!![position])
                 }
             })
         }else{
@@ -99,6 +108,15 @@ class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWi
             listFavorite.visibility = View.GONE
             ll_nodata.visibility    = View.VISIBLE
         }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home){
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return true
     }
 }

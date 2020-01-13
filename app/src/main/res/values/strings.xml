@@ -78,5 +78,14 @@
     <string name="profile">Profil</string>
     <string name="nearby">Terdekat</string>
     <string name="_yearBuild">2019</string>
+    <string name="notFoundUlasan">Ulasan tidak ditemukan</string>
+    <string name="clickUlasan">Jadilah yang pertama memberikan ulasan untuk wisata ini</string>
+    <string name="allUlasan">Tampilkan semua ulasan</string>
+    <string name="buka">Buka</string>
+    <string name="tentang">Tentang</string>
+    <string name="foto">Foto</string>
+    <string name="lihat_semua">Lihat semua</string>
+    <string name="createFoto">Tambahkan Foto</string>
+    <string name="noFoundFoto">Foto tidak ditemukan</string>
 
 </resources>

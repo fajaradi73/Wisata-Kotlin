@@ -1,4 +1,4 @@
-package com.fajarproject.travels.nearbyTour.model
+package com.fajarproject.travels.models
 
 import com.google.gson.annotations.SerializedName
 
