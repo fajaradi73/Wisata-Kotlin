@@ -4,13 +4,14 @@ import android.app.Activity
 import android.view.View
 import com.fajarproject.travels.api.WisataApi
 import com.fajarproject.travels.base.ui.BasePresenter
-import com.fajarproject.travels.models.SaveFavoriteModel
-import com.fajarproject.travels.models.UserModel
+import com.fajarproject.travels.models.*
 import com.fajarproject.travels.network.NetworkCallback
-import com.fajarproject.travels.models.DetailWisataModel
-import com.fajarproject.travels.models.WisataDetailModel
 import com.fajarproject.travels.util.Util
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.json.JSONObject
+import java.io.File
 
 /**
  * Created by Fajar Adi Prasetyo on 08/01/20.
@@ -69,6 +70,35 @@ class DetailWisataPresenter(view: DetailWisataView, val context: Activity,
 
             override fun onFinish() {
                 likes.isEnabled = true
+            }
+
+        })
+    }
+    fun uploadPicture(idWisata: Int,list: MutableList<String>){
+        val imageWisata = arrayOfNulls<MultipartBody.Part>(list.size)
+        for(i in 0 until list.size){
+            val path = list[i].replace("\n","")
+            val file = File(path)
+            val imageBody = RequestBody.create(MediaType.parse("image/*"), file)
+            imageWisata[i] = MultipartBody.Part.createFormData("files[]", file.name.replace("\"\n",""), imageBody)
+        }
+        val id = RequestBody.create(MediaType.parse("text/plain"), idWisata.toString())
+        view?.showLoading()
+        addSubscribe(apiStores.uploadPictureWisata(user.token,id,imageWisata),object : NetworkCallback<SavePictureWisataModel>(){
+            override fun onSuccess(model: SavePictureWisataModel) {
+                view?.successUpload(model.title,model.message)
+            }
+
+            override fun onFailure(message: String?, code: Int?, jsonObject: JSONObject?) {
+                if (code == 401){
+                    Util.sessionExpired(context)
+                }else{
+                    view?.failedUpload(message!!)
+                }
+            }
+
+            override fun onFinish() {
+                view?.hideLoading()
             }
 
         })

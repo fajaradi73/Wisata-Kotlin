@@ -16,7 +16,7 @@ import com.fajarproject.travels.feature.main.MainActivity
 import com.fajarproject.travels.models.PopularWisataModel
 import com.fajarproject.travels.util.Util
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_popular.*
+import kotlinx.android.synthetic.main.fragment_populer.*
 
 /**
  * Created by Fajar Adi Prasetyo on 09/01/20.
@@ -37,7 +37,7 @@ class PopularWisataFragment : MvpFragment<PopularWisataPresenter>(),PopularWisat
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_popular, container, false)
+        return inflater.inflate(R.layout.fragment_populer, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

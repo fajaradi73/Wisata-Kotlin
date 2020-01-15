@@ -1,0 +1,29 @@
+package com.fajarproject.travels.feature.ulasan
+
+import com.fajarproject.travels.models.RattingItem
+import com.fajarproject.travels.models.UlasanItem
+import com.fajarproject.travels.models.UlasanModel
+
+/**
+ * Create by Fajar Adi Prasetyo on 14/01/2020.
+ */
+interface UlasanView {
+
+    fun setToolbar()
+
+    fun setUI()
+
+    fun showLoading()
+
+    fun hideLoading()
+
+    fun getDataSuccess(model : UlasanModel)
+
+    fun getDataFail(message : String)
+
+    fun setDataRatting(model : List<RattingItem>)
+
+    fun setDataUlasan(model : List<UlasanItem>)
+
+    fun getProgressRatting(ratting : Int) : Float
+}

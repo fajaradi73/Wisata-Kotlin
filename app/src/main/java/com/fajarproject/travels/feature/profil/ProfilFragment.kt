@@ -1,5 +1,6 @@
 package com.fajarproject.travels.feature.profil
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,14 +18,14 @@ import com.fajarproject.travels.feature.wisataFavorite.FavoriteWisataActivity
 import com.fajarproject.travels.feature.main.MainActivity
 import com.fajarproject.travels.models.ProfileModel
 import com.fajarproject.travels.util.Util
-import kotlinx.android.synthetic.main.fragment_user.*
+import kotlinx.android.synthetic.main.fragment_profil.*
 
 /**
  * Created by Fajar Adi Prasetyo on 09/01/20.
  */
 
+@SuppressLint("SetTextI18n")
 class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView {
-
 
     override fun createPresenter(): ProfilPresenter {
         val userApi = Util.getRetrofitRxJava2()!!.create(UserApi::class.java)
@@ -37,12 +38,13 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_user, container, false)
+        return inflater.inflate(R.layout.fragment_profil, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setAction()
+        version.text = "Version " + Util.getAppVersion()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,12 +57,15 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView {
     }
 
     override fun showLoading() {
-        loadingOverlay.visibility   = View.VISIBLE
+        shimmerView.visibility  = View.VISIBLE
+        shimmerView.duration    = 1150
+        shimmerView.startShimmerAnimation()
         swipeRefresh.visibility     = View.GONE
     }
 
     override fun hideLoading() {
-        loadingOverlay.visibility   = View.GONE
+        shimmerView.stopShimmerAnimation()
+        shimmerView.visibility  = View.GONE
         swipeRefresh.visibility     = View.VISIBLE
     }
 

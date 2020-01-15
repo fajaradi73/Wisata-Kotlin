@@ -177,5 +177,7 @@ dependencies {
     ////Zoom Image
     implementation 'com.jsibbold:zoomage:1.2.0'
 
+    //// Round Corner Progress Bar
+    implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -16,4 +16,6 @@ object Constant {
     const val fullName          = "fullname"
     const val titleWisata       = "TitleWisata"
     const val nearby            = "WisataTerdekat"
+    const val position          = "Position"
+    const val dataFoto          = "DataFoto"
 }

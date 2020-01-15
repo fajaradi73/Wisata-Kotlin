@@ -83,6 +83,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.*
 import java.lang.reflect.Type
+import java.math.RoundingMode
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
@@ -143,14 +144,14 @@ object Util {
             .build()
     }
 
-    fun getOkHttp(): OkHttpClient {
+    private fun getOkHttp(): OkHttpClient {
         val interceptor =
             HttpLoggingInterceptor()
-        interceptor.level = Level.BODY
+//        interceptor.level = Level.BODY
         return OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(interceptor).build()
     }
 
@@ -369,9 +370,8 @@ object Util {
             urlConnection.connect()
             val inputStream: InputStream = urlConnection.inputStream
             val fileOutputStream = FileOutputStream(directory!!)
-            val totalSize = urlConnection.contentLength
             val buffer = ByteArray(MEGABYTE)
-            var bufferLength = 0
+            var bufferLength: Int
             while (inputStream.read(buffer).also { bufferLength = it } > 0) {
                 fileOutputStream.write(buffer, 0, bufferLength)
             }
@@ -1118,5 +1118,14 @@ object Util {
             result = context.resources.getDimensionPixelSize(resourceId)
         }
         return result
+    }
+
+    fun getCurrentMilisecond() : Long {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        return TimeUnit.HOURS.toMillis(calendar.get(Calendar.HOUR_OF_DAY).toLong()) +
+                TimeUnit.MINUTES.toMillis(calendar.get(Calendar.MINUTE).toLong()) +
+                TimeUnit.SECONDS.toMillis(calendar.get(Calendar.SECOND).toLong()) +
+                calendar.get(Calendar.MILLISECOND)
     }
 }

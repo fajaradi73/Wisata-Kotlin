@@ -11,6 +11,7 @@ import com.fajarproject.travels.R
 import com.fajarproject.travels.adapter.SectionsPagerAdapter
 import com.fajarproject.travels.base.widget.DepthPageTransformer
 import com.fajarproject.travels.models.PictureItem
+import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import kotlinx.android.synthetic.main.activity_preview_picture.*
 import org.parceler.Parcels
@@ -51,8 +52,8 @@ class PreviewPictureActivity : AppCompatActivity(),PreviewPictureView {
     }
 
     override fun getDataIntent() {
-        pos = intent.getIntExtra("pos",0)
-        data = Parcels.unwrap(intent.getParcelableExtra("data"))
+        pos = intent.getIntExtra(Constant.position,0)
+        data = Parcels.unwrap(intent.getParcelableExtra(Constant.dataFoto))
     }
 
     override fun setViewPager() {

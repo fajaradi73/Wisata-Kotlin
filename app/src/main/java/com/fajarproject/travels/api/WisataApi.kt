@@ -2,6 +2,8 @@ package com.fajarproject.travels.api
 
 import com.fajarproject.travels.models.*
 import com.fajarproject.travels.models.NearbyModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 import rx.Observable
 
@@ -37,4 +39,9 @@ interface WisataApi {
     @GET("auth/popular_wisata")
     fun getPopularWisata(@Header("Authorization") token : String?): Observable<List<PopularWisataModel>>
 
+    @Multipart
+    @POST("auth/saveMultiplePicture")
+    fun uploadPictureWisata(@Header("Authorization") token : String?,
+                            @Part("id_wisata") idWisata : RequestBody,
+                            @Part files : Array<MultipartBody.Part?> ) : Observable<SavePictureWisataModel>
 }

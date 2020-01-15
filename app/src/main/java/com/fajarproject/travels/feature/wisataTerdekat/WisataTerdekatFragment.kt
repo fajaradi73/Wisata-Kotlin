@@ -23,7 +23,7 @@ import com.fajarproject.travels.util.Util
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_wisata_terderkat.*
+import kotlinx.android.synthetic.main.fragment_wisata_terdekat.*
 
 /**
  * Created by Fajar Adi Prasetyo on 12/01/20.
@@ -43,7 +43,7 @@ class WisataTerdekatFragment : MvpFragment<WisataTerdekatPresenter>(),WisataTerd
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wisata_terderkat, container, false)
+        return inflater.inflate(R.layout.fragment_wisata_terdekat, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

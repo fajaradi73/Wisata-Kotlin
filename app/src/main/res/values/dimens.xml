@@ -73,5 +73,7 @@
     <dimen name="height_200">200dp</dimen>
     <dimen name="size_100">100dp</dimen>
     <dimen name="height_image">125dp</dimen>
+    <dimen name="height_image2">150dp</dimen>
+    <dimen name="padding_15">15dp</dimen>
 
 </resources>

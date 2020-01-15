@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Travels</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Wanderlusters</string>
     <string name="network_not_enabled">Gps Tidak Aktif</string>
     <string name="open_location_settings">Harap mengaktifkan lokasi anda untuk melihat wisata terdekat dengan anda</string>
     <string name="direction">Tidak ada data untuk akses ketempat, apakah anda mau menggunakan direction untuk mengetahui akses ketempat ini</string>
@@ -62,8 +62,8 @@
     <string name="masuk">Masuk</string>
     <string name="no">No</string>
     <string name="home">Home</string>
-    <string name="favorite">Favorite</string>
-    <string name="popular">Popular</string>
+    <string name="favorite">Favorit</string>
+    <string name="populer" tools:ignore="Typos">Populer</string>
     <string name="user">User</string>
     <string name="titleRegister">Siapa Anda?</string>
     <string name="phone">Nomor HP</string>
@@ -73,7 +73,7 @@
     <string name="lastLogin">Terakhir Login</string>
     <string name="changePassword">Ubah Kata Sandi</string>
     <string name="edit_profile">Edit Profil</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Keluar</string>
     <string name="akun">Akun</string>
     <string name="profile">Profil</string>
     <string name="nearby">Terdekat</string>
@@ -87,5 +87,12 @@
     <string name="lihat_semua">Lihat semua</string>
     <string name="createFoto">Tambahkan Foto</string>
     <string name="noFoundFoto">Foto tidak ditemukan</string>
+    <string name="_5">5</string>
+    <string name="ratting">Ratting</string>
+    <string name="_4">4</string>
+    <string name="_3">3</string>
+    <string name="_2">2</string>
+    <string name="_1">1</string>
+    <string name="__5">/5</string>
 
 </resources>

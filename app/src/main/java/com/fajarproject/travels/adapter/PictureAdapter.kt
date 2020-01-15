@@ -1,7 +1,6 @@
 package com.fajarproject.travels.adapter
 
 import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +12,12 @@ import com.fajarproject.travels.R
 import com.fajarproject.travels.base.view.OnItemClickListener
 import com.fajarproject.travels.models.PictureItem
 import com.fajarproject.travels.util.Util
-import kotlinx.android.synthetic.main.adapter_foto_detail.view.*
+import kotlinx.android.synthetic.main.adapter_foto.view.*
 
 /**
- * Create by Fajar Adi Prasetyo on 12/01/2020.
+ * Create by Fajar Adi Prasetyo on 13/01/2020.
  */
-class PictureAdapter(private val list: List<PictureItem>,private val context : Activity) : RecyclerView.Adapter<PictureAdapter.AdapterHolder>() {
+class PictureAdapter(private val list: List<PictureItem>, private val context : Activity) : RecyclerView.Adapter<PictureAdapter.AdapterHolder>() {
 
     private var onItemClickListener : OnItemClickListener? = null
 
@@ -43,7 +42,7 @@ class PictureAdapter(private val list: List<PictureItem>,private val context : A
         return AdapterHolder(
             LayoutInflater.from(
                 parent.context
-            ).inflate(R.layout.adapter_foto_detail, parent, false)
+            ).inflate(R.layout.adapter_foto, parent, false)
             , this.onItemClickListener
         )
     }
@@ -58,6 +57,7 @@ class PictureAdapter(private val list: List<PictureItem>,private val context : A
             .load(App.BASE_IMAGE + data.picture)
             .error(R.drawable.image_dieng)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .thumbnail(0.1f)
             .placeholder(Util.circleLoading(context))
             .into(holder.itemView.picture)
     }

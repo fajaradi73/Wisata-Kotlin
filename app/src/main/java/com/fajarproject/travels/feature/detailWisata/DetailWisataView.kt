@@ -19,6 +19,8 @@ interface DetailWisataView {
 
     fun init()
 
+    fun setAction()
+
     fun setUlasan(list: List<UlasanItem>)
 
     fun getDataSuccess(data: WisataDetailModel)
@@ -43,5 +45,16 @@ interface DetailWisataView {
 
     fun setDataFavorite(isFav: Boolean,idWisata: Int)
 
-    fun setDataFoto(data : List<PictureItem>)
+    fun setDataFoto(data : List<PictureItem>,idWisata: Int)
+
+    fun getStoragePermission()
+
+    fun checkPermission()
+
+    fun openFile()
+
+    fun successUpload(title : String,message : String)
+
+    fun failedUpload(message: String)
+
 }

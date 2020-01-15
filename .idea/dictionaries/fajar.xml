@@ -13,12 +13,14 @@
       <w>dengan</w>
       <w>fajar</w>
       <w>fajarproject</w>
+      <w>foto</w>
       <w>fullname</w>
       <w>harap</w>
       <w>januari</w>
       <w>jenis</w>
       <w>jumlah</w>
       <w>kelamin</w>
+      <w>keluar</w>
       <w>kota</w>
       <w>kuliner</w>
       <w>lahir</w>
@@ -31,11 +33,13 @@
       <w>opsi</w>
       <w>pendidikan</w>
       <w>pertanian</w>
+      <w>populer</w>
       <w>prasetyo</w>
       <w>pria</w>
       <w>profil</w>
       <w>provinsi</w>
       <w>rabu</w>
+      <w>realpathfromuri</w>
       <w>religi</w>
       <w>salah</w>
       <w>sejarah</w>
@@ -51,6 +55,7 @@
       <w>ubah</w>
       <w>ulasan</w>
       <w>untuk</w>
+      <w>wanderlusters</w>
     </words>
   </dictionary>
 </component>

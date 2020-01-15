@@ -15,7 +15,7 @@ import com.fajarproject.travels.models.PopularWisataModel
 import com.fajarproject.travels.util.Util
 import com.like.LikeButton
 import com.like.OnLikeListener
-import kotlinx.android.synthetic.main.adapter_popular.view.*
+import kotlinx.android.synthetic.main.adapter_populer.view.*
 
 class PopularWisataAdapter(private val list: List<PopularWisataModel>, private val context : Context, private val presenter: PopularWisataPresenter?) :
     RecyclerView.Adapter<PopularWisataAdapter.AdapterHolder>() {
@@ -30,7 +30,7 @@ class PopularWisataAdapter(private val list: List<PopularWisataModel>, private v
         return AdapterHolder(
             LayoutInflater.from(
                 parent.context
-            ).inflate(R.layout.adapter_popular, parent, false)
+            ).inflate(R.layout.adapter_populer, parent, false)
             , this.onItemClickListener
         )
     }

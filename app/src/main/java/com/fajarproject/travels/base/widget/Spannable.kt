@@ -18,7 +18,7 @@ abstract class Spannable(isUnderline: Boolean) : ClickableSpan() {
 
     override fun updateDrawState(ds: TextPaint) {
         ds.isUnderlineText = isUnderline
-        ds.color = Color.parseColor("#00E3FF")
+        ds.color = Color.parseColor("#FF00F38D")
     }
 
     /**

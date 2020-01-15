@@ -1,7 +1,10 @@
 package com.fajarproject.travels.feature.detailWisata
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -11,23 +14,31 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
-import com.fajarproject.travels.adapter.PictureAdapter
+import com.fajarproject.travels.adapter.PictureDetailAdapter
 import com.fajarproject.travels.api.WisataApi
 import com.fajarproject.travels.base.mvp.MvpActivity
 import com.fajarproject.travels.feature.mapsWisata.MapsWisataActivity
 import com.fajarproject.travels.adapter.UlasanAdapter
+import com.fajarproject.travels.base.view.DialogNoListener
+import com.fajarproject.travels.base.view.DialogYesListener
 import com.fajarproject.travels.base.view.OnItemClickListener
+import com.fajarproject.travels.feature.pictureWisata.PictureWisataActivity
 import com.fajarproject.travels.feature.previewPictureWisata.PreviewPictureActivity
+import com.fajarproject.travels.feature.ulasan.UlasanActivity
 import com.fajarproject.travels.models.PictureItem
 import com.fajarproject.travels.models.UlasanItem
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.fajarproject.travels.models.WisataDetailModel
+import com.fajarproject.travels.util.fileUtil.FileUtil
+import com.fajarproject.travels.util.fileUtil.FileUtilCallbacks
 import com.google.android.ads.nativetemplates.NativeTemplateStyle
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
@@ -43,8 +54,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.like.LikeButton
 import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.activity_detail_wisata.*
-import kotlinx.android.synthetic.main.travel_details.*
 import org.parceler.Parcels
+import java.util.*
 
 /**
  * Created by Fajar Adi Prasetyo on 08/01/20.
@@ -52,12 +63,19 @@ import org.parceler.Parcels
 
 @SuppressLint("SetTextI18n")
 class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataView,
+    FileUtilCallbacks,
     OnMapReadyCallback {
 
     private var maps        : GoogleMap?    = null
     private var idWisata    : Int?          = 0
     private var menu        : Menu?         = null
-
+    private var requestCodePicture = 132
+    private var requestCodeStorage = 101
+    private var requestCodeOpenImage = 121
+    private var mStoragePermissionGranted = false
+    private var fileUtil : FileUtil? = null
+    private var list: MutableList<String> = ArrayList()
+    private var isSafeBackPressed = true
 
     override fun createPresenter(): DetailWisataPresenter {
         val wisataApi : WisataApi = Util.getRetrofitRxJava2()!!.create(WisataApi::class.java)
@@ -72,7 +90,11 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         idWisata       = intent.getIntExtra(Constant.IdWisata,0)
         setNativeAds()
         presenter?.getDetailWisata(idWisata)
-
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = false
+            presenter?.getDetailWisata(idWisata)
+        }
+        setAction()
     }
 
     override fun setNativeAds() {
@@ -118,6 +140,23 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
     override fun init() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.maps_wisata) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+        fileUtil = FileUtil(this, this)
+    }
+
+    override fun setAction() {
+        lihat_semua.setOnClickListener {
+            val intent = Intent(this@DetailWisataActivity,PictureWisataActivity::class.java)
+            intent.putExtra(Constant.IdWisata,idWisata)
+            startActivityForResult(intent,requestCodePicture)
+        }
+        tambah_foto.setOnClickListener {
+            checkPermission()
+        }
+        cvSemuaUlasan.setOnClickListener {
+            val intent = Intent(this,UlasanActivity::class.java)
+            intent.putExtra(Constant.IdWisata,idWisata)
+            changeActivity(intent)
+        }
     }
 
 
@@ -147,9 +186,18 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         checkUlasan(data.jumlahRatting!!)
         if (data.picture!!.isNotEmpty()){
             showDataFoto(true)
-            setDataFoto(data.picture)
+            setDataFoto(data.picture,data.idWisata)
         }else{
             showDataFoto(false)
+        }
+        val time = Util.getCurrentMilisecond()
+        cv_view.visibility = View.VISIBLE
+        if(time > data.jamBuka && time < data.jamTutup || data.jamBuka == 0L && data.jamTutup == 0L){
+            cv_view.setCardBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary))
+            tv_view.text = "Buka"
+        }else{
+            cv_view.setCardBackgroundColor(ContextCompat.getColor(this,R.color.red))
+            tv_view.text = "Tutup"
         }
     }
 
@@ -158,15 +206,13 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
     }
 
     override fun showLoading() {
+        isSafeBackPressed = false
         loadingOverlay.visibility   = View.VISIBLE
-        htab_appbar.visibility      = View.GONE
-        layoutID.visibility         = View.GONE
     }
 
     override fun hideLoading() {
+        isSafeBackPressed = true
         loadingOverlay.visibility   = View.GONE
-        htab_appbar.visibility      = View.VISIBLE
-        layoutID.visibility         = View.VISIBLE
     }
 
     override fun changeActivity(intent: Intent) {
@@ -208,9 +254,11 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         if(isShow){
             clNoFoto.visibility     = View.GONE
             list_foto.visibility    = View.VISIBLE
+            lihat_semua.visibility  = View.VISIBLE
         }else{
             clNoFoto.visibility     = View.VISIBLE
             list_foto.visibility    = View.GONE
+            lihat_semua.visibility  = View.GONE
         }
     }
 
@@ -244,23 +292,76 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
 
     }
 
-    var list : List<PictureItem> = arrayListOf()
-
-    override fun setDataFoto(data: List<PictureItem>) {
-        this.list = data
+    override fun setDataFoto(data: List<PictureItem>,idWisata: Int) {
         val linearLayoutManager         = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         list_foto.layoutManager         = linearLayoutManager
-        val adapter                     = PictureAdapter(data,this)
+        val adapter                     = PictureDetailAdapter(data,this)
         list_foto.adapter               = adapter
         adapter.setOnItemClickListener(object : OnItemClickListener{
             override fun onItemClick(view: View?, position: Int) {
                 val intent = Intent(this@DetailWisataActivity,PreviewPictureActivity::class.java)
-                intent.putExtra("pos",position)
-                intent.putExtra("data",Parcels.wrap(data))
+                intent.putExtra(Constant.position,position)
+                intent.putExtra(Constant.dataFoto,Parcels.wrap(data))
                 changeActivity(intent)
             }
         })
+
+    }
+
+    override fun getStoragePermission() {
+        val permissionAccessStorageApproved = ActivityCompat
+            .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED
+                && ActivityCompat
+            .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED
+
+        if (permissionAccessStorageApproved){
+            mStoragePermissionGranted = true
+            checkPermission()
+        }else{
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                requestCodeStorage
+            )
+        }
+    }
+
+    override fun checkPermission() {
+        try {
+            if (mStoragePermissionGranted){
+                openFile()
+            }else{
+                getStoragePermission()
+            }
+        }catch (e : SecurityException){
+            Log.e("ErrorPermission",e.message!!)
+        }
+    }
+
+    override fun openFile() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), requestCodeOpenImage)
+    }
+
+    override fun successUpload(title: String, message: String) {
+        Util.showRoundedDialog(this,title,message,false,object : DialogYesListener {
+            override fun onYes() {
+                presenter?.getDetailWisata(idWisata)
+            }
+        },object : DialogNoListener {
+            override fun onNo() {
+
+            }
+        })
+    }
+
+    override fun failedUpload(message: String) {
+        Toast.makeText(this,message, Toast.LENGTH_LONG).show()
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -282,5 +383,69 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
 //        menuInflater.inflate(R.menu.travels_menu,menu)
         this.menu   = menu
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK){
+            if (requestCode == requestCodePicture){
+                presenter?.getDetailWisata(idWisata)
+            }else if (requestCode == requestCodeOpenImage){
+                if (data != null) {
+                    list = arrayListOf()
+                    if (data.clipData != null) {
+                        for (i in 0 until data.clipData!!.itemCount) {
+                            fileUtil?.getPath(
+                                data.clipData!!.getItemAt(i).uri,
+                                Build.VERSION.SDK_INT
+                            )
+                        }
+                    }else{
+                        fileUtil?.getPath(data.data!!,Build.VERSION.SDK_INT)
+                    }
+                    if (list.size > 0){
+                        presenter?.uploadPicture(idWisata!!,list)
+                    }
+                }
+            }
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        mStoragePermissionGranted   = false
+        when (requestCode) {
+            requestCode -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty()
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    mStoragePermissionGranted = true
+                }
+            }
+        }
+        checkPermission()
+    }
+
+    override fun FileUtilonStartListener() {
+
+    }
+
+    override fun FileUtilonProgressUpdate(progress: Int) {
+    }
+
+    override fun FileUtilonCompleteListener(
+        path: String?,
+        wasDriveFile: Boolean,
+        wasUnknownProvider: Boolean,
+        wasSuccessful: Boolean,
+        Reason: String?
+    ) {
+        if (wasSuccessful){
+            list.add(path!!)
+        }
     }
 }
