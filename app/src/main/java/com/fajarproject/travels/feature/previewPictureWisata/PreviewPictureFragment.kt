@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.transition.TransitionInflater
+import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler
 import com.bumptech.glide.Glide
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
@@ -60,6 +62,10 @@ class PreviewPictureFragment : Fragment() {
         Glide.with(activity!!).load(App.BASE_IMAGE + url).error(R.drawable.image_dieng).placeholder(
             Util.circleLoading(activity!!)).thumbnail(0.1f).into(detailImage)
 
+        detailImage.setOnTouchListener(ImageMatrixTouchHandler(activity))
+        postponeEnterTransition()
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementReturnTransition = null
     }
 
 }

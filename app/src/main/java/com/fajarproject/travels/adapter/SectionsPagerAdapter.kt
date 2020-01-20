@@ -9,7 +9,7 @@ import com.fajarproject.travels.models.PictureItem
 /**
  * Create by Fajar Adi Prasetyo on 13/01/2020.
  */
-class SectionsPagerAdapter(fragmentManager: FragmentManager,val data : List<PictureItem>) : FragmentPagerAdapter(fragmentManager) {
+class SectionsPagerAdapter(fragmentManager: FragmentManager, val data : List<PictureItem>) : FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
         return PreviewPictureFragment().newInstance(position,data[position].namaWisata,data[position].picture)

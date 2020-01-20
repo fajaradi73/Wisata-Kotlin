@@ -1,8 +1,12 @@
 package com.fajarproject.travels.feature.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -21,15 +25,17 @@ import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import lv.chi.photopicker.PhotoPickerFragment
 
 
 /**
  * Created by Fajar Adi Prasetyo on 09/01/20.
  */
 
-class MainActivity : MvpActivity<MainPresenter>(),MainView {
+class MainActivity : MvpActivity<MainPresenter>(),MainView, PhotoPickerFragment.Callback {
 
     private val fragmentManager = supportFragmentManager
+    private var currentFragment : Fragment? = null
 
     override fun createPresenter(): MainPresenter {
         val menuApi : MenuApi = Util.getRetrofitRxJava2()!!.create(MenuApi::class.java)
@@ -127,7 +133,7 @@ class MainActivity : MvpActivity<MainPresenter>(),MainView {
 //            fragmentTransaction.attach(fragment)
             fragmentTransaction.show(fragment)
         }
-
+        currentFragment = fragment
         fragmentTransaction.setPrimaryNavigationFragment(fragment)
         fragmentTransaction.setReorderingAllowed(true)
         fragmentTransaction.commitNowAllowingStateLoss()
@@ -150,6 +156,20 @@ class MainActivity : MvpActivity<MainPresenter>(),MainView {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 }
+            }
+        }
+    }
+
+    override fun onImagesPicked(photos: ArrayList<Uri>) {
+        Log.d("Images",photos.joinToString(separator = "\n") { it.toString() })
+        (currentFragment as ProfilFragment).onImagePicked(photos[0])
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK){
+            if(requestCode == 1999){
+                (currentFragment as ProfilFragment).previewResult()
             }
         }
     }

@@ -6,11 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
+    <ImageView
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
         android:transitionName="@string/transition_string"
-        android:layout_height="match_parent"/>
+        android:id="@+id/detailImage"
+        tools:ignore="ContentDescription" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -22,17 +25,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:elevation="0dp"/>
-
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvDate"
-        tools:text="20 April 2020"
-        android:padding="@dimen/padding_10"
-        android:background="@color/blackTransparent"
-        android:textSize="16sp"
-        android:textColor="@color/white"
+        android:layout_height="0dp"
+        android:id="@+id/loadingOverlay"
+        android:visibility="gone"
+        android:background="@color/greyTransparent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/customProgress"/>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.fajarproject.travels.feature.pictureWisata
 
 import android.content.Intent
+import android.view.View
 import com.fajarproject.travels.models.PictureItem
 
 /**
@@ -11,7 +12,7 @@ interface PictureWisataView {
 
     fun hideLoading()
 
-    fun getDataSucces(list: List<PictureItem>)
+    fun getDataSuccess(list: List<PictureItem>)
 
     fun getDataFail(message : String)
 
@@ -23,11 +24,6 @@ interface PictureWisataView {
 
     fun setAction()
 
-    fun getStoragePermission()
-
-    fun checkPermission()
-
-    fun openFile()
 
     fun successUpload(title : String,message : String)
 

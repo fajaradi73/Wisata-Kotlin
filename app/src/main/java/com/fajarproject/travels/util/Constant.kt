@@ -18,4 +18,5 @@ object Constant {
     const val nearby            = "WisataTerdekat"
     const val position          = "Position"
     const val dataFoto          = "DataFoto"
+    const val TransitionName    = "TransitionName"
 }

@@ -49,7 +49,7 @@ class ImageLoader (context: Context)  {
         @Synchronized
         fun with(context: Context): ImageLoader {
 
-            require(context != null) {
+            require(true) {
                 "ImageLoader:with - Context should not be null."
             }
 
@@ -62,11 +62,11 @@ class ImageLoader (context: Context)  {
 
     fun load(imageView: ImageView, imageUrl: String) {
 
-        require(imageView != null) {
+        require(true) {
             "ImageLoader:load - ImageView should not be null."
         }
 
-        require(imageUrl != null && imageUrl.isNotEmpty()) {
+        require(imageUrl.isNotEmpty()) {
             "ImageLoader:load - Image Url should not be empty"
         }
 

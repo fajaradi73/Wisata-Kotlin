@@ -25,8 +25,10 @@ class DetailWisataPresenter(view: DetailWisataView, val context: Activity,
     }
     private val user : UserModel = Util.getUserToken(context)
 
-    fun getDetailWisata(idWisata : Int?){
-        view!!.showLoading()
+    fun getDetailWisata(idWisata : Int?,isLoading : Boolean){
+        if (isLoading) {
+            view!!.showLoading()
+        }
         addSubscribe(apiStores.getDetailWisata(user.token,idWisata),object : NetworkCallback<WisataDetailModel>(){
             override fun onSuccess(model: WisataDetailModel) {
                 view!!.getDataSuccess(model)
@@ -46,6 +48,7 @@ class DetailWisataPresenter(view: DetailWisataView, val context: Activity,
 
         })
     }
+
     fun saveFavorite(id_wisata : Int,likes: View){
         likes.isEnabled = false
         addSubscribe(apiStores.saveFavorites(user.token,id_wisata),object : NetworkCallback<SaveFavoriteModel>(){

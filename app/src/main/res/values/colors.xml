@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF00F38D</color>
-    <color name="colorPrimaryDark">#009153</color>
+    <color name="colorPrimary">#18dcff</color>
+    <color name="colorPrimaryDark">#15A5C9</color>
     <color name="colorAccent">#FF005D</color>
     <color name="white">#ffffff</color>
     <color name="background">#f0f0f0</color>
     <color name="black">#000</color>
     <color name="default_background">#fafafa</color>
-    <color name="colorPrimary_80">#CC00F38D</color>
+    <color name="colorPrimary_80">#CC18DCFF</color>
 
     <color name="default_textColor">#808080</color>
     <color name="default_textHint">#afafaf</color>
@@ -16,7 +16,7 @@
     <color name="golden">#FFD700</color>
     <color name="colorLightGrayCard">#EBEBEB</color>
     <color name="colorWhitePressed">#e6e6e6</color>
-    <color name="shadowPrimary">#9900F38D</color>
+    <color name="shadowPrimary">#9918DCFF</color>
     <color name="greyTransparent">#77BBBBBB</color>
     <color name="transparent">#00FFFFFF</color>
 
@@ -25,7 +25,7 @@
     <color name="headings">#3797CF</color>
     <color name="solidCircle">#AAFFFFFF</color>
     <color name="circleBorder">#50FFFFFF</color>
-    <color name="gradEnd">#FF00F38D</color>
+    <color name="gradEnd">#18dcff</color>
     <color name="gradStart">#63C9FF</color>
     <color name="followersBg">#65DCE5</color>
     <color name="followingBg">#49BEFF</color>

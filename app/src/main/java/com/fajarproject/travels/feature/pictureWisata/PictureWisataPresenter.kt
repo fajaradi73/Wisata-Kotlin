@@ -30,7 +30,7 @@ class PictureWisataPresenter(view: PictureWisataView, val context: Activity,
         view?.showLoading()
         addSubscribe(apiStores.getPictureWisata(user.token,idWisata),object : NetworkCallback<List<PictureItem>>(){
             override fun onSuccess(model: List<PictureItem>) {
-                view?.getDataSucces(model)
+                view?.getDataSuccess(model)
             }
 
             override fun onFailure(message: String?, code: Int?, jsonObject: JSONObject?) {

@@ -49,6 +49,7 @@ class PreviewPictureActivity : AppCompatActivity(),PreviewPictureView {
         }
         title = data[pos].namaWisata
         tvDate.text = Util.getDateWithTime(data[pos].createDate!!)
+
     }
 
     override fun getDataIntent() {

@@ -95,4 +95,13 @@
     <string name="_1">1</string>
     <string name="__5">/5</string>
 
+    ////String Picker
+    <string name="picker_select">Upload</string>
+    <plurals name="picker_selected_count">
+        <item quantity="one">%d image selected</item>
+        <item quantity="other">%d images selected</item>
+    </plurals>
+    <string name="transition_string">hello</string>
+    <string name="upload_photo">Upload Photo</string>
+
 </resources>

@@ -2,7 +2,6 @@ package com.fajarproject.travels.feature.detailWisata
 
 import android.content.Intent
 import android.view.View
-import com.fajarproject.travels.models.DetailWisataModel
 import com.fajarproject.travels.models.PictureItem
 import com.fajarproject.travels.models.UlasanItem
 import com.fajarproject.travels.models.WisataDetailModel
@@ -46,12 +45,6 @@ interface DetailWisataView {
     fun setDataFavorite(isFav: Boolean,idWisata: Int)
 
     fun setDataFoto(data : List<PictureItem>,idWisata: Int)
-
-    fun getStoragePermission()
-
-    fun checkPermission()
-
-    fun openFile()
 
     fun successUpload(title : String,message : String)
 

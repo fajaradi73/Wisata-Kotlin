@@ -1,12 +1,10 @@
 package com.fajarproject.travels.feature.detailWisata
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +13,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -28,9 +25,7 @@ import com.fajarproject.travels.feature.mapsWisata.MapsWisataActivity
 import com.fajarproject.travels.adapter.UlasanAdapter
 import com.fajarproject.travels.base.view.DialogNoListener
 import com.fajarproject.travels.base.view.DialogYesListener
-import com.fajarproject.travels.base.view.OnItemClickListener
 import com.fajarproject.travels.feature.pictureWisata.PictureWisataActivity
-import com.fajarproject.travels.feature.previewPictureWisata.PreviewPictureActivity
 import com.fajarproject.travels.feature.ulasan.UlasanActivity
 import com.fajarproject.travels.models.PictureItem
 import com.fajarproject.travels.models.UlasanItem
@@ -54,7 +49,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.like.LikeButton
 import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.activity_detail_wisata.*
-import org.parceler.Parcels
+import lv.chi.photopicker.PhotoPickerFragment
 import java.util.*
 
 /**
@@ -63,16 +58,13 @@ import java.util.*
 
 @SuppressLint("SetTextI18n")
 class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataView,
-    FileUtilCallbacks,
+    FileUtilCallbacks,PhotoPickerFragment.Callback,
     OnMapReadyCallback {
 
     private var maps        : GoogleMap?    = null
     private var idWisata    : Int?          = 0
     private var menu        : Menu?         = null
     private var requestCodePicture = 132
-    private var requestCodeStorage = 101
-    private var requestCodeOpenImage = 121
-    private var mStoragePermissionGranted = false
     private var fileUtil : FileUtil? = null
     private var list: MutableList<String> = ArrayList()
     private var isSafeBackPressed = true
@@ -89,10 +81,10 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         init()
         idWisata       = intent.getIntExtra(Constant.IdWisata,0)
         setNativeAds()
-        presenter?.getDetailWisata(idWisata)
+        presenter?.getDetailWisata(idWisata,true)
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = false
-            presenter?.getDetailWisata(idWisata)
+            presenter?.getDetailWisata(idWisata,true)
         }
         setAction()
     }
@@ -150,7 +142,7 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
             startActivityForResult(intent,requestCodePicture)
         }
         tambah_foto.setOnClickListener {
-            checkPermission()
+            openPicker()
         }
         cvSemuaUlasan.setOnClickListener {
             val intent = Intent(this,UlasanActivity::class.java)
@@ -159,6 +151,26 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         }
     }
 
+    private fun openPicker() {
+        PhotoPickerFragment.newInstance(
+            multiple = true,
+            maxSelection = 5,
+            allowCamera = true,
+            theme = R.style.ChiliPhotoPicker_Dark
+        ).show(supportFragmentManager, "picker")
+    }
+
+    override fun onImagesPicked(photos: ArrayList<Uri>) {
+        for (i in 0 until photos.size) {
+            fileUtil?.getPath(
+                photos[i],
+                Build.VERSION.SDK_INT
+            )
+        }
+        if (list.size > 0){
+            presenter?.uploadPicture(idWisata!!,list)
+        }
+    }
 
     override fun setUlasan(list: List<UlasanItem>) {
         val linearLayoutManager = LinearLayoutManager(this)
@@ -296,62 +308,13 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         val linearLayoutManager         = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         list_foto.layoutManager         = linearLayoutManager
-        val adapter                     = PictureDetailAdapter(data,this)
-        list_foto.adapter               = adapter
-        adapter.setOnItemClickListener(object : OnItemClickListener{
-            override fun onItemClick(view: View?, position: Int) {
-                val intent = Intent(this@DetailWisataActivity,PreviewPictureActivity::class.java)
-                intent.putExtra(Constant.position,position)
-                intent.putExtra(Constant.dataFoto,Parcels.wrap(data))
-                changeActivity(intent)
-            }
-        })
-
-    }
-
-    override fun getStoragePermission() {
-        val permissionAccessStorageApproved = ActivityCompat
-            .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED
-                && ActivityCompat
-            .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED
-
-        if (permissionAccessStorageApproved){
-            mStoragePermissionGranted = true
-            checkPermission()
-        }else{
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                requestCodeStorage
-            )
-        }
-    }
-
-    override fun checkPermission() {
-        try {
-            if (mStoragePermissionGranted){
-                openFile()
-            }else{
-                getStoragePermission()
-            }
-        }catch (e : SecurityException){
-            Log.e("ErrorPermission",e.message!!)
-        }
-    }
-
-    override fun openFile() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), requestCodeOpenImage)
+        list_foto.adapter               = PictureDetailAdapter(data,this)
     }
 
     override fun successUpload(title: String, message: String) {
+        presenter?.getDetailWisata(idWisata,false)
         Util.showRoundedDialog(this,title,message,false,object : DialogYesListener {
             override fun onYes() {
-                presenter?.getDetailWisata(idWisata)
             }
         },object : DialogNoListener {
             override fun onNo() {
@@ -363,6 +326,7 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
     override fun failedUpload(message: String) {
         Toast.makeText(this,message, Toast.LENGTH_LONG).show()
     }
+
 
     override fun onMapReady(googleMap: GoogleMap?) {
         this.maps   = googleMap
@@ -383,51 +347,6 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
 //        menuInflater.inflate(R.menu.travels_menu,menu)
         this.menu   = menu
         return true
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK){
-            if (requestCode == requestCodePicture){
-                presenter?.getDetailWisata(idWisata)
-            }else if (requestCode == requestCodeOpenImage){
-                if (data != null) {
-                    list = arrayListOf()
-                    if (data.clipData != null) {
-                        for (i in 0 until data.clipData!!.itemCount) {
-                            fileUtil?.getPath(
-                                data.clipData!!.getItemAt(i).uri,
-                                Build.VERSION.SDK_INT
-                            )
-                        }
-                    }else{
-                        fileUtil?.getPath(data.data!!,Build.VERSION.SDK_INT)
-                    }
-                    if (list.size > 0){
-                        presenter?.uploadPicture(idWisata!!,list)
-                    }
-                }
-            }
-        }
-    }
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        mStoragePermissionGranted   = false
-        when (requestCode) {
-            requestCode -> {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.isNotEmpty()
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    mStoragePermissionGranted = true
-                }
-            }
-        }
-        checkPermission()
     }
 
     override fun FileUtilonStartListener() {

@@ -11,10 +11,6 @@ import androidx.preference.PreferenceManager
 object AppPreference {
         const val THEME_COLOR : String = "com.fajarproject.THEME_COLOR"
 
-    fun deletePreference(context: Context){
-        val sharedPref : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
-    }
-
     fun writePreference(context: Context,prefName : String, prefValue : String){
         val sharedPref : SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
         val editor : SharedPreferences.Editor = sharedPref.edit()

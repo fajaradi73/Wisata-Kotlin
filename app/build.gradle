@@ -10,7 +10,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.fajarproject.travels"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0-build${getDate()}"
@@ -176,8 +176,17 @@ dependencies {
 
     ////Zoom Image
     implementation 'com.jsibbold:zoomage:1.2.0'
+    implementation 'com.bogdwellers:pinchtozoom:0.1'
 
     //// Round Corner Progress Bar
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+
+    ///// Image Crop
+    api 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
+
+    //// Photo Picker
+    implementation "com.github.ChiliLabs:ChiliPhotoPicker:0.3.1"
+
+
 }
 apply plugin: 'com.google.gms.google-services'

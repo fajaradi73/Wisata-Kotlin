@@ -4,7 +4,9 @@ import android.app.Application
 import android.content.Context
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
+import com.fajarproject.travels.base.widget.GlideImageLoader
 import com.google.android.gms.ads.MobileAds
+import lv.chi.photopicker.ChiliPhotoPicker
 
 /**
  * Created by Fajar Adi Prasetyo on 09/10/19.
@@ -23,6 +25,11 @@ class App : Application() {
         AppEventsLogger.activateApp(this)
 //        MobileAds.initialize(this, resources.getString(R.string.ads_mob_ID))
         MobileAds.initialize(this) {}
+
+        ChiliPhotoPicker.init(
+            loader = GlideImageLoader(),
+            authority = "com.fajarproject.travels"
+        )
     }
 
     companion object {

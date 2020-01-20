@@ -147,7 +147,7 @@ object Util {
     private fun getOkHttp(): OkHttpClient {
         val interceptor =
             HttpLoggingInterceptor()
-//        interceptor.level = Level.BODY
+        interceptor.level = Level.BODY
         return OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
@@ -983,7 +983,6 @@ object Util {
     }
     fun sessionExpired(context: Activity) {
         AppPreference.writePreference(context, "user", "")
-        AppPreference.deletePreference(context)
         Toast.makeText(
             context,
             "Session expired, Please re-login",

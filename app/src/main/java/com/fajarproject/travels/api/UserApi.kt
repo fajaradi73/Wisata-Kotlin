@@ -1,8 +1,9 @@
 package com.fajarproject.travels.api
 
 import com.fajarproject.travels.models.ProfileModel
-import retrofit2.http.GET
-import retrofit2.http.Header
+import com.fajarproject.travels.models.SavePictureWisataModel
+import okhttp3.MultipartBody
+import retrofit2.http.*
 import rx.Observable
 
 /**
@@ -14,4 +15,7 @@ interface UserApi {
     @GET("auth/profile")
     fun getProfile(@Header("Authorization") token : String?): Observable<ProfileModel>
 
+    @Multipart
+    @POST("auth/update_picture")
+    fun uploadPicture(@Header("Authorization") token : String?,@Part picture : MultipartBody.Part) : Observable<SavePictureWisataModel>
 }
