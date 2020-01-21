@@ -25,6 +25,7 @@ import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ImageSpan
 import android.util.Base64
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Patterns
 import android.view.*
@@ -83,7 +84,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.*
 import java.lang.reflect.Type
-import java.math.RoundingMode
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
@@ -99,6 +99,7 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
+import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.pow
@@ -1119,7 +1120,7 @@ object Util {
         return result
     }
 
-    fun getCurrentMilisecond() : Long {
+    fun getCurrentMilliSecond() : Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         return TimeUnit.HOURS.toMillis(calendar.get(Calendar.HOUR_OF_DAY).toLong()) +
@@ -1127,4 +1128,5 @@ object Util {
                 TimeUnit.SECONDS.toMillis(calendar.get(Calendar.SECOND).toLong()) +
                 calendar.get(Calendar.MILLISECOND)
     }
+
 }

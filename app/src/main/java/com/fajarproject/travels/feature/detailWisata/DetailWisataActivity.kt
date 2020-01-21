@@ -202,7 +202,7 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         }else{
             showDataFoto(false)
         }
-        val time = Util.getCurrentMilisecond()
+        val time = Util.getCurrentMilliSecond()
         cv_view.visibility = View.VISIBLE
         if(time > data.jamBuka && time < data.jamTutup || data.jamBuka == 0L && data.jamTutup == 0L){
             cv_view.setCardBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary))
