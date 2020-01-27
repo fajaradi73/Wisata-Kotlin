@@ -12,13 +12,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.shimmer.Shimmer
 import com.fajarproject.travels.R
+import com.fajarproject.travels.adapter.WisataTerdekatAdapter
 import com.fajarproject.travels.api.WisataApi
 import com.fajarproject.travels.base.mvp.MvpFragment
 import com.fajarproject.travels.base.view.OnItemClickListener
+import com.fajarproject.travels.base.widget.PaginationScrollListener
 import com.fajarproject.travels.feature.main.MainActivity
-import com.fajarproject.travels.adapter.WisataTerdekatAdapter
 import com.fajarproject.travels.models.NearbyModel
+import com.fajarproject.travels.preference.AppPreference
 import com.fajarproject.travels.util.Util
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -38,6 +41,15 @@ class WisataTerdekatFragment : MvpFragment<WisataTerdekatPresenter>(),WisataTerd
     private var requestCodeLocations        = 123
     private var mLastKnownLocation : Location? = null
 
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private var limit :Int? = 10
+    private var currentPage = 0
+    private var adapter : WisataTerdekatAdapter? = null
+    private var countData = 0
+
+    private var isLoading = false
+    private var isLastPage = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,10 +61,14 @@ class WisataTerdekatFragment : MvpFragment<WisataTerdekatPresenter>(),WisataTerd
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setRecycleView()
+        limit = AppPreference.getIntPreferenceByName(activity!!,"sizePerPage")
         updateLocationUI()
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = false
-            presenter?.getNearbyWisata(currentLatitude,currentLongitude)
+            isLoading = false
+            isLastPage = false
+            currentPage = 0
+            presenter?.getNearbyWisata(currentLatitude,currentLongitude,limit!!,currentPage)
         }
     }
 
@@ -64,22 +80,52 @@ class WisataTerdekatFragment : MvpFragment<WisataTerdekatPresenter>(),WisataTerd
     }
 
     override fun setRecycleView() {
-        val linearLayoutManager         = LinearLayoutManager(context)
+        linearLayoutManager             = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         listNearby.layoutManager        = linearLayoutManager
+        listNearby.setHasFixedSize(true)
     }
+
+    private fun setScrollRecycleView(){
+        listNearby.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
+            override fun loadMoreItems() {
+                isLoading = true
+                currentPage += 1
+                presenter?.getNearbyWisata(
+                    currentLatitude,
+                    currentLongitude,
+                    limit!!,
+                    currentPage
+                )
+            }
+
+            override fun getTotalPageCount(): Int {
+                return limit!!
+            }
+
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+        })
+    }
+
 
     override fun showLoading() {
         shimmerView.visibility  = View.VISIBLE
-        shimmerView.duration    = 1150
-        shimmerView.startShimmerAnimation()
-        swipeRefresh.visibility = View.GONE
+        shimmerView.setShimmer(Shimmer.AlphaHighlightBuilder().setDuration(1150L).build())
+        shimmerView.startShimmer()
+        swipeRefresh.visibility     = View.GONE
     }
 
     override fun hideLoading() {
-        shimmerView.stopShimmerAnimation()
-        shimmerView.visibility  = View.GONE
-        swipeRefresh.visibility = View.VISIBLE
+        shimmerView.stopShimmer()
+        shimmerView.visibility      = View.GONE
+        swipeRefresh.visibility     = View.VISIBLE
     }
 
     override fun getLocationPermission() {
@@ -117,25 +163,50 @@ class WisataTerdekatFragment : MvpFragment<WisataTerdekatPresenter>(),WisataTerd
         mLastKnownLocation  = location
         currentLatitude     = mLastKnownLocation!!.latitude
         currentLongitude    = mLastKnownLocation!!.longitude
-        presenter?.getNearbyWisata(currentLatitude,currentLongitude)
+        currentPage = 0
+        presenter?.getNearbyWisata(currentLatitude,currentLongitude,limit!!,currentPage)
     }
 
-    override fun getDataSuccess(list: List<NearbyModel>) {
-        if (list.isNotEmpty()){
-            showData(true)
-            val adapter = WisataTerdekatAdapter(
+    override fun getDataSuccess(list: MutableList<NearbyModel>) {
+        countData = list.size
+        if (currentPage == 0){
+            adapter = WisataTerdekatAdapter(
                 list,
                 activity!!,
                 presenter!!
             )
             listNearby.adapter = adapter
-            adapter.setOnItemClickListener(object : OnItemClickListener {
-                override fun onItemClick(view: View?, position: Int) {
-                    presenter?.getItem(list[position])
-                }
-            })
+            setScrollRecycleView()
         }else{
+            adapter?.removeLoadingFooter()
+            isLoading = false
+            adapter?.addData(list)
+            adapter?.notifyDataSetChanged()
+        }
+
+        adapter?.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val model = adapter?.getDataList()
+                presenter?.getItem(model!![position])
+            }
+        })
+        checkLastData()
+        checkData()
+    }
+
+    private fun checkLastData(){
+        if (countData == limit){
+            adapter?.addLoadingFooter()
+        }else{
+            isLastPage = true
+        }
+    }
+
+    private fun checkData(){
+        if (adapter?.itemCount == 0){
             showData(false)
+        }else{
+            showData(true)
         }
     }
 

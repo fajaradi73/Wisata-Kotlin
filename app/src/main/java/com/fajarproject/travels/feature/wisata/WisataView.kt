@@ -13,7 +13,7 @@ interface WisataView {
 
     fun hideLoading()
 
-    fun getDataSuccess(model: List<WisataModel>)
+    fun getDataSuccess(model: MutableList<WisataModel>)
 
     fun getDataFail(message: String?)
 

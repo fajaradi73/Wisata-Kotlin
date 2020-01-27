@@ -7,7 +7,7 @@ import com.fajarproject.travels.api.UserApi
 import com.fajarproject.travels.base.ui.BasePresenter
 import com.fajarproject.travels.feature.opsiLogin.OpsiLoginActivity
 import com.fajarproject.travels.models.ProfileModel
-import com.fajarproject.travels.models.SavePictureWisataModel
+import com.fajarproject.travels.models.PictureModel
 import com.fajarproject.travels.models.UserModel
 import com.fajarproject.travels.network.NetworkCallback
 import com.fajarproject.travels.preference.AppPreference
@@ -58,8 +58,32 @@ class ProfilPresenter(view: ProfilView, val context: Activity, override var apiS
         val file = File(path)
         val imageBody = RequestBody.create(MediaType.parse("image/*"), file)
         val picturePart = MultipartBody.Part.createFormData("picture", file.name.replace("\"\n",""), imageBody)
-        addSubscribe(apiStores.uploadPicture(user.token,picturePart),object : NetworkCallback<SavePictureWisataModel>(){
-            override fun onSuccess(model: SavePictureWisataModel) {
+        addSubscribe(apiStores.uploadPicture(user.token,picturePart),object : NetworkCallback<PictureModel>(){
+            override fun onSuccess(model: PictureModel) {
+                view?.successUpload(model.title,model.message)
+            }
+
+            override fun onFailure(message: String?, code: Int?, jsonObject: JSONObject?) {
+                if (code == 401){
+                    Util.sessionExpired(context)
+                }else{
+                    view?.failedUpload(message!!)
+                }
+            }
+
+            override fun onFinish() {
+                view?.hideLoading()
+            }
+
+        })
+    }
+    fun uploadPictureBackground(path : String){
+        view?.showLoading()
+        val file = File(path)
+        val imageBody = RequestBody.create(MediaType.parse("image/*"), file)
+        val picturePart = MultipartBody.Part.createFormData("picture", file.name.replace("\"\n",""), imageBody)
+        addSubscribe(apiStores.uploadPictureBackground(user.token,picturePart),object : NetworkCallback<PictureModel>(){
+            override fun onSuccess(model: PictureModel) {
                 view?.successUpload(model.title,model.message)
             }
 

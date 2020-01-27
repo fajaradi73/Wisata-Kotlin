@@ -184,10 +184,12 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         alamat_wisata.text          = data.alamatWisata
         jam_wisata.text             = Util.milisecondTotimes(data.jamBuka!!) + " - " + Util.milisecondTotimes(data.jamTutup!!)
         title_wisata.text           = data.namaWisata
+        text_kota.text              = data.kotaWisata.toString().replace("  "," ")  + ", " + data.provinsiWisata.toString().replace("  "," ")
         text_rating.text            = data.ratting.toString()
         text_rating_ulasan.text     = data.ratting.toString()
         text_ulasan.text            = "( " + data.jumlahRatting.toString() + " ulasan )"
         text_ulasan_view.text       = "( " + data.jumlahRatting.toString() + " ulasan )"
+        textAkses.text              = data.aksesWisata
         Glide.with(this)
             .load(App.BASE_IMAGE + data.imageWisata)
             .error(R.drawable.image_dieng)
@@ -196,6 +198,7 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
         setDataFavorite(data.favorite!!,data.idWisata!!)
         setUlasan(data.ulasan!!)
         checkUlasan(data.jumlahRatting!!)
+        checkCreateUlasan(data.create_ulasan!!)
         if (data.picture!!.isNotEmpty()){
             showDataFoto(true)
             setDataFoto(data.picture,data.idWisata)
@@ -249,6 +252,16 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(),DetailWisataVi
                 showDataUlasan(true)
                 cvSemuaUlasan.visibility = View.VISIBLE
             }
+        }
+    }
+
+    override fun checkCreateUlasan(isShow: Boolean){
+        if (isShow){
+            if (clNoUlasan.visibility == View.GONE) {
+                cvCreateUlasan.visibility = View.VISIBLE
+            }
+        }else{
+            cvCreateUlasan.visibility = View.GONE
         }
     }
 

@@ -24,6 +24,14 @@ data class PictureItem(
 	@Expose
 	val namaWisata: String? = "",
 
+	@SerializedName("namaUser")
+	@Expose
+	val namaUser: String? = "",
+
+	@SerializedName("userID")
+	@Expose
+	val userID: Int? = 0,
+
 	@SerializedName("create_date")
 	@Expose
 	val createDate: Long? = 0,
@@ -36,6 +44,8 @@ data class PictureItem(
 		parcel.readValue(Int::class.java.classLoader) as? Int,
 		parcel.readValue(Int::class.java.classLoader) as? Int,
 		parcel.readString(),
+		parcel.readString(),
+		parcel.readValue(Int::class.java.classLoader) as? Int,
 		parcel.readValue(Long::class.java.classLoader) as? Long,
 		parcel.readString()
 	)
@@ -44,6 +54,8 @@ data class PictureItem(
 		parcel.writeValue(idPicture)
 		parcel.writeValue(idWisata)
 		parcel.writeString(namaWisata)
+		parcel.writeString(namaUser)
+		parcel.writeValue(userID)
 		parcel.writeValue(createDate)
 		parcel.writeString(picture)
 	}

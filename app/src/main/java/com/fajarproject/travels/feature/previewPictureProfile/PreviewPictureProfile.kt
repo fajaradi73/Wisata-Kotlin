@@ -6,10 +6,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler
@@ -33,13 +30,20 @@ import lv.chi.photopicker.PhotoPickerFragment
 class PreviewPictureProfile : MvpActivity<PreviewPictureProfilePresenter>(),
     PreviewPictureProfileView, FileUtilCallbacks, PhotoPickerFragment.Callback {
     private var fileUtil : FileUtil? = null
+    private var isBackground = false
+
+    override fun createPresenter(): PreviewPictureProfilePresenter {
+        val userApi = Util.getRetrofitRxJava2()!!.create(UserApi::class.java)
+        return PreviewPictureProfilePresenter(this,this,userApi)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_picture_profile)
         setToolbar()
-        fileUtil = FileUtil(this,this)
-        val url = intent.getStringExtra("ImageUrl")
+        fileUtil        = FileUtil(this,this)
+        val url         = intent.getStringExtra("ImageUrl")
+        isBackground    = intent.getBooleanExtra("isBackground",false)
         Glide.with(this).load(url).error(R.drawable.ic_man).placeholder(
             Util.circleLoading(this)).thumbnail(0.1f).into(detailImage)
         detailImage.setOnTouchListener(ImageMatrixTouchHandler(this))
@@ -57,20 +61,30 @@ class PreviewPictureProfile : MvpActivity<PreviewPictureProfilePresenter>(),
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         Util.setColorFilter(toolbar.navigationIcon!!, ContextCompat.getColor(this,R.color.white))
-        Util.setMargins(toolbar,0, Util.getStatusBarHeight(this),0,0)
+        val statusBarHeight = Util.getStatusBarHeight(this)
+        val size = Util.convertDpToPixel(24F)
+        Util.setMargins(toolbar,0,statusBarHeight ,0,0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = Color.parseColor("#00FFFFFF")
             window.setFlags(
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES,
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             )
+            window.statusBarColor = ContextCompat.getColor(this, R.color.greyTransparent)
+
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            if (statusBarHeight > size) {
+                val decor = window.decorView
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
         }
     }
+
 
     override fun successUpload(title: String, message: String) {
         Util.showRoundedDialog(this,title,message,false,object : DialogYesListener{
@@ -144,7 +158,11 @@ class PreviewPictureProfile : MvpActivity<PreviewPictureProfilePresenter>(),
         Reason: String?
     ) {
         if (wasSuccessful){
-            presenter?.uploadPicture(path!!)
+            if (isBackground){
+                presenter?.uploadPictureBackground(path!!)
+            }else {
+                presenter?.uploadPicture(path!!)
+            }
         }
     }
 
@@ -154,8 +172,5 @@ class PreviewPictureProfile : MvpActivity<PreviewPictureProfilePresenter>(),
             .start(this)
     }
 
-    override fun createPresenter(): PreviewPictureProfilePresenter {
-        val userApi = Util.getRetrofitRxJava2()!!.create(UserApi::class.java)
-        return PreviewPictureProfilePresenter(this,this,userApi)
-    }
+
 }

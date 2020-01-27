@@ -19,7 +19,7 @@ interface FavoriteWisataView {
 
     fun setRecycleView()
 
-    fun getDataSucces(model: List<FavoriteModel>)
+    fun getDataSucces(model: MutableList<FavoriteModel>)
 
     fun getDataFail(message : String)
 

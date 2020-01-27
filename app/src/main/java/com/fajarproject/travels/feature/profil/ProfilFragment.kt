@@ -13,16 +13,20 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import com.bumptech.glide.Glide
+import com.facebook.shimmer.Shimmer
 import com.fajarproject.travels.App
 import com.fajarproject.travels.R
 import com.fajarproject.travels.api.UserApi
 import com.fajarproject.travels.base.mvp.MvpFragment
 import com.fajarproject.travels.base.view.DialogNoListener
 import com.fajarproject.travels.base.view.DialogYesListener
+import com.fajarproject.travels.feature.editProfil.EditProfilActivity
 import com.fajarproject.travels.feature.main.MainActivity
+import com.fajarproject.travels.feature.password.Password
 import com.fajarproject.travels.feature.previewPictureProfile.PreviewPictureProfile
 import com.fajarproject.travels.feature.wisataFavorite.FavoriteWisataActivity
 import com.fajarproject.travels.models.ProfileModel
+import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.fajarproject.travels.util.fileUtil.FileUtil
 import com.fajarproject.travels.util.fileUtil.FileUtilCallbacks
@@ -30,6 +34,7 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_profil.*
 import lv.chi.photopicker.PhotoPickerFragment
+import org.parceler.Parcels
 
 
 /**
@@ -40,6 +45,8 @@ import lv.chi.photopicker.PhotoPickerFragment
 class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallbacks {
 
     private var fileUtil : FileUtil? = null
+    private var isBackground  = true
+    var data : ProfileModel? = null
 
     override fun createPresenter(): ProfilPresenter {
         val userApi = Util.getRetrofitRxJava2()!!.create(UserApi::class.java)
@@ -81,13 +88,13 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
 
     override fun showLoadingShimmer() {
         shimmerView.visibility  = View.VISIBLE
-        shimmerView.duration    = 1150
-        shimmerView.startShimmerAnimation()
+        shimmerView.setShimmer(Shimmer.AlphaHighlightBuilder().setDuration(1150L).build())
+        shimmerView.startShimmer()
         swipeRefresh.visibility     = View.GONE
     }
 
     override fun hideLoadingShimmer() {
-        shimmerView.stopShimmerAnimation()
+        shimmerView.stopShimmer()
         shimmerView.visibility      = View.GONE
         swipeRefresh.visibility     = View.VISIBLE
     }
@@ -97,14 +104,20 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
     }
 
     override fun getDataSuccess(model: ProfileModel) {
+        this.data       = model
         userName.text   = model.username
         fullName.text   = model.fullname
         tvEmail.text    = model.email
         tvPhone.text    = model.mobilePhone
-        tvLast.text     = Util.getDateWithTime(model.lastLogin!!.toLong())
-        tvFavorite.text = Util.prettyCount(20)
+        tvLast.text     = Util.convertLongToDateWithTime(model.lastLogin!!)
+        tvFavorite.text = model.jumlahFavorite.toString()
+        tvGender.text   = model.gender
+        tvBirth.text    = model.tempat_lahir + " / " + Util.convertLongToDate(model.tanggal_lahir!!)
         if (model.picture != null && model.picture != ""){
             setImage(model.picture)
+        }
+        if (model.picture_background != null && model.picture_background != ""){
+            setImageBackground(model.picture_background)
         }
         Glide.with(activity!!).load(R.drawable.love).into(ivFavorite)
     }
@@ -126,16 +139,35 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
     }
 
     override fun setImage(imageUrl : String) {
+        val image = if (imageUrl.contains("google") || imageUrl.contains("facebook")){
+            imageUrl
+        }else{
+            App.BASE_IMAGE_PROFILE + imageUrl
+        }
         Glide.with(activity!!)
-            .load(App.BASE_IMAGE_PROFILE + imageUrl)
+            .load(image)
+            .error(R.drawable.ic_man)
             .placeholder(Util.circleLoading(activity!!))
             .into(imageUser)
         clImage.setOnClickListener {
-            previewImageProfil(App.BASE_IMAGE_PROFILE + imageUrl)
+            isBackground = false
+            previewImageProfil(App.BASE_IMAGE_PROFILE + imageUrl,imageUser)
         }
     }
 
-    override fun previewImageProfil(imageUrl: String){
+    override fun setImageBackground(imageUrl: String) {
+        Glide.with(activity!!)
+            .load(App.BASE_IMAGE_BACKGROUND + imageUrl)
+            .error(R.drawable.image_dieng)
+            .placeholder(Util.circleLoading(activity!!))
+            .into(imageBackground)
+        cvBackground.setOnClickListener {
+            isBackground = true
+            previewImageProfil(App.BASE_IMAGE_BACKGROUND + imageUrl,imageBackground)
+        }
+    }
+
+    override fun previewImageProfil(imageUrl: String,view : View){
         // Ordinary Intent for launching a new activity
         val intent =
             Intent(activity!!, PreviewPictureProfile::class.java)
@@ -143,14 +175,14 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
         // Get the transition name from the string
         val transitionName = getString(R.string.transition_string)
 
-
         val options: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
             activity!!,
-            imageUser,  // Starting view
+            view,  // Starting view
             transitionName // The String
         )
         //Start the Intent
         intent.putExtra("ImageUrl",imageUrl)
+        intent.putExtra("isBackground",isBackground)
         ActivityCompat.startActivityForResult(activity!!, intent, 1999,options.toBundle())
 
     }
@@ -167,7 +199,22 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
             changeActivity(Intent(activity,FavoriteWisataActivity::class.java))
         }
         cvUploadPicture.setOnClickListener {
+            isBackground = false
             openPicker()
+        }
+        cvUploadBackground.setOnClickListener {
+            isBackground = true
+            openPicker()
+        }
+        clEdit.setOnClickListener {
+            val intent = Intent(activity,EditProfilActivity::class.java)
+            intent.putExtra(Constant.dataProfil,Parcels.wrap(data))
+            startActivityForResult(intent,Constant.requestIDProfil)
+        }
+        clPassword.setOnClickListener {
+            val intent = Intent(activity,Password::class.java)
+            intent.putExtra(Constant.typePassword,true)
+            startActivityForResult(intent,Constant.requestChangePassword)
         }
     }
 
@@ -187,6 +234,14 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 val error = result.error
                 error.printStackTrace()
+            }
+        }else if (requestCode == Constant.requestIDProfil){
+            if (resultCode == RESULT_OK){
+                presenter?.getProfile(false)
+            }
+        }else if (requestCode == Constant.requestChangePassword){
+            if (resultCode == RESULT_OK){
+                presenter?.getProfile(true)
             }
         }
     }
@@ -225,8 +280,11 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
         Reason: String?
     ) {
         if (wasSuccessful && path != null){
-            presenter?.uploadPicture(path)
+            if (isBackground){
+                presenter?.uploadPictureBackground(path)
+            }else{
+                presenter?.uploadPicture(path)
+            }
         }
     }
-
 }

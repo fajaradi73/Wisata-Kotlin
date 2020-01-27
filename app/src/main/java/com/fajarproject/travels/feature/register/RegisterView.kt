@@ -1,7 +1,7 @@
 package com.fajarproject.travels.feature.register
 
 import android.content.Intent
-import com.fajarproject.travels.models.RegisterModel
+import com.fajarproject.travels.models.SaveModel
 import org.json.JSONObject
 
 /**
@@ -18,7 +18,7 @@ interface RegisterView {
 
     fun hideLoading()
 
-    fun getDataSuccess(data : RegisterModel)
+    fun getDataSuccess(data : SaveModel)
 
     fun getDataFail(jsonObject: JSONObject)
 

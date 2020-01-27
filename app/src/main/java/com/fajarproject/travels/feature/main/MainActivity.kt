@@ -21,6 +21,7 @@ import com.fajarproject.travels.feature.home.HomeFragment
 import com.fajarproject.travels.feature.popularWisata.PopularWisataFragment
 import com.fajarproject.travels.feature.profil.ProfilFragment
 import com.fajarproject.travels.feature.wisataTerdekat.WisataTerdekatFragment
+import com.fajarproject.travels.preference.AppPreference
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -59,10 +60,9 @@ class MainActivity : MvpActivity<MainPresenter>(),MainView, PhotoPickerFragment.
 
     @SuppressLint("RestrictedApi")
     override fun setUI() {
-
+        AppPreference.writePreference(this,"sizePerPage",5)
         nav_view.setOnNavigationItemSelectedListener(object : BottomNavigationView.OnNavigationItemSelectedListener{
             override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
                 when(item.itemId){
                     R.id.action_home -> {
                         toolbar.visibility = View.VISIBLE
@@ -172,5 +172,10 @@ class MainActivity : MvpActivity<MainPresenter>(),MainView, PhotoPickerFragment.
                 (currentFragment as ProfilFragment).previewResult()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("Destroy","Main Activity")
     }
 }

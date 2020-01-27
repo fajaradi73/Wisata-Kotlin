@@ -14,7 +14,7 @@ import com.fajarproject.travels.api.RegisterApi
 import com.fajarproject.travels.base.mvp.MvpActivity
 import com.fajarproject.travels.feature.opsiLogin.OpsiLoginActivity
 import com.fajarproject.travels.models.RegisterSubmitModel
-import com.fajarproject.travels.models.RegisterModel
+import com.fajarproject.travels.models.SaveModel
 import com.fajarproject.travels.util.Util
 import com.fajarproject.travels.base.view.DialogNoListener
 import com.fajarproject.travels.base.view.DialogYesListener
@@ -102,7 +102,7 @@ class RegisterActivity : MvpActivity<RegisterPresenter>(),RegisterView{
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
-    override fun getDataSuccess(data: RegisterModel) {
+    override fun getDataSuccess(data: SaveModel) {
         Util.showRoundedDialog(this,data.title,data.message,false,object : DialogYesListener{
             override fun onYes() {
                 val intent = Intent(this@RegisterActivity, OpsiLoginActivity::class.java)

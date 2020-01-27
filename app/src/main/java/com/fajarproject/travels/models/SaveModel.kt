@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Fajar Adi Prasetyo on 09/10/19.
  */
 
-data class RegisterModel (
+data class SaveModel (
     @SerializedName("title")
     val title : String,
     @SerializedName("message")

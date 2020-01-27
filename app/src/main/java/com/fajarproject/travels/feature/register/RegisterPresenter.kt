@@ -5,7 +5,7 @@ import com.fajarproject.travels.api.RegisterApi
 import com.fajarproject.travels.base.ui.BasePresenter
 import com.fajarproject.travels.network.NetworkCallback
 import com.fajarproject.travels.models.RegisterSubmitModel
-import com.fajarproject.travels.models.RegisterModel
+import com.fajarproject.travels.models.SaveModel
 import org.json.JSONObject
 
 /**
@@ -20,8 +20,8 @@ class RegisterPresenter(view: RegisterView, val context: Context,
 
     fun registerWisata(registerSubmitModel: RegisterSubmitModel){
         view!!.showLoading()
-        addSubscribe(apiStores.registerWisatas(registerSubmitModel),object : NetworkCallback<RegisterModel>(){
-            override fun onSuccess(model: RegisterModel) {
+        addSubscribe(apiStores.registerWisata(registerSubmitModel),object : NetworkCallback<SaveModel>(){
+            override fun onSuccess(model: SaveModel) {
                 view!!.getDataSuccess(model)
             }
 

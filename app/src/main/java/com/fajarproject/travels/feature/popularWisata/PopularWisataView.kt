@@ -18,7 +18,7 @@ interface PopularWisataView {
 
     fun setRecycleView()
 
-    fun getDataSucces(model: List<PopularWisataModel>)
+    fun getDataSuccess(model: MutableList<PopularWisataModel>)
 
     fun getDataFail(message : String)
 

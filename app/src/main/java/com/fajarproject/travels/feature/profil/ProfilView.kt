@@ -2,6 +2,7 @@ package com.fajarproject.travels.feature.profil
 
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import com.fajarproject.travels.models.ProfileModel
 
 /**
@@ -27,6 +28,8 @@ interface ProfilView {
 
     fun setImage(imageUrl : String)
 
+    fun setImageBackground(imageUrl : String)
+
     fun setAction()
 
     fun onImagePicked(uri : Uri)
@@ -35,7 +38,7 @@ interface ProfilView {
 
     fun failedUpload(message: String)
 
-    fun previewImageProfil(imageUrl: String)
+    fun previewImageProfil(imageUrl: String,view : View)
 
     fun previewResult()
 }

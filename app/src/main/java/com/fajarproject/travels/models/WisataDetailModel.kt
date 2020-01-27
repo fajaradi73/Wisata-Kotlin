@@ -60,6 +60,9 @@ data class WisataDetailModel(
 	@SerializedName("favorite")
 	val favorite: Boolean? = false,
 
+	@SerializedName("create_ulasan")
+	val create_ulasan: Boolean? = false,
+
 	@SerializedName("longitude")
 	val longitude: Double? = 0.0,
 

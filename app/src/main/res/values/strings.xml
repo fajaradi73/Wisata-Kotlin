@@ -60,7 +60,7 @@
     <string name="jenis_peta">Jenis Peta</string>
     <string name="detail_peta">Detail Peta</string>
     <string name="masuk">Masuk</string>
-    <string name="no">No</string>
+    <string name="no">Tidak</string>
     <string name="home">Home</string>
     <string name="favorite">Favorit</string>
     <string name="populer" tools:ignore="Typos">Populer</string>
@@ -103,5 +103,15 @@
     </plurals>
     <string name="transition_string">hello</string>
     <string name="upload_photo">Upload Photo</string>
+    <string name="create_ulasan">Berikan Ulasan Anda</string>
+    <string name="akses_wisata">Akses Wisata</string>
+    <string name="lokasi_wisata">Lokasi Wisata</string>
+    <string name="username">Username</string>
+    <string name="fullname">Nama Lengkap</string>
+    <string name="tempat_lahir">Tempat Lahir</string>
+    <string name="tanggal_lahir">Tanggal Lahir</string>
+    <string name="pria">Pria</string>
+    <string name="wanita">Wanita</string>
+    <string name="simpan">Simpan</string>
 
 </resources>

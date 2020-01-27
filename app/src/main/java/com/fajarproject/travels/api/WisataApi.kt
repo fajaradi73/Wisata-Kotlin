@@ -13,35 +13,43 @@ import rx.Observable
 
 interface WisataApi {
 
-    @GET("auth/nearby_wisata")
+    @GET("wisata/nearbyWisata")
     fun getNearbyWisata(
         @Header("Authorization") token : String?,
         @Query("latitude") latitude: Double?,
-        @Query("longitude") longitude: Double?
-    ): Observable<List<NearbyModel>>
+        @Query("longitude") longitude: Double?,
+        @Query("limit") limit : Int?,
+        @Query("page") page : Int?
+    ): Observable<MutableList<NearbyModel>>
 
     @FormUrlEncoded
-    @POST("auth/favorite")
+    @POST("user/favorite")
     fun saveFavorites(@Header("Authorization") token : String?,
                      @Field("id_wisata") id_wisata: Int?) : Observable<SaveFavoriteModel>
 
-    @GET("auth/find_wisata")
+    @GET("wisata/findWisata")
     fun getFindWisata(@Header("Authorization") token : String?,
-                      @Query("type_id") type_id: String?): Observable<List<WisataModel>>
+                      @Query("type_id") type_id: String?,
+                      @Query("limit") limit : Int?,
+                      @Query("page") page : Int?): Observable<MutableList<WisataModel>>
 
-    @GET("auth/detail_wisata")
+    @GET("wisata/detailWisata")
     fun getDetailWisata(@Header("Authorization") token : String?,
                         @Query("id_wisata") id_wisata: Int?): Observable<WisataDetailModel>
 
-    @GET("auth/favorite_wisata")
-    fun getFavoriteWisata(@Header("Authorization") token : String?): Observable<List<FavoriteModel>>
+    @GET("wisata/favoriteWisata")
+    fun getFavoriteWisata(@Header("Authorization") token : String?,
+                          @Query("limit") limit : Int?,
+                          @Query("page") page : Int?): Observable<MutableList<FavoriteModel>>
 
-    @GET("auth/popular_wisata")
-    fun getPopularWisata(@Header("Authorization") token : String?): Observable<List<PopularWisataModel>>
+    @GET("wisata/popularWisata")
+    fun getPopularWisata(@Header("Authorization") token : String?,
+                         @Query("limit") limit : Int?,
+                         @Query("page") page : Int?): Observable<MutableList<PopularWisataModel>>
 
     @Multipart
-    @POST("auth/saveMultiplePicture")
+    @POST("wisata/saveMultiplePicture")
     fun uploadPictureWisata(@Header("Authorization") token : String?,
                             @Part("id_wisata") idWisata : RequestBody,
-                            @Part files : Array<MultipartBody.Part?> ) : Observable<SavePictureWisataModel>
+                            @Part files : Array<MultipartBody.Part?> ) : Observable<PictureModel>
 }

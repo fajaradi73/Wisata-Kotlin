@@ -11,7 +11,7 @@ import rx.Observable
  */
 interface UlasanApi {
 
-    @GET("auth/ulasan")
+    @GET("wisata/ulasanWisata")
     fun getUlasan(@Header("Authorization") token : String?,
                   @Query("id_wisata") id_wisata: Int?): Observable<UlasanModel>
 }

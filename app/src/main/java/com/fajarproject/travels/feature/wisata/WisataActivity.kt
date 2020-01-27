@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.shimmer.Shimmer
 import com.fajarproject.travels.R
 import com.fajarproject.travels.api.WisataApi
 import com.fajarproject.travels.base.mvp.MvpActivity
@@ -16,6 +17,8 @@ import com.fajarproject.travels.models.WisataModel
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.fajarproject.travels.base.view.OnItemClickListener
+import com.fajarproject.travels.base.widget.PaginationScrollListener
+import com.fajarproject.travels.preference.AppPreference
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_wisata.*
 
@@ -25,10 +28,16 @@ import kotlinx.android.synthetic.main.activity_wisata.*
 
 class WisataActivity : MvpActivity<WisataPresenter>(),WisataView{
 
-    var list : List<WisataModel>? = arrayListOf()
     private var typeId : String? = ""
     private var titleWisata : String? = ""
     private var adapter : WisataAdapter? = null
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private var limit :Int? = 10
+    private var currentPage = 0
+    private var countData = 0
+
+    private var isLoading = false
+    private var isLastPage = false
 
     override fun createPresenter(): WisataPresenter {
         val wisataApi : WisataApi = Util.getRetrofitRxJava2()!!.create(WisataApi::class.java)
@@ -41,17 +50,23 @@ class WisataActivity : MvpActivity<WisataPresenter>(),WisataView{
         setRecycleView()
         typeId      = intent.getStringExtra(Constant.typeID)
         titleWisata = intent.getStringExtra(Constant.titleWisata)
+        limit       = AppPreference.getIntPreferenceByName(activity!!,"sizePerPage")
+
         setToolbar()
         Util.setAds(adView)
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = false
-            presenter?.getWisata(typeId!!)
+            isLoading = false
+            isLastPage = false
+            currentPage = 0
+            presenter?.getWisata(typeId!!,limit!!,currentPage)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        presenter?.getWisata(typeId!!)
+        currentPage = 0
+        presenter?.getWisata(typeId!!,limit!!,currentPage)
     }
 
     override fun onResume() {
@@ -82,49 +97,88 @@ class WisataActivity : MvpActivity<WisataPresenter>(),WisataView{
     }
 
     override fun setRecycleView(){
-        val linearLayoutManager         = LinearLayoutManager(this)
+        linearLayoutManager         = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         rv_wisata.layoutManager         = linearLayoutManager
         rv_wisata.itemAnimator = DefaultItemAnimator()
-
     }
 
     override fun showLoading() {
-//        loadingOverlay.visibility = View.VISIBLE
         shimmerView.visibility  = View.VISIBLE
-        shimmerView.duration    = 1150
-        shimmerView.startShimmerAnimation()
-        swipeRefresh.visibility = View.GONE
+        shimmerView.setShimmer(Shimmer.AlphaHighlightBuilder().setDuration(1150L).build())
+        shimmerView.startShimmer()
+        swipeRefresh.visibility     = View.GONE
     }
 
     override fun hideLoading() {
-//        loadingOverlay.visibility = View.GONE
-        shimmerView.stopShimmerAnimation()
-        shimmerView.visibility  = View.GONE
-        swipeRefresh.visibility = View.VISIBLE
+        shimmerView.stopShimmer()
+        shimmerView.visibility      = View.GONE
+        swipeRefresh.visibility     = View.VISIBLE
     }
 
-    override fun getDataSuccess(model: List<WisataModel>) {
-        if (model.isNotEmpty()){
-            showData(true)
-            this.list = model
+    private fun setScrollRecycleView(){
+        rv_wisata.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
+            override fun loadMoreItems() {
+                isLoading = true
+                currentPage += 1
+                presenter?.getWisata(typeId!!,limit!!,currentPage)
+            }
+
+            override fun getTotalPageCount(): Int {
+                return limit!!
+            }
+
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+        })
+    }
+
+    override fun getDataSuccess(model: MutableList<WisataModel>) {
+        countData = model.size
+        if (currentPage == 0){
             adapter = WisataAdapter(
-                model,
-                this,
-                presenter
+                model,this,presenter
             )
             rv_wisata.adapter = adapter
-            adapter?.setOnItemClickListener(object : OnItemClickListener{
-                override fun onItemClick(view: View?, position: Int) {
-                    presenter?.getItem(list!![position])
-                }
-            })
-
+            setScrollRecycleView()
         }else{
-            showData(false)
+            adapter?.removeLoadingFooter()
+            isLoading = false
+            adapter?.addData(model)
+            adapter?.notifyDataSetChanged()
+        }
+
+        adapter?.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val list = adapter?.getDataList()
+                presenter?.getItem(list!![position])
+            }
+        })
+        checkLastData()
+        checkData()
+    }
+
+    private fun checkLastData(){
+        if (countData == limit){
+            adapter?.addLoadingFooter()
+        }else{
+            isLastPage = true
         }
     }
 
+    private fun checkData(){
+        if (adapter?.itemCount == 0){
+            showData(false)
+        }else{
+            showData(true)
+        }
+    }
     override fun getDataFail(message: String?) {
         showData(false)
         Log.d("ErrorWisata",message!!)

@@ -7,12 +7,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.shimmer.Shimmer
 import com.fajarproject.travels.R
 import com.fajarproject.travels.adapter.FavoriteWisataAdapter
 import com.fajarproject.travels.api.WisataApi
 import com.fajarproject.travels.base.mvp.MvpActivity
 import com.fajarproject.travels.base.view.OnItemClickListener
+import com.fajarproject.travels.base.widget.PaginationScrollListener
 import com.fajarproject.travels.models.FavoriteModel
+import com.fajarproject.travels.preference.AppPreference
 import com.fajarproject.travels.util.Util
 import kotlinx.android.synthetic.main.activity_favorite.*
 
@@ -22,8 +25,14 @@ import kotlinx.android.synthetic.main.activity_favorite.*
 
 class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWisataView {
 
-    var list : List<FavoriteModel>? = null
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private var limit :Int? = 10
+    private var currentPage = 0
+    private var adapter : FavoriteWisataAdapter? = null
+    private var countData = 0
 
+    private var isLoading = false
+    private var isLastPage = false
     override fun createPresenter(): FavoriteWisataPresenter {
         val wisataApi : WisataApi = Util.getRetrofitRxJava2()!!.create(WisataApi::class.java)
         return FavoriteWisataPresenter(this,this,wisataApi)
@@ -33,16 +42,21 @@ class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favorite)
         setToolbar()
+        limit = AppPreference.getIntPreferenceByName(activity!!,"sizePerPage")
         setRecycleView()
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = false
-            presenter?.getFavorite()
+            isLoading = false
+            isLastPage = false
+            currentPage = 0
+            presenter?.getFavorite(limit!!,currentPage)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        presenter?.getFavorite()
+        currentPage = 0
+        presenter?.getFavorite(limit!!,currentPage)
     }
 
     override fun setToolbar() {
@@ -51,47 +65,90 @@ class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWi
         title = "Favorite Wisata"
     }
 
+
     override fun showLoading() {
-//        loadingOverlay.visibility = View.VISIBLE
         shimmerView.visibility  = View.VISIBLE
-        shimmerView.duration    = 1150
-        shimmerView.startShimmerAnimation()
-        swipeRefresh.visibility = View.GONE
+        shimmerView.setShimmer(Shimmer.AlphaHighlightBuilder().build())
+        shimmerView.startShimmer()
+        swipeRefresh.visibility     = View.GONE
     }
 
     override fun hideLoading() {
-//        loadingOverlay.visibility = View.GONE
-        shimmerView.stopShimmerAnimation()
-        shimmerView.visibility  = View.GONE
-        swipeRefresh.visibility = View.VISIBLE
+        shimmerView.stopShimmer()
+        shimmerView.visibility      = View.GONE
+        swipeRefresh.visibility     = View.VISIBLE
     }
 
     override fun moveToDetail(intent: Intent) {
         startActivity(intent)
     }
 
+    private fun setScrollRecycleView(){
+        listFavorite.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
+            override fun loadMoreItems() {
+                isLoading = true
+                currentPage += 1
+                presenter?.getFavorite(limit!!,currentPage)
+            }
+
+            override fun getTotalPageCount(): Int {
+                return limit!!
+            }
+
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+        })
+    }
     override fun setRecycleView() {
-        val linearLayoutManager         = LinearLayoutManager(this)
+        linearLayoutManager         = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         listFavorite.layoutManager      = linearLayoutManager
+        listFavorite.setHasFixedSize(true)
     }
 
-    override fun getDataSucces(model: List<FavoriteModel>) {
-        if (model.isNotEmpty()){
-            showData(true)
-            this.list = model
-            val adapter = FavoriteWisataAdapter(
-                model,
-                this
+    override fun getDataSucces(model: MutableList<FavoriteModel>) {
+        countData = model.size
+        if (currentPage == 0){
+            adapter = FavoriteWisataAdapter(
+                model,this
             )
             listFavorite.adapter = adapter
-            adapter.setOnItemClickListener(object : OnItemClickListener {
-                override fun onItemClick(view: View?, position: Int) {
-                    presenter?.getItem(list!![position])
-                }
-            })
+            setScrollRecycleView()
         }else{
+            adapter?.removeLoadingFooter()
+            isLoading = false
+            adapter?.addData(model)
+            adapter?.notifyDataSetChanged()
+        }
+
+        adapter?.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val list = adapter?.getDataList()
+                presenter?.getItem(list!![position])
+            }
+        })
+        checkLastData()
+        checkData()
+    }
+    private fun checkLastData(){
+        if (countData == limit){
+            adapter?.addLoadingFooter()
+        }else{
+            isLastPage = true
+        }
+    }
+
+    private fun checkData(){
+        if (adapter?.itemCount == 0){
             showData(false)
+        }else{
+            showData(true)
         }
     }
 

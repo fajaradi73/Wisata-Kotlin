@@ -87,8 +87,8 @@ class DetailWisataPresenter(view: DetailWisataView, val context: Activity,
         }
         val id = RequestBody.create(MediaType.parse("text/plain"), idWisata.toString())
         view?.showLoading()
-        addSubscribe(apiStores.uploadPictureWisata(user.token,id,imageWisata),object : NetworkCallback<SavePictureWisataModel>(){
-            override fun onSuccess(model: SavePictureWisataModel) {
+        addSubscribe(apiStores.uploadPictureWisata(user.token,id,imageWisata),object : NetworkCallback<PictureModel>(){
+            override fun onSuccess(model: PictureModel) {
                 view?.successUpload(model.title,model.message)
             }
 

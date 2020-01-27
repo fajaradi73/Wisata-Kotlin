@@ -19,4 +19,10 @@ object Constant {
     const val position          = "Position"
     const val dataFoto          = "DataFoto"
     const val TransitionName    = "TransitionName"
+    const val VIEW_TYPE_ITEM    = 0
+    const val VIEW_TYPE_LOADING = 1
+    const val requestIDProfil   = 1334
+    const val requestChangePassword   = 1335
+    const val dataProfil        = "DataProfil"
+    const val typePassword      = "TypePassword"
 }

@@ -33,7 +33,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_maps_travels.*
 
@@ -70,7 +69,7 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
 
     override fun init() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.maps_travels) as SupportMapFragment?
-        mapFragment!!.getMapAsync(this)
+        mapFragment?.getMapAsync(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -94,7 +93,7 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
                 val builder = CameraPosition.builder()
                 builder.zoom(15f)
                 builder.target(latLngCurrent)
-                mapsTravels!!.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()))
+                mapsTravels?.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()))
             }
         }
         interstitialAd  = createNewIntAd()
@@ -116,7 +115,7 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
 
             override fun onAdClosed() {
                 // Proceed to the next level.
-                presenter!!.setDirection(latLngCurrent!!,latLngTravels!!)
+                presenter?.setDirection(latLngCurrent!!,latLngTravels!!)
             }
         }
         return interstitialAd
@@ -134,9 +133,9 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
 
     override fun showIntAds() {
         if (interstitialAd != null && interstitialAd!!.isLoaded){
-            interstitialAd!!.show()
+            interstitialAd?.show()
         }else{
-            presenter!!.setDirection(latLngCurrent!!,latLngTravels!!)
+            presenter?.setDirection(latLngCurrent!!,latLngTravels!!)
         }
     }
 
@@ -157,11 +156,11 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
     }
 
     override fun showDirection(direction: Direction?) {
-        val route : Route? = direction!!.routeList[0]
-        val leg : Leg? = route!!.legList[0]
-        val directionPositionList : ArrayList<LatLng> = leg!!.directionPoint
+        val route : Route? = direction?.routeList?.get(0)
+        val leg : Leg? = route?.legList?.get(0)
+        val directionPositionList = leg?.directionPoint as ArrayList<LatLng>
         val polylineOptions : PolylineOptions = DirectionConverter.createPolyline(application,directionPositionList,3,Color.BLUE)
-        mapsTravels!!.addPolyline(polylineOptions)
+        mapsTravels?.addPolyline(polylineOptions)
         Util.setCameraWithCoordinationBounds(route,mapsTravels)
     }
 
@@ -171,11 +170,11 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
         }
         try {
             if (mLocationPermissionGranted) {
-                mapsTravels!!.isMyLocationEnabled = true
-                presenter!!.setDeviceLocation(mLocationPermissionGranted)
+                mapsTravels?.isMyLocationEnabled = true
+                presenter?.setDeviceLocation(mLocationPermissionGranted)
             } else {
                 mLastKnownLocation = null
-                mapsTravels!!.isMyLocationEnabled = false
+                mapsTravels?.isMyLocationEnabled = false
                 getLocationPermission()
             }
         } catch (e : SecurityException)  {
@@ -202,20 +201,20 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
 
     override fun showDeviceLocation(location: Location) {
         mLastKnownLocation  = location
-        currentLatitude     = mLastKnownLocation!!.latitude
-        currentLongitude    = mLastKnownLocation!!.longitude
+        currentLatitude     = mLastKnownLocation?.latitude
+        currentLongitude    = mLastKnownLocation?.longitude
         latLngCurrent       = LatLng(mLastKnownLocation!!.latitude,mLastKnownLocation!!.longitude)
         val markerOptions = MarkerOptions()
         markerOptions.position(latLngCurrent!!)
         markerOptions.title("Lokasi anda")
         markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_location))
-        mapsTravels!!.addMarker(markerOptions)
+        mapsTravels?.addMarker(markerOptions)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mapsTravels = googleMap
-        mapsTravels!!.uiSettings.isMyLocationButtonEnabled = false
-        mapsTravels!!.uiSettings.isMapToolbarEnabled = false
+        mapsTravels?.uiSettings?.isMyLocationButtonEnabled = false
+        mapsTravels?.uiSettings?.isMapToolbarEnabled = false
         latLngTravels = LatLng(latitudeTravels!!,longitudeTravels!!)
         val cameraPosition = CameraPosition.builder().target(latLngTravels).zoom(13f).build()
         val markerOptions = MarkerOptions()
@@ -223,15 +222,15 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
         markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_marker_48dp))
 
         //// move camera
-        mapsTravels!!.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-        mapsTravels!!.animateCamera(CameraUpdateFactory.zoomTo(14f))
-        mapsTravels!!.addMarker(markerOptions)
+        mapsTravels?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        mapsTravels?.animateCamera(CameraUpdateFactory.zoomTo(14f))
+        mapsTravels?.addMarker(markerOptions)
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI()
 
         // Get the current location of the device and set the position of the map.
-        presenter!!.setDeviceLocation(mLocationPermissionGranted)
-        mapsTravels!!.setOnCameraMoveListener(this)
+        presenter?.setDeviceLocation(mLocationPermissionGranted)
+        mapsTravels?.setOnCameraMoveListener(this)
     }
 
     override fun onRequestPermissionsResult(
@@ -255,9 +254,9 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
     }
 
     override fun onCameraMove() {
-        val cameraPosition = mapsTravels!!.cameraPosition
-        if (cameraPosition.target.latitude != latLngCurrent!!.latitude &&
-                cameraPosition.target.longitude != latLngCurrent!!.longitude){
+        val cameraPosition = mapsTravels?.cameraPosition
+        if (cameraPosition?.target?.latitude != latLngCurrent?.latitude &&
+                cameraPosition?.target?.longitude != latLngCurrent?.longitude){
             btn_current.show()
         }
     }

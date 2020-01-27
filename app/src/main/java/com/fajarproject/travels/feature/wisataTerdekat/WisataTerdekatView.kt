@@ -23,7 +23,7 @@ interface WisataTerdekatView {
 
     fun showDeviceLocation(location: Location)
 
-    fun getDataSuccess(list: List<NearbyModel>)
+    fun getDataSuccess(list: MutableList<NearbyModel>)
 
     fun getDataFail(message : String)
 

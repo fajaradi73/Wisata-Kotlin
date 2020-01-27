@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.facebook.shimmer.Shimmer
 import com.fajarproject.travels.R
 import com.fajarproject.travels.adapter.MenuAdapter
 import com.fajarproject.travels.adapter.SliderAdapter
@@ -64,19 +65,18 @@ class HomeFragment : MvpFragment<HomePresenter>(),HomeView {
         outState.putString("Texst","Tester")
         super.onSaveInstanceState(outState)
     }
+
     override fun showLoading() {
-//        loadingOverlay.visibility = View.VISIBLE
-        shimmerView.visibility = View.VISIBLE
-        shimmerView.duration = 1150
-        shimmerView.startShimmerAnimation()
-        swipeRefresh.visibility = View.GONE
+        shimmerView.visibility  = View.VISIBLE
+        shimmerView.setShimmer(Shimmer.AlphaHighlightBuilder().setDuration(1150L).build())
+        shimmerView.startShimmer()
+        swipeRefresh.visibility     = View.GONE
     }
 
     override fun hideLoading() {
-//        loadingOverlay.visibility = View.GONE
-        shimmerView.stopShimmerAnimation()
-        shimmerView.visibility = View.GONE
-        swipeRefresh.visibility = View.VISIBLE
+        shimmerView.stopShimmer()
+        shimmerView.visibility      = View.GONE
+        swipeRefresh.visibility     = View.VISIBLE
     }
 
     override fun getDataSuccess(model: List<LookupDetailModel>?) {

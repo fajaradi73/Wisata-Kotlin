@@ -50,4 +50,6 @@ interface DetailWisataView {
 
     fun failedUpload(message: String)
 
+    fun checkCreateUlasan(isShow: Boolean)
+
 }

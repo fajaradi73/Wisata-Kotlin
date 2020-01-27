@@ -35,7 +35,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -99,10 +98,10 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
-import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.pow
+import kotlin.math.roundToInt
 
 /**
  * Created by Fajar Adi Prasetyo on 09/10/19.
@@ -521,13 +520,14 @@ object Util {
         }
         return flag
     }
-    private fun requestFocus(view: View,activity: Activity?) {
+    fun requestFocus(view: View,activity: Activity?) {
         if (view.requestFocus()) {
-            activity!!.window.setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+            activity?.window?.setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         }
     }
+
     private fun capitalize(s: String?): String {
-        if (s == null || s.length == 0) {
+        if (s == null || s.isEmpty()) {
             return ""
         }
         val first = s[0]
@@ -537,6 +537,7 @@ object Util {
             Character.toUpperCase(first).toString() + s.substring(1)
         }
     }
+
     fun setColorFilter(@NonNull drawable: Drawable, color: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             drawable.colorFilter = BlendModeColorFilter(
@@ -782,8 +783,9 @@ object Util {
     }
 
     private var alertDialog : AlertDialog? = null
-    private var btnYes : Button? = null
-    private var btnNo : Button? = null
+    private var btnYes : CardView? = null
+    private var btnNo : CardView? = null
+    private var textYes : TextView? = null
     private fun initShowDialog(activity: Activity,title : String, message : String, isTwoButton : Boolean){
         if (alertDialog != null && alertDialog!!.isShowing  || activity.isFinishing){
             // A dialog is already open, wait for it to be dismissed, do nothing
@@ -791,12 +793,12 @@ object Util {
         }else{
             alertDialog         = AlertDialog.Builder(activity).create()
             val inflater        = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val viewDialog      = inflater.inflate(R.layout.alert_dialog,null)
+            val viewDialog      = inflater.inflate(R.layout.show_dialog,null)
             val titleDialog     = viewDialog.findViewById<TextView>(R.id.title_dialog)
             val messageDialog   = viewDialog.findViewById<TextView>(R.id.message_dialog)
             btnYes              = viewDialog.findViewById(R.id.btn_yes)
             btnNo               = viewDialog.findViewById(R.id.btn_no)
-            val viewLine        = viewDialog.findViewById<View>(R.id.view_line)
+            textYes             = viewDialog.findViewById(R.id.tvYes)
             alertDialog?.setView(viewDialog)
             alertDialog?.setCancelable(false)
             titleDialog.text    = title
@@ -809,8 +811,7 @@ object Util {
             }
             if (isTwoButton){
                 btnNo?.visibility       = View.VISIBLE
-                viewLine.visibility    = View.VISIBLE
-                btnYes?.text = activity.resources.getString(R.string.yes)
+                textYes?.text = activity.resources.getString(R.string.yes)
             }
             alertDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog?.show()
@@ -1016,12 +1017,13 @@ object Util {
         AppPreference.writePreference(context,"user",json!!)
     }
 
-    fun getDateWithTime(timestamp: Long) :String {
+    fun convertLongToDateWithTime(timestamp: Long) :String {
         val calendar = Calendar.getInstance(Locale.getDefault())
         calendar.timeInMillis = timestamp * 1000L
         return android.text.format.DateFormat.format("dd MMMM yyyy HH:mm:dd", calendar).toString()
     }
-    fun getDate(timestamp: Long) :String {
+
+    fun convertLongToDate(timestamp: Long) :String {
         val calendar = Calendar.getInstance(Locale.getDefault())
         calendar.timeInMillis = timestamp * 1000L
         return android.text.format.DateFormat.format("dd MMMM yyyy", calendar).toString()
@@ -1129,4 +1131,62 @@ object Util {
                 calendar.get(Calendar.MILLISECOND)
     }
 
+    fun convertDate(year: Int, month: Int, day: Int): String? {
+        val temp = year.toString() + "-" + (month + 1) + "-" + day
+        val calendarDateFormat =
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val newFormatDate =
+            SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        return try {
+            newFormatDate.format(calendarDateFormat.parse(temp)!!)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+    fun checkDataNull(data: String?): String? {
+        return if (data == null || data.isEmpty()) {
+            ""
+        } else {
+            data
+        }
+    }
+    fun getYear(timestamp: Long) :String {
+        val calendar = Calendar.getInstance(Locale.getDefault())
+        calendar.timeInMillis = timestamp * 1000L
+        return android.text.format.DateFormat.format("yyyy", calendar).toString()
+    }
+    fun getMonth(timestamp: Long) :String {
+        val calendar = Calendar.getInstance(Locale.getDefault())
+        calendar.timeInMillis = timestamp * 1000L
+        return android.text.format.DateFormat.format("M", calendar).toString()
+    }
+    fun getDate(timestamp: Long) :String {
+        val calendar = Calendar.getInstance(Locale.getDefault())
+        calendar.timeInMillis = timestamp * 1000L
+        return android.text.format.DateFormat.format("dd", calendar).toString()
+    }
+
+    fun convertTanggal(
+        tanggal: String,
+        oldFormat: String,
+        newFormat: String
+    ): String {
+        val newDateFormat =
+            SimpleDateFormat(newFormat, Locale.getDefault())
+        val oldDateFormat =
+            SimpleDateFormat(oldFormat, Locale.getDefault())
+        return try {
+            newDateFormat.format(oldDateFormat.parse(tanggal)!!)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            ""
+        }
+    }
+    fun convertDpToPixel(dp: Float): Int {
+        val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
+        val px: Float = dp * (metrics.densityDpi / 160f)
+        return px.roundToInt()
+    }
 }

@@ -54,11 +54,13 @@ class PopularWisataPresenter(view: PopularWisataView, val context: Activity,
         })
     }
 
-    fun getPopularWisata(){
-        view!!.showLoading()
-        addSubscribe(apiStores.getPopularWisata(user.token),object : NetworkCallback<List<PopularWisataModel>>(){
-            override fun onSuccess(model: List<PopularWisataModel>) {
-                view!!.getDataSucces(model)
+    fun getPopularWisata(limit : Int, page : Int){
+        if (page == 0) {
+            view?.showLoading()
+        }
+        addSubscribe(apiStores.getPopularWisata(user.token,limit,page),object : NetworkCallback<MutableList<PopularWisataModel>>(){
+            override fun onSuccess(model: MutableList<PopularWisataModel>) {
+                view!!.getDataSuccess(model)
             }
 
             override fun onFailure(message: String?, code: Int?, jsonObject: JSONObject?) {

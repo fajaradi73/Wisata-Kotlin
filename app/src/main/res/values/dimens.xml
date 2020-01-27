@@ -76,5 +76,8 @@
     <dimen name="height_image2">150dp</dimen>
     <dimen name="padding_15">15dp</dimen>
     <dimen name="samplePickerCornerRadius">16dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
+    <dimen name="dimen_25">25dp</dimen>
+    <dimen name="dimen_12">12dp</dimen>
 
 </resources>

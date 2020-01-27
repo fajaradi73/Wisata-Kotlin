@@ -78,10 +78,12 @@ class WisataTerdekatPresenter(view: WisataTerdekatView, val context: Activity,
 
         })
     }
-    fun getNearbyWisata(latitude : Double,longitude : Double){
-        view?.showLoading()
-        addSubscribe(apiStores.getNearbyWisata(user.token,latitude,longitude),object : NetworkCallback<List<NearbyModel>>(){
-            override fun onSuccess(model: List<NearbyModel>) {
+    fun getNearbyWisata(latitude : Double,longitude : Double,limit : Int, page : Int){
+        if (page == 0) {
+            view?.showLoading()
+        }
+        addSubscribe(apiStores.getNearbyWisata(user.token,latitude,longitude,limit,page),object : NetworkCallback<MutableList<NearbyModel>>(){
+            override fun onSuccess(model: MutableList<NearbyModel>) {
                 view?.getDataSuccess(model)
             }
 

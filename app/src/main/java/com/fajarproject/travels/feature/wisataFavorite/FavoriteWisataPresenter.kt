@@ -23,23 +23,31 @@ class FavoriteWisataPresenter(view: FavoriteWisataView, val context: Activity, o
     }
     private val user : UserModel = Util.getUserToken(context)
 
-    fun getFavorite(){
-        view!!.showLoading()
-        addSubscribe(apiStores.getFavoriteWisata(user.token),object : NetworkCallback<List<FavoriteModel>>(){
-            override fun onSuccess(model: List<FavoriteModel>) {
-                view!!.getDataSucces(model)
+    fun getFavorite(limit : Int, page : Int){
+        if (page == 0) {
+            view?.showLoading()
+        }
+        addSubscribe(apiStores.getFavoriteWisata(user.token,limit,page),object : NetworkCallback<MutableList<FavoriteModel>>(){
+            override fun onSuccess(model: MutableList<FavoriteModel>) {
+                view?.getDataSucces(model)
             }
 
             override fun onFailure(message: String?, code: Int?, jsonObject: JSONObject?) {
-                if (code == 401){
-                    Util.sessionExpired(context)
-                }else {
-                    view!!.getDataFail(message!!)
+                when (code) {
+                    401 -> {
+                        Util.sessionExpired(context)
+                    }
+                    500 -> {
+                        view?.getDataSucces(arrayListOf())
+                    }
+                    else -> {
+                        view?.getDataFail(message!!)
+                    }
                 }
             }
 
             override fun onFinish() {
-                view!!.hideLoading()
+                view?.hideLoading()
             }
         })
     }
@@ -47,6 +55,6 @@ class FavoriteWisataPresenter(view: FavoriteWisataView, val context: Activity, o
     fun getItem(data: FavoriteModel){
         val intent = Intent(context, DetailWisataActivity::class.java)
         intent.putExtra(Constant.IdWisata,data.idWisata!!)
-        view!!.moveToDetail(intent)
+        view?.moveToDetail(intent)
     }
 }

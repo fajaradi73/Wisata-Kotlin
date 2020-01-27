@@ -1,6 +1,6 @@
 package com.fajarproject.travels.feature.previewPictureWisata
 
-import android.graphics.Color
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -34,22 +34,30 @@ class PreviewPictureActivity : AppCompatActivity(),PreviewPictureView {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         Util.setColorFilter(toolbar.navigationIcon!!, ContextCompat.getColor(this,R.color.white))
-        Util.setMargins(toolbar,0,Util.getStatusBarHeight(this),0,0)
+        val statusBarHeight = Util.getStatusBarHeight(this)
+        val size = Util.convertDpToPixel(24F)
+        Util.setMargins(toolbar,0,statusBarHeight ,0,0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = Color.parseColor("#00FFFFFF")
             window.setFlags(
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES,
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             )
+            window.statusBarColor = ContextCompat.getColor(this, R.color.greyTransparent)
+
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            if (statusBarHeight > size) {
+                val decor = window.decorView
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
         }
         title = data[pos].namaWisata
-        tvDate.text = Util.getDateWithTime(data[pos].createDate!!)
-
+        tvDate.text = Util.convertLongToDateWithTime(data[pos].createDate!!)
     }
 
     override fun getDataIntent() {
@@ -75,9 +83,11 @@ class PreviewPictureActivity : AppCompatActivity(),PreviewPictureView {
 
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onPageSelected(position: Int) {
                 title = data[position].namaWisata
-                tvDate.text = Util.getDateWithTime(data[position].createDate!!)
+                tvNama.text = "Dari" + data[position].namaUser
+                tvDate.text = Util.convertLongToDateWithTime(data[position].createDate!!)
             }
 
         })
