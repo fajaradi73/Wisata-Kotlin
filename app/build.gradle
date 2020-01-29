@@ -194,5 +194,8 @@ dependencies {
     //// Ratting Bar
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.0'
 
+    //// Super Bottom Sheet
+    implementation 'com.github.andrefrsousa:SuperBottomSheet:1.5.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

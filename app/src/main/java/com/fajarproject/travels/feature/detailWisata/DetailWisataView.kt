@@ -20,7 +20,7 @@ interface DetailWisataView {
 
     fun setAction()
 
-    fun setUlasan(list: List<UlasanItem>)
+    fun setUlasan(list: MutableList<UlasanItem>)
 
     fun getDataSuccess(data: WisataDetailModel)
 

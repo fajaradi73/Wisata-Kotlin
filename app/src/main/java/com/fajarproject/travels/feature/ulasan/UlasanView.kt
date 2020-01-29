@@ -23,7 +23,7 @@ interface UlasanView {
 
     fun setDataRatting(model : List<RattingItem>)
 
-    fun setDataUlasan(model : List<UlasanItem>)
+    fun setDataUlasan(model : MutableList<UlasanItem>)
 
     fun getProgressRatting(ratting : Int) : Float
 }

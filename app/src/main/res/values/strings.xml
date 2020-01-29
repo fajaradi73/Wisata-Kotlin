@@ -22,7 +22,7 @@
     <string name="ads_mob_ID">ca-app-pub-2863783427636380~4401014905</string>
 
     ///// Login
-    <string name="title_login">Selamat datang di Travels</string>
+    <string name="title_login">Selamat datang di Wanderlusters</string>
     <string name="google">Google</string>
     <string name="facebook">Facebook</string>
     <string name="email">Email</string>

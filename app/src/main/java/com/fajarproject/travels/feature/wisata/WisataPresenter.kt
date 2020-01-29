@@ -59,7 +59,7 @@ class WisataPresenter(view : WisataView, val context: Activity, override var api
         if (page == 0) {
             view?.showLoading()
         }
-        addSubscribe(apiStores.getFindWisata(user.token,typeID,limit,page),object : NetworkCallback<MutableList<WisataModel>>(){
+        addSubscribe(apiStores.getFindWisata(user.token,limit,page,typeID),object : NetworkCallback<MutableList<WisataModel>>(){
             override fun onSuccess(model: MutableList<WisataModel>) {
                 view!!.getDataSuccess(model)
             }

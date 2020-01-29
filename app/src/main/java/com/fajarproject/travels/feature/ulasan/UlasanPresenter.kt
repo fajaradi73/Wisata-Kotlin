@@ -19,11 +19,17 @@ class UlasanPresenter(view: UlasanView, val context: Activity, override var apiS
     }
     private val user : UserModel = Util.getUserToken(context)
 
-    fun getUlasan(idWisata : Int){
-        view?.showLoading()
-        addSubscribe(apiStores.getUlasan(user.token,idWisata),object : NetworkCallback<UlasanModel>(){
+    fun getUlasan(idWisata : Int,limit: Int,currentPage : Int){
+        if (currentPage == 0) {
+            view?.showLoading()
+        }
+        addSubscribe(apiStores.getUlasan(user.token,limit,currentPage,idWisata),object : NetworkCallback<UlasanModel>(){
             override fun onSuccess(model: UlasanModel) {
-                view?.getDataSuccess(model)
+                if (currentPage == 0) {
+                    view?.getDataSuccess(model)
+                }else{
+                    view?.setDataUlasan(model.ulasan)
+                }
             }
 
             override fun onFailure(message: String?, code: Int?, jsonObject: JSONObject?) {

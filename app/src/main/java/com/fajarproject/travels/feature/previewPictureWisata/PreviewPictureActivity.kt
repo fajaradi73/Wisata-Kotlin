@@ -16,7 +16,7 @@ import com.fajarproject.travels.util.Util
 import kotlinx.android.synthetic.main.activity_preview_picture.*
 import org.parceler.Parcels
 
-
+@SuppressLint("SetTextI18n")
 class PreviewPictureActivity : AppCompatActivity(),PreviewPictureView {
 
     private var data : List<PictureItem> = arrayListOf()
@@ -58,6 +58,7 @@ class PreviewPictureActivity : AppCompatActivity(),PreviewPictureView {
         }
         title = data[pos].namaWisata
         tvDate.text = Util.convertLongToDateWithTime(data[pos].createDate!!)
+        tvNama.text = "Dari " + data[pos].namaUser
     }
 
     override fun getDataIntent() {
@@ -83,10 +84,10 @@ class PreviewPictureActivity : AppCompatActivity(),PreviewPictureView {
 
             }
 
-            @SuppressLint("SetTextI18n")
+
             override fun onPageSelected(position: Int) {
                 title = data[position].namaWisata
-                tvNama.text = "Dari" + data[position].namaUser
+                tvNama.text = "Dari " + data[position].namaUser
                 tvDate.text = Util.convertLongToDateWithTime(data[position].createDate!!)
             }
 

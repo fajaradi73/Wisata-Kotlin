@@ -7,6 +7,7 @@ package com.fajarproject.travels.util
 object Constant {
     const val typeID            = "type_id"
     const val IdWisata          = "id_wisata"
+    const val NamaWisata        = "NamaWisata"
     const val latitudeTravels   = "latitudeTravels"
     const val longitudeTravels  = "longitudeTravels"
     const val home              = "Home"

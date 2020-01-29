@@ -82,7 +82,7 @@ class WisataTerdekatPresenter(view: WisataTerdekatView, val context: Activity,
         if (page == 0) {
             view?.showLoading()
         }
-        addSubscribe(apiStores.getNearbyWisata(user.token,latitude,longitude,limit,page),object : NetworkCallback<MutableList<NearbyModel>>(){
+        addSubscribe(apiStores.getNearbyWisata(user.token,limit,page,latitude,longitude),object : NetworkCallback<MutableList<NearbyModel>>(){
             override fun onSuccess(model: MutableList<NearbyModel>) {
                 view?.getDataSuccess(model)
             }

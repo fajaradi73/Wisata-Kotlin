@@ -40,7 +40,7 @@ data class WisataDetailModel(
 	val jamBuka: Long? = 0,
 
 	@SerializedName("ulasan")
-	val ulasan: List<UlasanItem>? = arrayListOf(),
+	val ulasan: MutableList<UlasanItem>? = arrayListOf(),
 
 	@SerializedName("id_wisata")
 	val idWisata: Int? = 0,

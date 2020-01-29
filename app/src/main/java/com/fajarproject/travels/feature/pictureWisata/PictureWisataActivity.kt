@@ -44,13 +44,15 @@ class PictureWisataActivity : MvpActivity<PictureWisataPresenter>(),PictureWisat
     private var list: MutableList<String> = ArrayList()
     private var isSafeBackPressed = true
     private var newImage = false
+    private var namaWisata : String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture_wisata)
-        setToolbar()
         setUI()
         idWisata    = intent.getIntExtra(Constant.IdWisata,0)
+        namaWisata  = intent.getStringExtra(Constant.NamaWisata)
+        setToolbar()
         presenter?.getPicture(idWisata)
         setAction()
     }
@@ -77,6 +79,7 @@ class PictureWisataActivity : MvpActivity<PictureWisataPresenter>(),PictureWisat
     override fun setToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        title = "Kumpulan foto dari $namaWisata"
     }
 
     override fun setUI() {

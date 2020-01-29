@@ -9,12 +9,6 @@
     android:fitsSystemWindows="true"
     tools:ignore="ContentDescription">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/htab_appbar"
         android:layout_width="match_parent"
@@ -354,6 +348,7 @@
                                     android:gravity="center_vertical"
                                     android:text="@string/akses_wisata"
                                     android:textSize="18sp"
+                                    android:textColor="@color/black"
                                     app:layout_constraintTop_toTopOf="parent"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintRight_toLeftOf="@id/imageExpansion"
@@ -500,14 +495,18 @@
                             android:id="@+id/tambah_foto"
                             android:drawableStart="@drawable/ic_camera"
                             android:drawablePadding="@dimen/itemBetweenMargin"
+                            android:drawableTint="@color/black"
                             android:text="@string/createFoto"
-                            android:textColor="@color/colorPrimary"
-                            android:textSize="13sp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
                             android:gravity="center_vertical"
                             android:padding="@dimen/itemBetweenMarginMedium"
+                            android:textStyle="bold"
                             app:layout_constraintTop_toBottomOf="@id/list_foto"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
+                            app:layout_constraintRight_toRightOf="parent"
+                            tools:targetApi="m"
+                            />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
@@ -524,24 +523,42 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/padding_10">
-                        <TextView
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/itemBetweenMarginMedium"
-                            android:text="@string/ulasan"
-                            android:id="@+id/title_ulasan"
-                            android:textColor="@color/black"
-                            android:textSize="23sp"
-                            android:textStyle="bold"
+                            android:id="@+id/cl_title_ulasan"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/ulasan"
+                                android:textSize="23sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:layout_margin="@dimen/itemBetweenMarginMedium"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/allUlasan"
+                                android:id="@+id/semuaUlasan"
+                                android:textSize="13sp"
+                                android:textColor="@color/colorPrimary"
+                                android:layout_margin="@dimen/itemBetweenMarginMedium"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/cl_rating_ulasan"
                             android:layout_margin="@dimen/itemBetweenMarginMedium"
-                            app:layout_constraintTop_toBottomOf="@id/title_ulasan"
+                            app:layout_constraintTop_toBottomOf="@id/cl_title_ulasan"
                             app:layout_constraintLeft_toLeftOf="parent">
                             <ImageView
                                 android:layout_width="20dp"
@@ -585,7 +602,7 @@
                             app:layout_constraintTop_toBottomOf="@id/cl_rating_ulasan"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintBottom_toTopOf="@id/cvSemuaUlasan"/>
+                            app:layout_constraintBottom_toTopOf="@id/createUlasan"/>
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -597,7 +614,7 @@
                             app:layout_constraintTop_toBottomOf="@id/cl_rating_ulasan"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintBottom_toTopOf="@id/cvSemuaUlasan">
+                            app:layout_constraintBottom_toTopOf="@id/createUlasan">
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -625,52 +642,21 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"/>
                         </androidx.constraintlayout.widget.ConstraintLayout>
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/cvSemuaUlasan"
-                            android:focusable="true"
-                            android:clickable="true"
                             android:layout_margin="@dimen/itemBetweenMarginMedium"
+                            android:id="@+id/createUlasan"
                             android:visibility="gone"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="@dimen/itemBetweenMarginMedium"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintBottom_toTopOf="@id/cvCreateUlasan">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/allUlasan"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/black"
-                                android:layout_margin="@dimen/itemBetweenMarginMedium"/>
-                        </androidx.cardview.widget.CardView>
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/cvCreateUlasan"
-                            android:visibility="gone"
-                            android:focusable="true"
-                            android:clickable="true"
-                            android:layout_margin="@dimen/itemBetweenMarginMedium"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="@dimen/itemBetweenMarginMedium"
+                            android:text="@string/create_ulasan"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:gravity="center_vertical"
+                            android:padding="@dimen/itemBetweenMarginMedium"
+                            android:textStyle="bold"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/create_ulasan"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                android:textAlignment="center"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:textColor="@color/black"
-                                android:layout_margin="@dimen/itemBetweenMarginMedium"/>
-                        </androidx.cardview.widget.CardView>
+                            app:layout_constraintBottom_toBottomOf="parent"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>

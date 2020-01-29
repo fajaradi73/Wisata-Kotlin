@@ -1055,9 +1055,9 @@ object Util {
                     tv.setText(tv.tag.toString(), TextView.BufferType.SPANNABLE)
                     tv.invalidate()
                     if (viewMore) {
-                        makeTextViewResizable(tv, -1, "", false)
+                        makeTextViewResizable(tv, -1, "", !viewMore)
                     } else {
-                        makeTextViewResizable(tv, 3, "...Selengkapnya", true)
+                        makeTextViewResizable(tv, maxLine, "...$spannableText", viewMore)
                     }
                 }
             }, str.indexOf(spannableText), str.indexOf(spannableText) + spannableText.length, 0)
@@ -1086,16 +1086,16 @@ object Util {
                     text = tv.text.subSequence(
                         0,
                         lineEndIndex - expandText.length + 1
-                    ).toString() + " " + expandText
+                    ).toString() + "..." + expandText
                 } else if (maxLine > 0 && tv.lineCount >= maxLine) {
                     lineEndIndex = tv.layout.getLineEnd(maxLine - 1)
                     text = tv.text.subSequence(
                         0,
                         lineEndIndex - expandText.length + 1
-                    ).toString() + " " + expandText
+                    ).toString() + "..." + expandText
                 } else {
                     lineEndIndex = tv.layout.getLineEnd(tv.layout.lineCount - 1)
-                    text = tv.text.subSequence(0, lineEndIndex).toString() + " " + expandText
+                    text = tv.text.subSequence(0, lineEndIndex).toString()
                 }
                 tv.text = text
                 tv.movementMethod = LinkMovementMethod.getInstance()

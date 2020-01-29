@@ -8,6 +8,7 @@
     <color name="black">#000</color>
     <color name="default_background">#fafafa</color>
     <color name="colorPrimary_80">#CC18DCFF</color>
+    <color name="colorPrimary_60">#9918DCFF</color>
 
     <color name="default_textColor">#808080</color>
     <color name="default_textHint">#afafaf</color>

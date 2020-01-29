@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class UlasanModel(
 
 	@field:SerializedName("ulasan")
-	val ulasan: List<UlasanItem> = arrayListOf(),
+	val ulasan: MutableList<UlasanItem> = arrayListOf(),
 
 	@field:SerializedName("id_wisata")
 	val idWisata: Int? = 0,
