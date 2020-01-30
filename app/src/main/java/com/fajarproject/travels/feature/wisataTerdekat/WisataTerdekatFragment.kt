@@ -149,7 +149,9 @@ class WisataTerdekatFragment : MvpFragment<WisataTerdekatPresenter>(),WisataTerd
     override fun updateLocationUI() {
         try {
             if (mLocationPermissionGranted) {
-                presenter!!.setDeviceLocation(mLocationPermissionGranted)
+                if (isConnection) {
+                    presenter!!.setDeviceLocation(mLocationPermissionGranted)
+                }
             } else {
                 mLastKnownLocation = null
                 getLocationPermission()

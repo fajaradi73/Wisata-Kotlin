@@ -70,7 +70,9 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter?.getProfile(true)
+        if (isConnection) {
+            presenter?.getProfile(true)
+        }
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = false
             presenter?.getProfile(true)

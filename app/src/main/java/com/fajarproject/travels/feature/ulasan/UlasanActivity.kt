@@ -15,11 +15,10 @@ import com.fajarproject.travels.R
 import com.fajarproject.travels.adapter.UlasanAdapter
 import com.fajarproject.travels.api.UlasanApi
 import com.fajarproject.travels.base.mvp.MvpActivity
-import com.fajarproject.travels.base.widget.PaginationScrollListener
 import com.fajarproject.travels.feature.createUlasan.CreateUlasanActivity
 import com.fajarproject.travels.models.RattingItem
 import com.fajarproject.travels.models.UlasanItem
-import com.fajarproject.travels.models.UlasanModel
+import com.fajarproject.travels.models.RattingModel
 import com.fajarproject.travels.preference.AppPreference
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
@@ -49,13 +48,12 @@ class UlasanActivity : MvpActivity<UlasanPresenter>(),UlasanView {
         setUI()
         limit       = AppPreference.getIntPreferenceByName(this,"sizePerPage")
         idWisata    = intent.getIntExtra(Constant.IdWisata,0)
-        presenter?.getUlasan(idWisata,limit!!,currentPage)
+        presenter?.getRatting(idWisata)
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing   = false
             isLoading = false
             isLastPage = false
-            currentPage = 0
-            presenter?.getUlasan(idWisata,limit!!,currentPage)
+            presenter?.getRatting(idWisata)
         }
     }
 
@@ -123,13 +121,17 @@ class UlasanActivity : MvpActivity<UlasanPresenter>(),UlasanView {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun getDataSuccess(model: UlasanModel) {
+    override fun getDataSuccess(model: RattingModel) {
         title = "Ulasan " + model.namaWisata
         totalUlasan = model.jumlahUlasan!!
         totalRatting.text   = model.rattingWisata.toString()
         jumlahUlasan.text   = model.jumlahUlasan.toString() + " Ulasan"
         setDataRatting(model.ratting)
-        setDataUlasan(model.ulasan)
+        if (model.createUlasan!!){
+            cvUlasan.visibility = View.GONE
+        }else{
+            cvUlasan.visibility = View.GONE
+        }
     }
 
     override fun getDataFail(message: String) {

@@ -56,7 +56,9 @@ class FavoriteWisataActivity : MvpActivity<FavoriteWisataPresenter>(),FavoriteWi
     override fun onStart() {
         super.onStart()
         currentPage = 0
-        presenter?.getFavorite(limit!!,currentPage)
+        if (isConnection) {
+            presenter?.getFavorite(limit!!, currentPage)
+        }
     }
 
     override fun setToolbar() {

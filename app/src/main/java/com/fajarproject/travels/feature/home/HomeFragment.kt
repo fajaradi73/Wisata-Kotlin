@@ -52,12 +52,14 @@ class HomeFragment : MvpFragment<HomePresenter>(),HomeView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter!!.loadMenu()
+        if (isConnection) {
+            presenter?.loadMenu()
+        }
         setBanner()
         setRecycleView()
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = false
-            presenter!!.loadMenu()
+            presenter?.loadMenu()
         }
     }
 

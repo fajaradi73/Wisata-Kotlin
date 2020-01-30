@@ -84,12 +84,18 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(), DetailWisataV
 		init()
 		idWisata = intent.getIntExtra(Constant.IdWisata, 0)
 		setNativeAds()
-		presenter?.getDetailWisata(idWisata, true)
 		swipeRefresh.setOnRefreshListener {
 			swipeRefresh.isRefreshing = false
 			presenter?.getDetailWisata(idWisata, true)
 		}
 		setAction()
+	}
+
+	override fun onStart() {
+		super.onStart()
+		if (isConnection) {
+			presenter?.getDetailWisata(idWisata, true)
+		}
 	}
 
 	override fun setNativeAds() {

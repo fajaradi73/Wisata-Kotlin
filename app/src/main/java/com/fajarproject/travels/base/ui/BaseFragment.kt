@@ -18,9 +18,13 @@ open class BaseFragment : Fragment() {
     var activity: Activity? = null
     private val compositeSubscription: CompositeSubscription? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity = getActivity()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity = getActivity()
         ButterKnife.bind(activity!!, view)
     }
 

@@ -66,7 +66,9 @@ class WisataActivity : MvpActivity<WisataPresenter>(),WisataView{
     override fun onStart() {
         super.onStart()
         currentPage = 0
-        presenter?.getWisata(typeId!!,limit!!,currentPage)
+        if (isConnection) {
+            presenter?.getWisata(typeId!!, limit!!, currentPage)
+        }
     }
 
     override fun onResume() {

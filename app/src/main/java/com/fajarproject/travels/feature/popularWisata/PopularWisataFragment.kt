@@ -59,7 +59,9 @@ class PopularWisataFragment : MvpFragment<PopularWisataPresenter>(),PopularWisat
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         limit = AppPreference.getIntPreferenceByName(activity!!,"sizePerPage")
-        presenter!!.getPopularWisata(limit!!,currentPage)
+        if(isConnection){
+            presenter!!.getPopularWisata(limit!!,currentPage)
+        }
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = false
             isLoading = false

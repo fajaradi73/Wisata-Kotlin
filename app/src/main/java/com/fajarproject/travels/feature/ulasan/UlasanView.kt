@@ -2,7 +2,7 @@ package com.fajarproject.travels.feature.ulasan
 
 import com.fajarproject.travels.models.RattingItem
 import com.fajarproject.travels.models.UlasanItem
-import com.fajarproject.travels.models.UlasanModel
+import com.fajarproject.travels.models.RattingModel
 
 /**
  * Create by Fajar Adi Prasetyo on 14/01/2020.
@@ -17,7 +17,7 @@ interface UlasanView {
 
     fun hideLoading()
 
-    fun getDataSuccess(model : UlasanModel)
+    fun getDataSuccess(model : RattingModel)
 
     fun getDataFail(message : String)
 

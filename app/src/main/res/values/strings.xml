@@ -113,5 +113,6 @@
     <string name="pria">Pria</string>
     <string name="wanita">Wanita</string>
     <string name="simpan">Simpan</string>
-
+    <string name="title_connection">Tidak ada koneksi internet</string>
+    <string name="body_connection">Anda harus memiliki Data Seluler atau wifi untuk mengakses ini. Tekan OK untuk mengaktifkan internet</string>
 </resources>
