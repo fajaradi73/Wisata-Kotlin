@@ -107,14 +107,18 @@ class ProfilFragment : MvpFragment<ProfilPresenter>(),ProfilView, FileUtilCallba
 
     override fun getDataSuccess(model: ProfileModel) {
         this.data       = model
-        userName.text   = model.username
-        fullName.text   = model.fullname
-        tvEmail.text    = model.email
-        tvPhone.text    = model.mobilePhone
+        userName.text   = Util.checkDataNull(model.username)
+        fullName.text   = Util.checkDataNull(model.fullname)
+        tvEmail.text    = Util.checkDataNull(model.email)
+        tvPhone.text    = Util.checkDataNull(model.mobilePhone)
         tvLast.text     = Util.convertLongToDateWithTime(model.lastLogin!!)
         tvFavorite.text = model.jumlahFavorite.toString()
-        tvGender.text   = model.gender
-        tvBirth.text    = model.tempat_lahir + " / " + Util.convertLongToDate(model.tanggal_lahir!!)
+        tvGender.text   = Util.checkDataNull(model.gender)
+        if (Util.sign(model.tanggal_lahir!!) != -1){
+            tvBirth.text    = model.tempat_lahir + " / " + Util.convertLongToDate(model.tanggal_lahir)
+        }else{
+            tvBirth.text = "-"
+        }
         if (model.picture != null && model.picture != ""){
             setImage(model.picture)
         }

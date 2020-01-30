@@ -7,12 +7,8 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UserModel (
-    @SerializedName("code")
-    val code : String,
-    @SerializedName("status")
-    val status  : Int,
     @SerializedName("username")
-    val username : String,
+    var username : String = "",
     @SerializedName("token")
-    val token : String
+    var token : String = ""
 )

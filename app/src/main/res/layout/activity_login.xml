@@ -4,136 +4,107 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_background"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".login.activity.Login">
+    tools:ignore="Autofill,LabelFor"
+    >
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:minHeight="?attr/actionBarSize"
-        android:background="@android:color/transparent"
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
-
-    <TextView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/masuk"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:id="@+id/title"
-        android:textColor="@color/white"
-        android:padding="@dimen/padding_10"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/child_email"
-        android:layout_margin="20dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-        <TextView
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/email"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:id="@+id/title_email"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/email"
-            style="@style/TextLabelWhite"
-            android:textSize="16sp"
-            android:inputType="textWebEmailAddress"
-            android:background="@drawable/edt_bg_selector_white"
-            android:paddingBottom="6dp"
-            android:textColor="@color/white"
-            android:paddingTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/title_email"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/error_email"
-        android:visibility="gone"
-        tools:text="Eror"
-        android:textSize="16sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:textColor="@color/red"
-        app:layout_constraintTop_toBottomOf="@id/child_email"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/child_password"
-        android:layout_margin="20dp"
-        app:layout_constraintTop_toBottomOf="@id/error_email"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/password"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:id="@+id/title_password"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/password"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/show"
-            android:id="@+id/show_hide_password"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:textColor="@color/white"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/password"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/password"
-            style="@style/TextLabelWhite"
-            android:textSize="16sp"
-            android:inputType="textPassword"
-            android:background="@drawable/edt_bg_selector_white"
-            android:paddingBottom="6dp"
-            android:textColor="@color/white"
-            android:paddingTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/title_password"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/error_password"
-        android:visibility="gone"
-        tools:text="Eror"
-        android:textSize="16sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:textColor="@color/red"
-        app:layout_constraintTop_toBottomOf="@id/child_password"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_login"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:padding="@dimen/padding_10"
+                android:id="@+id/title_login"
+                android:textAlignment="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/image_login"/>
+            <ImageView
+                android:layout_width="@dimen/height_200"
+                android:layout_height="@dimen/height_200"
+                android:src="@drawable/ic_logo_icon"
+                android:id="@+id/image_login"
+                app:layout_constraintTop_toBottomOf="@id/title_login"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tilEmail"
+                android:contentDescription="@string/app_name"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutStyle"
+                style="@style/TextInputLayoutStyle"
+                android:layout_margin="@dimen/padding_10"
+                android:id="@+id/tilEmail"
+                app:layout_constraintTop_toBottomOf="@id/image_login"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:id="@+id/email"
+                    android:hint="@string/email"
+                    android:gravity="center_vertical"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:maxLength="50"
+                    android:padding="@dimen/padding_10"
+                    android:textColor="@color/default_textColor"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/TextInputLayoutStyle"
+                style="@style/TextInputLayoutStyle"
+                android:layout_margin="@dimen/padding_10"
+                android:id="@+id/tilPassword"
+                app:passwordToggleTint="@color/colorPrimary"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleDrawable="@drawable/show_password_selector"
+                app:layout_constraintTop_toBottomOf="@id/tilEmail"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:id="@+id/password"
+                    android:hint="@string/password"
+                    android:gravity="center_vertical"
+                    android:inputType="textPassword"
+                    android:padding="@dimen/padding_10"
+                    android:textColor="@color/default_textColor"
+                    android:textSize="16sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
     <androidx.cardview.widget.CardView
         style="@style/CardViewButton"
         android:layout_marginEnd="50dp"

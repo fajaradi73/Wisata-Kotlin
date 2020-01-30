@@ -1189,4 +1189,24 @@ object Util {
         val px: Float = dp * (metrics.densityDpi / 160f)
         return px.roundToInt()
     }
+
+    fun sign(i: Int): Int {
+        if (i == 0) return 0
+        return if (i shr 31 != 0) -1 else +1
+    }
+
+    fun sign(i: Long): Int {
+        if (i == 0L) return 0
+        return if (i shr 63 != 0L) -1 else +1
+    }
+
+    fun sign(double: Double): Int {
+        var f = double
+        require(f == f) { "NaN" }
+        if (f == 0.0) return 0
+        f *= Double.POSITIVE_INFINITY
+        if (f == Double.POSITIVE_INFINITY) return +1
+        if (f == Double.NEGATIVE_INFINITY) return -1
+        throw IllegalArgumentException("Unfathomed double")
+    }
 }

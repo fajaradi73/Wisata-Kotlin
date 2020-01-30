@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/parent_view"
-    android:background="@drawable/ic_background"
     tools:ignore="ContentDescription,RtlSymmetry">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +15,7 @@
             android:text="@string/title_login"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/colorPrimary"
             android:padding="@dimen/padding_10"
             android:id="@+id/title_login"
             android:textAlignment="center"
@@ -25,16 +24,16 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@id/image_login"/>
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/ic_sunset"
+            android:layout_width="@dimen/height_200"
+            android:layout_height="@dimen/height_200"
+            android:src="@drawable/ic_logo_icon"
             android:id="@+id/image_login"
             app:layout_constraintTop_toBottomOf="@id/title_login"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@id/login_google" />
         <androidx.cardview.widget.CardView
-            style="@style/CardViewButtonWhite"
+            style="@style/CardViewButtonColorPrimary"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
@@ -50,7 +49,7 @@
                 android:id="@+id/loading_google"
                 android:visibility="gone"
                 android:indeterminate="true"
-                android:indeterminateTint="@color/colorPrimary"
+                android:indeterminateTint="@color/white"
                 android:padding="@dimen/padding_10"/>
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -59,6 +58,7 @@
                 <ImageView
                     android:layout_marginStart="20dp"
                     android:src="@drawable/ic_google"
+                    android:tint="@color/white"
                     android:layout_width="25dp"
                     android:layout_height="match_parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -70,15 +70,16 @@
                     android:paddingStart="@dimen/padding_10"
                     android:textSize="16sp"
                     android:layout_gravity="center"
+                    android:textStyle="bold"
                     android:gravity="center"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:background="@android:color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
-            style="@style/CardViewButtonWhite"
+            style="@style/CardViewButtonColorPrimary"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
@@ -106,6 +107,7 @@
                 <ImageView
                     android:layout_marginStart="20dp"
                     android:src="@drawable/ic_facebook"
+                    android:tint="@color/white"
                     android:layout_width="25dp"
                     android:layout_height="match_parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -117,15 +119,16 @@
                     android:paddingStart="@dimen/padding_10"
                     android:textSize="16sp"
                     android:layout_gravity="center"
+                    android:textStyle="bold"
                     android:gravity="center"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:background="@android:color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
-            style="@style/CardViewButtonWhite"
+            style="@style/CardViewButtonColorPrimary"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
@@ -136,6 +139,7 @@
             <ImageView
                 android:layout_marginStart="20dp"
                 android:src="@drawable/ic_mail"
+                android:tint="@color/white"
                 android:layout_width="25dp"
                 android:layout_height="match_parent"/>
 
@@ -144,11 +148,12 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:paddingStart="@dimen/padding_10"
                 android:text="@string/email"
                 android:textAllCaps="false"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="16sp" />
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
@@ -157,13 +162,13 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
             android:id="@+id/create_account"
-            app:cardBackgroundColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/login_email"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
             <ImageView
                 android:layout_marginStart="20dp"
                 android:src="@drawable/ic_user_add"
+                android:tint="@color/white"
                 android:layout_width="25dp"
                 android:layout_height="match_parent"/>
 
@@ -174,7 +179,8 @@
                 android:textSize="16sp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
                 android:background="@android:color/transparent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
@@ -183,8 +189,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/version"
-            android:text="3.0"
-            android:textColor="@color/white"
+            tools:text="3.0"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/create_account"
             app:layout_constraintLeft_toLeftOf="parent"

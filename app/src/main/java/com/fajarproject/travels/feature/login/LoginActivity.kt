@@ -1,6 +1,7 @@
 package com.fajarproject.travels.feature.login
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -14,6 +15,10 @@ import androidx.core.content.ContextCompat
 import com.fajarproject.travels.R
 import com.fajarproject.travels.api.LoginAPI
 import com.fajarproject.travels.base.mvp.MvpActivity
+import com.fajarproject.travels.base.view.DialogNoListener
+import com.fajarproject.travels.base.view.DialogYesListener
+import com.fajarproject.travels.feature.main.MainActivity
+import com.fajarproject.travels.feature.password.Password
 import com.fajarproject.travels.models.LoginModel
 import com.fajarproject.travels.util.Util
 import kotlinx.android.synthetic.main.activity_login.*
@@ -44,6 +49,7 @@ class LoginActivity: MvpActivity<LoginPresenter>(),LoginView {
     override fun setToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title = getString(R.string.masuk)
     }
 
     override fun setUI() {
@@ -77,22 +83,11 @@ class LoginActivity: MvpActivity<LoginPresenter>(),LoginView {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 enableButton()
-                error_password.visibility = View.GONE
+                tilPassword.isErrorEnabled = false
             }
         })
 
-        show_hide_password.setOnClickListener {
-            if (show_hide_password.text == "Tampilkan"){
-                password.transformationMethod = null
-                show_hide_password.text = getString(R.string.hide)
-            }else {
-                password.transformationMethod = PasswordTransformationMethod()
-                show_hide_password.text = getString(R.string.show)
-            }
-        }
         btn_masuk.setOnClickListener {
-            error_password.visibility   = View.GONE
-            error_email.visibility      = View.GONE
             val loginModel = LoginModel(
                 email.text.toString(),
                 password.text.toString()
@@ -130,22 +125,52 @@ class LoginActivity: MvpActivity<LoginPresenter>(),LoginView {
     }
 
     override fun errorEmail() {
-        error_email.visibility = View.VISIBLE
-        error_email.text = "Email yang anda masukkan belum terdaftar"
+        tilEmail.error = "Email yang anda masukkan belum terdaftar"
+        Util.requestFocus(email,this)
     }
 
     override fun isEmailValid(isValid: Boolean) {
         if(isValid){
-            error_email.visibility = View.GONE
+            tilEmail.isErrorEnabled = false
         }else{
-            error_email.visibility = View.VISIBLE
-            error_email.text = "Harap memasukkan email dengan benar"
+            tilEmail.error = "Harap memasukkan email dengan benar"
+            Util.requestFocus(email,this)
         }
     }
 
     override fun errorPassword() {
-        error_password.visibility = View.VISIBLE
-        error_password.text = "Password yang anda masukkan salah"
+        tilPassword.error = "Password yang anda masukkan salah"
+        Util.requestFocus(password,this)
+    }
+
+    override fun failedLogin(title: String, msg: String, isFinish: Boolean) {
+        Util.showRoundedDialog(this,title,msg,false,object : DialogYesListener{
+            @SuppressLint("DefaultLocale")
+            override fun onYes() {
+                if (isFinish){
+                    if (msg.toLowerCase().contains("kata sandi")){
+                        val intent = Intent(this@LoginActivity,Password::class.java)
+                        startActivityForResult(intent,522)
+                    }else{
+                        finish()
+                    }
+                }
+            }
+        },object : DialogNoListener{
+            override fun onNo() {
+
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK){
+            if (requestCode == 522){
+                finish()
+                startActivity(Intent(this,MainActivity::class.java))
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -26,4 +26,6 @@ interface LoginView {
 
     fun errorPassword()
 
+    fun failedLogin(title: String, msg: String,isFinish: Boolean)
+
 }

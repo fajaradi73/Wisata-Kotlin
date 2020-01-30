@@ -25,6 +25,4 @@ interface RegisterView {
     fun checkValidation() : Boolean
 
     fun changeActivity(intent: Intent)
-
-    fun showErrorPassword(isError : Boolean)
 }

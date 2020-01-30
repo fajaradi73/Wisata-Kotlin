@@ -103,6 +103,30 @@ class Password : MvpActivity<PasswordPresenter>(),PasswordView {
                 }
             }
         })
+        password.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                list = arrayListOf()
+                if (!Util.isValidPassword(s.toString(),list,this@Password)) {
+                    var string = ""
+                    for (error in list) {
+                        string += "- $error\n"
+                    }
+                    tilPassword.error = string
+                    cvEdit.isEnabled = false
+                    clEdit.background = ContextCompat.getDrawable(this@Password,R.drawable.ic_grey)
+                }else{
+                    tilPassword.isErrorEnabled = false
+                    cvEdit.isEnabled = true
+                    clEdit.background = ContextCompat.getDrawable(this@Password,R.drawable.ic_gradient)
+                }
+            }
+        })
         cvEdit.setOnClickListener {
             val request = PasswordRequest()
             request.passwordOld = password_old.text.toString()
@@ -134,12 +158,17 @@ class Password : MvpActivity<PasswordPresenter>(),PasswordView {
     override fun failedDialog(title: String, msg: String,isNew : Boolean) {
         Util.showRoundedDialog(this,title,msg,false,object : DialogYesListener{
             override fun onYes() {
-                if (isNew){
-                    tilPasswordNew.error = msg
-                    Util.requestFocus(password_new,this@Password)
-                }else{
-                    tilPasswordOld.error = msg
-                    Util.requestFocus(password_old,this@Password)
+                if (isNewPassword){
+                    tilPassword.error = msg
+                    Util.requestFocus(password, this@Password)
+                }else {
+                    if (isNew) {
+                        tilPasswordNew.error = msg
+                        Util.requestFocus(password_new, this@Password)
+                    } else {
+                        tilPasswordOld.error = msg
+                        Util.requestFocus(password_old, this@Password)
+                    }
                 }
             }
         },object: DialogNoListener{

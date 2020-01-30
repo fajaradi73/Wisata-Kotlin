@@ -143,13 +143,20 @@ class EditProfilActivity : MvpActivity<EditProfilPresenter>(),EditProfilView {
         email.setText(Util.checkDataNull(data.email))
         phone.setText(Util.checkDataNull(data.mobilePhone))
         tempatLahir.setText(Util.checkDataNull(data.tempat_lahir))
-        tanggalLahir.setText(Util.convertLongToDate(data.tanggal_lahir!!))
         if (data.gender?.toLowerCase()?.contains("pria")!!){
             rg_hubungan.check(R.id.rb_pria)
         }else if (data.gender.toLowerCase().contains("wanita")){
             rg_hubungan.check(R.id.rb_wanita)
         }
-        mDatePicker.updateDate(Util.getYear(data.tanggal_lahir).toInt(),Util.getMonth(data.tanggal_lahir).toInt()-1,Util.getDate(data.tanggal_lahir).toInt())
+
+        if (Util.sign(data.tanggal_lahir!!) != -1) {
+            tanggalLahir.setText(Util.convertLongToDate(data.tanggal_lahir))
+            mDatePicker.updateDate(
+                Util.getYear(data.tanggal_lahir).toInt(),
+                Util.getMonth(data.tanggal_lahir).toInt() - 1,
+                Util.getDate(data.tanggal_lahir).toInt()
+            )
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

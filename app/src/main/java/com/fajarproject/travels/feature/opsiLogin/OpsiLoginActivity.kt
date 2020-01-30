@@ -1,10 +1,15 @@
 package com.fajarproject.travels.feature.opsiLogin
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -41,7 +46,7 @@ class OpsiLoginActivity : MvpActivity<OpsiLoginPresenter>(),OpsiLoginView {
     private val rcSignIn                : Int = 1
     private lateinit var firebaseAuth   : FirebaseAuth
     private lateinit var views          : Array<View>
-    lateinit var mGoogleSignInClient    : GoogleSignInClient
+    private lateinit var mGoogleSignInClient    : GoogleSignInClient
 
     private var callbackManager: CallbackManager? =
         CallbackManager.Factory.create()
@@ -61,6 +66,7 @@ class OpsiLoginActivity : MvpActivity<OpsiLoginPresenter>(),OpsiLoginView {
         views  = arrayOf(login_google,login_facebook, login_email,create_account)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun setUI() {
         login_google.setOnClickListener{ loginGoogle()}
         login_facebook.setOnClickListener {
@@ -76,7 +82,15 @@ class OpsiLoginActivity : MvpActivity<OpsiLoginPresenter>(),OpsiLoginView {
         login_email.setOnClickListener {
             changeActivity(Intent(this, LoginActivity::class.java),false)
         }
-        version.text    = Util.getAppVersion()
+        version.text    = "Version ${Util.getAppVersion()}"
+        val window: Window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        val decor = window.decorView
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
     }
 
     override fun loginFacebook(){
@@ -84,7 +98,7 @@ class OpsiLoginActivity : MvpActivity<OpsiLoginPresenter>(),OpsiLoginView {
         login_button.registerCallback(callbackManager,object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
                 loadingFacebook(false)
-                presenter!!.setUserFacebook(result!!)
+                presenter?.setUserFacebook(result!!)
             }
 
             override fun onCancel() {
@@ -149,7 +163,7 @@ class OpsiLoginActivity : MvpActivity<OpsiLoginPresenter>(),OpsiLoginView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        callbackManager!!.onActivityResult(requestCode, resultCode, data)
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == rcSignIn) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -170,7 +184,7 @@ class OpsiLoginActivity : MvpActivity<OpsiLoginPresenter>(),OpsiLoginView {
             if (it.isSuccessful) {
                 loadingGoogle(false)
                 val user : FirebaseUser? = firebaseAuth.currentUser
-                presenter!!.setUserGoogle(user!!)
+                presenter?.setUserGoogle(user!!)
 
             } else {
                 loadingGoogle(false)
