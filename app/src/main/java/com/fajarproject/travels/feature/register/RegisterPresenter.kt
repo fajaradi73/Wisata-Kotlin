@@ -19,18 +19,18 @@ class RegisterPresenter(view: RegisterView, val context: Context,
     }
 
     fun registerWisata(registerSubmitModel: RegisterSubmitModel){
-        view!!.showLoading()
+        view?.showLoading()
         addSubscribe(apiStores.registerWisata(registerSubmitModel),object : NetworkCallback<SaveModel>(){
             override fun onSuccess(model: SaveModel) {
-                view!!.getDataSuccess(model)
+                view?.getDataSuccess(model)
             }
 
             override fun onFailure(message: String?, code: Int?, jsonObject: JSONObject?) {
-                view!!.getDataFail(jsonObject!!)
+                view?.getDataFail(jsonObject!!)
             }
 
             override fun onFinish() {
-                view!!.hideLoading()
+                view?.hideLoading()
             }
         })
     }

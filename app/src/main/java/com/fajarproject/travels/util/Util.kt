@@ -349,13 +349,13 @@ object Util {
     }
     fun setAds(adView: AdView){
         val adRequest: AdRequest? =
-            AdRequest.Builder().addTestDevice("828CDDB6B368965E6B6BB3B6C5321FD6").build()
+            AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }
 
     fun setAds(interstitialAd: InterstitialAd){
         val adRequest: AdRequest? =
-            AdRequest.Builder().addTestDevice("828CDDB6B368965E6B6BB3B6C5321FD6").build()
+            AdRequest.Builder().build()
         interstitialAd.loadAd(adRequest)
     }
     private const val MEGABYTE = 1024 * 1024

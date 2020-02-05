@@ -2,10 +2,13 @@ package com.fajarproject.travels
 
 import android.app.Application
 import android.content.Context
+import com.crashlytics.android.Crashlytics
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.fajarproject.travels.base.widget.GlideImageLoader
+import com.fajarproject.travels.util.CrashlyticsHandler
 import com.google.android.gms.ads.MobileAds
+import io.fabric.sdk.android.Fabric
 import lv.chi.photopicker.ChiliPhotoPicker
 
 /**
@@ -24,6 +27,14 @@ class App : Application() {
         FacebookSdk.sdkInitialize(applicationContext)
         AppEventsLogger.activateApp(this)
         MobileAds.initialize(this) {}
+        //Initialize Fabric before add the custom UncaughtExceptionHandler!
+        val fabric = Fabric.Builder(this)
+            .kits(Crashlytics())
+            .debuggable(BuildConfig.DEBUG) // Enables Crashlytics debugger
+            .build()
+        Fabric.with(fabric)
+        val defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler(CrashlyticsHandler(defaultUncaughtExceptionHandler))
 
         ChiliPhotoPicker.init(
             loader = GlideImageLoader(),

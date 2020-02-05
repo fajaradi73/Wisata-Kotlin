@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 29
@@ -12,8 +13,8 @@ android {
         applicationId "com.fajarproject.travels"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0-build${getDate()}"
+        versionCode 2
+        versionName "1.1-build${getDate()}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -30,34 +31,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-
-    useLibrary 'org.apache.http.legacy'
-
-    packagingOptions {
-        exclude 'AndroidManifest.xml'
-        exclude 'lib/arm64-v8a/libcardioDecider.so'
-        exclude 'lib/arm64-v8a/libcardioRecognizer.so'
-        exclude 'lib/arm64-v8a/libcardioRecognizer_tegra2.so'
-        exclude 'lib/arm64-v8a/libopencv_core.so'
-        exclude 'lib/arm64-v8a/libopencv_imgproc.so'
-        exclude 'lib/armeabi/libcardioDecider.so'
-        exclude 'lib/armeabi-v7a/libcardioDecider.so'
-        exclude 'lib/armeabi-v7a/libcardioRecognizer.so'
-        exclude 'lib/armeabi-v7a/libcardioRecognizer_tegra2.so'
-        exclude 'lib/armeabi-v7a/libopencv_core.so'
-        exclude 'lib/armeabi-v7a/libopencv_imgproc.so'
-        exclude 'lib/mips/libcardioDecider.so'
-        exclude 'lib/x86/libcardioDecider.so'
-        exclude 'lib/x86/libcardioRecognizer.so'
-        exclude 'lib/x86/libcardioRecognizer_tegra2.so'
-        exclude 'lib/x86/libopencv_core.so'
-        exclude 'lib/x86/libopencv_imgproc.so'
-        exclude 'lib/x86_64/libcardioDecider.so'
-        exclude 'lib/x86_64/libcardioRecognizer.so'
-        exclude 'lib/x86_64/libcardioRecognizer_tegra2.so'
-        exclude 'lib/x86_64/libopencv_core.so'
-        exclude 'lib/x86_64/libopencv_imgproc.so'
-    }
 }
 
 static def getDate() {
@@ -118,7 +91,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
-    implementation 'com.google.firebase:firebase-database:19.2.0'
+    // Add the Firebase SDK for Crashlytics.
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
+    implementation 'com.google.firebase:firebase-database:19.2.1'
     //////// Camera Scan Text and number
     implementation 'com.google.android.gms:play-services-vision:19.0.0'
     // Google MAPS
@@ -196,6 +171,9 @@ dependencies {
 
     //// Super Bottom Sheet
     implementation 'com.github.andrefrsousa:SuperBottomSheet:1.5.0'
+
+    /////crashlicitic
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
 }
 apply plugin: 'com.google.gms.google-services'

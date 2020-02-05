@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "1037036133695-p0h56ldeqh32tc4f81rpttana1u7u5vi.apps.googleusercontent.com",
+          "client_id": "1037036133695-004kih2khg2juagtk90308br789isr0e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.fajarproject.travels",
             "certificate_hash": "128fa87d6d5fc3dc411555bf944f4dc398c0afb2"
+          }
+        },
+        {
+          "client_id": "1037036133695-p0h56ldeqh32tc4f81rpttana1u7u5vi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fajarproject.travels",
+            "certificate_hash": "2476978c10797ff14dfb1b3a2f3753eb1e4b8c5b"
           }
         },
         {

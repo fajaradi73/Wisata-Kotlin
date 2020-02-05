@@ -40,11 +40,11 @@ class OpsiLoginPresenter(view: OpsiLoginView, val context: Activity,
         if (login.toLowerCase(Locale.getDefault()) == "facebook"){
             /////// Logout Facebook
             LoginManager.getInstance().logOut()
-            view!!.loadingFacebook(false)
+            view?.loadingFacebook(false)
         }else{
             ///// Google Logout
             FirebaseAuth.getInstance().signOut()
-            view!!.loadingFacebook(false)
+            view?.loadingFacebook(false)
         }
     }
 
@@ -82,11 +82,11 @@ class OpsiLoginPresenter(view: OpsiLoginView, val context: Activity,
     }
 
     private fun loginSosmed(fgCode : String, email: String, fullname : String, imageUrl : String, login: String){
-        view!!.showLoading()
+        view?.showLoading()
         addSubscribe(apiStores.loginSosmedPosts(fgCode),object : NetworkCallback<UserModel>(){
             override fun onSuccess(model: UserModel) {
                 Util.saveUser(model,context)
-                view!!.changeActivity(Intent(context, MainActivity::class.java),true)
+                view?.changeActivity(Intent(context, MainActivity::class.java),true)
             }
 
             override fun onFailure(message: String?,code : Int?,jsonObject: JSONObject?) {
@@ -108,17 +108,17 @@ class OpsiLoginPresenter(view: OpsiLoginView, val context: Activity,
             }
 
             override fun onFinish() {
-                view!!.hideLoading()
+                view?.hideLoading()
             }
         })
     }
 
     fun registerSosmed(registerSosmedModel: RegisterSosmedModel){
-        view!!.showLoading()
+        view?.showLoading()
         addSubscribe(apiStores.registerSosmeds(registerSosmedModel),object : NetworkCallback<UserModel>(){
             override fun onSuccess(model: UserModel) {
                 Util.saveUser(model,context)
-                view!!.changeActivity(Intent(context, MainActivity::class.java),true)
+                view?.changeActivity(Intent(context, MainActivity::class.java),true)
             }
 
             override fun onFailure(message: String?, code: Int?,jsonObject: JSONObject?) {
@@ -133,7 +133,7 @@ class OpsiLoginPresenter(view: OpsiLoginView, val context: Activity,
             }
 
             override fun onFinish() {
-                view!!.hideLoading()
+                view?.hideLoading()
             }
 
         })
