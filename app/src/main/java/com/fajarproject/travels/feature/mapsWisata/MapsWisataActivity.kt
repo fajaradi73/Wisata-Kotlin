@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.akexorcist.googledirection.model.Direction
 import com.akexorcist.googledirection.model.Leg
 import com.akexorcist.googledirection.model.Route
@@ -29,12 +30,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_maps_travels.*
+
+/**
+ * Create by Fajar Adi Prasetyo on 06/02/2020.
+ */
 
 class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, OnMapReadyCallback,
     GoogleMap.OnCameraMoveListener{
@@ -70,19 +72,26 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
     override fun init() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.maps_travels) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val statusBarHeight = Util.getStatusBarHeight(this)
+        val size = Util.convertDpToPixel(24F)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = Color.parseColor("#00FFFFFF")
+            window.setFlags(
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES,
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            )
+            window.statusBarColor = ContextCompat.getColor(this, R.color.greyTransparent)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                window.setFlags(
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES,
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-                )
-            }
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            if (statusBarHeight > size) {
+                val decor = window.decorView
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
         }
         btn_close.setOnClickListener { finish() }
         btn_current.setOnClickListener{
@@ -219,7 +228,8 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
         val cameraPosition = CameraPosition.builder().target(latLngTravels).zoom(13f).build()
         val markerOptions = MarkerOptions()
         markerOptions.position(latLngTravels!!)
-        markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_marker_48dp))
+//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location))
+        markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_marker_wisata))
 
         //// move camera
         mapsTravels?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))

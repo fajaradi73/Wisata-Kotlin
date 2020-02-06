@@ -7,10 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -18,6 +15,7 @@ import com.fajarproject.travels.R
 import com.fajarproject.travels.api.MenuApi
 import com.fajarproject.travels.base.mvp.MvpActivity
 import com.fajarproject.travels.feature.home.HomeFragment
+import com.fajarproject.travels.feature.mapsWisataTerdekat.MapsWisataTerdekatActivity
 import com.fajarproject.travels.feature.popularWisata.PopularWisataFragment
 import com.fajarproject.travels.feature.profil.ProfilFragment
 import com.fajarproject.travels.feature.wisataTerdekat.WisataTerdekatFragment
@@ -174,6 +172,21 @@ class MainActivity : MvpActivity<MainPresenter>(),MainView, PhotoPickerFragment.
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var result = true
+        when (item.itemId) {
+            R.id.action_style -> {
+                startActivity(Intent(this,MapsWisataTerdekatActivity::class.java))
+            }
+            else -> result = super.onOptionsItemSelected(item)
+        }
+        return result
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.toolbar_main_menu,menu)
+        return true
+    }
     override fun onDestroy() {
         super.onDestroy()
         Log.d("Destroy","Main Activity")

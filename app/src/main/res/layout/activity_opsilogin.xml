@@ -151,7 +151,7 @@
                 android:textStyle="bold"
                 android:gravity="center"
                 android:paddingStart="@dimen/padding_10"
-                android:text="@string/email"
+                android:text="@string/masuk"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
