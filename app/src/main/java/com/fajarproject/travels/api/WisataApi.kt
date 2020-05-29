@@ -52,4 +52,13 @@ interface WisataApi {
     fun uploadPictureWisata(@Header("Authorization") token : String?,
                             @Part("id_wisata") idWisata : RequestBody,
                             @Part files : Array<MultipartBody.Part?> ) : Observable<PictureModel>
+
+    @GET("wisata/nearbyMapsWisata")
+    fun getNearbyMapWisata(
+        @Header("Authorization") token : String?,
+        @Query("radius") radius: Double?,
+        @Query("latitude") latitude: Double?,
+        @Query("longitude") longitude: Double?
+    ): Observable<MutableList<NearbyModel>>
+
 }

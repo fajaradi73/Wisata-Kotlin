@@ -184,7 +184,7 @@ class MainActivity : MvpActivity<MainPresenter>(),MainView, PhotoPickerFragment.
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.toolbar_main_menu,menu)
+        menuInflater.inflate(R.menu.toolbar_main_menu,menu)
         return true
     }
     override fun onDestroy() {

@@ -4,16 +4,17 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.fajarproject.travels.R
 import com.fajarproject.travels.api.WisataApi
 import com.fajarproject.travels.base.mvp.MvpActivity
+import com.fajarproject.travels.models.NearbyModel
 import com.fajarproject.travels.util.Util
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -24,6 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.VisibleRegion
+import kotlinx.android.synthetic.main.activity_maps_wisata_terdekat.*
 
 /**
  * Create by Fajar Adi Prasetyo on 06/02/2020.
@@ -80,9 +83,11 @@ class MapsWisataTerdekatActivity : MvpActivity<MapsWisataTedekatPresenter>(),Map
 	}
 
 	override fun showLoading() {
+		loadingOverlay.visibility = View.VISIBLE
 	}
 
 	override fun hideLoading() {
+		loadingOverlay.visibility = View.GONE
 	}
 
 	override fun updateLocationUI() {
@@ -120,37 +125,68 @@ class MapsWisataTerdekatActivity : MvpActivity<MapsWisataTedekatPresenter>(),Map
 		}
 	}
 
+	override fun getDataSuccess(model: MutableList<NearbyModel>) {
+		mapsTravels?.clear()
+		if (model.size > 0){
+			for (data in model) {
+				val markerOptions = MarkerOptions()
+				markerOptions.position(LatLng(data.latitude!!,data.longitude!!))
+				markerOptions.title(data.namaWisata)
+				markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_location_wisata))
+				mapsTravels?.addMarker(markerOptions)
+			}
+		}
+	}
+
+	override fun getDataFailed(msg: String) {
+		Toast.makeText(this,msg,Toast.LENGTH_LONG).show()
+	}
+
 	override fun showDeviceLocation(location: Location) {
 		mLastKnownLocation  = location
 		currentLatitude     = mLastKnownLocation?.latitude
 		currentLongitude    = mLastKnownLocation?.longitude
 		latLngCurrent       = LatLng(mLastKnownLocation!!.latitude,mLastKnownLocation!!.longitude)
+
 		val markerOptions = MarkerOptions()
 		markerOptions.position(latLngCurrent!!)
 		markerOptions.title("Lokasi anda")
 		markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_location))
 		mapsTravels?.addMarker(markerOptions)
+
+		val cameraPosition = CameraPosition.builder().target(latLngCurrent).zoom(13f).build()
+
+		//// move camera
+		mapsTravels?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+		mapsTravels?.animateCamera(CameraUpdateFactory.zoomTo(14f))
+		calculateRadius(currentLatitude!!,currentLongitude!!)
+	}
+
+	override fun calculateRadius(latitude : Double, longitude : Double){
+		val vr: VisibleRegion = mapsTravels?.projection?.visibleRegion!!
+		val left = vr.latLngBounds.southwest.longitude
+
+		val middleLeftCornerLocation =
+			Location("center")
+		middleLeftCornerLocation.latitude = vr.latLngBounds.center.latitude
+		middleLeftCornerLocation.longitude = left
+		val radius = Util.calculationByDistance(vr.latLngBounds.center,LatLng(middleLeftCornerLocation.latitude,middleLeftCornerLocation.longitude))
+		presenter?.getNearbyMaps(latitude,longitude, radius)
+
 	}
 
 	override fun onMapReady(googleMap: GoogleMap?) {
 		mapsTravels = googleMap
 		mapsTravels?.uiSettings?.isMyLocationButtonEnabled = false
 		mapsTravels?.uiSettings?.isMapToolbarEnabled = false
-//		latLngTravels = LatLng(latitudeTravels!!,longitudeTravels!!)
-//		val cameraPosition = CameraPosition.builder().target(latLngTravels).zoom(13f).build()
-//		val markerOptions = MarkerOptions()
-//		markerOptions.position(latLngTravels!!)
-//		markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_marker_48dp))
-//
-//		//// move camera
-//		mapsTravels?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-//		mapsTravels?.animateCamera(CameraUpdateFactory.zoomTo(14f))
-//		mapsTravels?.addMarker(markerOptions)
 		// Turn on the My Location layer and the related control on the map.
 		updateLocationUI()
 
 		// Get the current location of the device and set the position of the map.
 		presenter?.setDeviceLocation(mLocationPermissionGranted)
+		mapsTravels?.setOnCameraIdleListener {
+			calculateRadius(mapsTravels?.cameraPosition?.target?.latitude!!,mapsTravels?.cameraPosition?.target?.longitude!!)
+		}
 	}
 
 	override fun onRequestPermissionsResult(

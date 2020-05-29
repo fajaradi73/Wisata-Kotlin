@@ -124,7 +124,7 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(), DetailWisataV
 			}
 		})
 		val adLoader: AdLoader = builder.build()
-		adLoader.loadAd(AdRequest.Builder().addTestDevice("828CDDB6B368965E6B6BB3B6C5321FD6").build())
+		adLoader.loadAd(AdRequest.Builder().build())
 	}
 
 	override fun setToolbar() {
@@ -339,7 +339,7 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(), DetailWisataV
 			CameraPosition.builder().target(latLng).zoom(15F).build()
 		val markerOptions = MarkerOptions()
 		markerOptions.position(latLng)
-		markerOptions.icon(Util.bitmapDescriptorFromVector(this, R.drawable.ic_marker_48dp))
+		markerOptions.icon(Util.bitmapDescriptorFromVector(this, R.drawable.ic_location_wisata))
 		maps?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 		maps?.addMarker(markerOptions)
 		maps?.setOnMapClickListener {

@@ -1,6 +1,7 @@
 package com.fajarproject.travels.feature.mapsWisataTerdekat
 
 import android.location.Location
+import com.fajarproject.travels.models.NearbyModel
 
 
 /**
@@ -20,4 +21,9 @@ interface MapsWisataTerdekatView {
 
 	fun getLocationPermission()
 
+	fun getDataSuccess(model : MutableList<NearbyModel>)
+
+	fun getDataFailed(msg : String)
+
+	fun calculateRadius(latitude : Double, longitude : Double)
 }

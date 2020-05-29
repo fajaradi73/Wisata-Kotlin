@@ -2,6 +2,7 @@ package com.fajarproject.travels.feature.mapsWisata
 
 import android.Manifest
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -24,8 +25,8 @@ import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -39,7 +40,7 @@ import kotlinx.android.synthetic.main.activity_maps_travels.*
  */
 
 class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, OnMapReadyCallback,
-    GoogleMap.OnCameraMoveListener{
+    GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraIdleListener {
 
     private var mapsTravels : GoogleMap? = null
 
@@ -96,7 +97,6 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
         btn_close.setOnClickListener { finish() }
         btn_current.setOnClickListener{
             if (mLastKnownLocation != null){
-                btn_current.hide()
                 val location : Location = mLastKnownLocation!!
                 latLngCurrent = LatLng(location.latitude,location.longitude)
                 val builder = CameraPosition.builder()
@@ -181,6 +181,7 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
             if (mLocationPermissionGranted) {
                 mapsTravels?.isMyLocationEnabled = true
                 presenter?.setDeviceLocation(mLocationPermissionGranted)
+                createLocationRequest()
             } else {
                 mLastKnownLocation = null
                 mapsTravels?.isMyLocationEnabled = false
@@ -188,6 +189,58 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
             }
         } catch (e : SecurityException)  {
             Log.e("Exception: %s", e.message!!)
+        }
+    }
+
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
+
+    private fun startLocationUpdates(){
+        try {
+            if (mLocationPermissionGranted) {
+                mFusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
+            } else {
+                getLocationPermission()
+            }
+        } catch (e : SecurityException)  {
+            Log.e("Exception: %s", e.message!!)
+        }
+    }
+
+    private fun createLocationRequest() {
+        // 1
+        locationRequest = LocationRequest()
+        // 2
+        locationRequest.interval = 10000
+        // 3
+        locationRequest.fastestInterval = 5000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        // 4
+        val client = LocationServices.getSettingsClient(this)
+        val task = client.checkLocationSettings(builder.build())
+
+        // 5
+        task.addOnSuccessListener {
+            startLocationUpdates()
+        }
+        task.addOnFailureListener { e ->
+            // 6
+            if (e is ResolvableApiException) {
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    e.startResolutionForResult(this,
+                        123)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    sendEx.printStackTrace()
+                }
+            }
         }
     }
 
@@ -229,7 +282,7 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
         val markerOptions = MarkerOptions()
         markerOptions.position(latLngTravels!!)
 //        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location))
-        markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_marker_wisata))
+        markerOptions.icon(Util.bitmapDescriptorFromVector(this,R.drawable.ic_location_wisata))
 
         //// move camera
         mapsTravels?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
@@ -241,6 +294,7 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
         // Get the current location of the device and set the position of the map.
         presenter?.setDeviceLocation(mLocationPermissionGranted)
         mapsTravels?.setOnCameraMoveListener(this)
+        mapsTravels?.setOnCameraIdleListener(this)
     }
 
     override fun onRequestPermissionsResult(
@@ -251,7 +305,9 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         mLocationPermissionGranted = false
         when (requestCode) {
-            requestCode -> {
+            123 -> {
+                startLocationUpdates()
+            }requestCode -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty()
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -259,15 +315,24 @@ class MapsWisataActivity : MvpActivity<MapsWisataPresenter>(),MapsWisataView, On
                     mLocationPermissionGranted = true
                 }
             }
+
         }
         updateLocationUI()
     }
 
     override fun onCameraMove() {
-        val cameraPosition = mapsTravels?.cameraPosition
-        if (cameraPosition?.target?.latitude != latLngCurrent?.latitude &&
-                cameraPosition?.target?.longitude != latLngCurrent?.longitude){
+	    val latLng = mapsTravels?.projection?.visibleRegion?.latLngBounds?.center
+        if (latLng?.latitude != mLastKnownLocation?.latitude &&
+                latLng?.longitude != mLastKnownLocation?.longitude){
             btn_current.show()
+        }
+    }
+
+    override fun onCameraIdle() {
+        val latLng = mapsTravels?.projection?.visibleRegion?.latLngBounds?.center
+        if (latLng?.latitude == mLastKnownLocation?.latitude &&
+            latLng?.longitude == mLastKnownLocation?.longitude){
+            btn_current.hide()
         }
     }
 }
