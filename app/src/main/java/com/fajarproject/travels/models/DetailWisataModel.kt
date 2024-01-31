@@ -15,7 +15,7 @@ data class DetailWisataModel(
 	val descWisata: String? = null,
 
     @SerializedName("type_id")
-	val typeId: Int? = null,
+	val typeId: String? = null,
 
     @SerializedName("latitude")
 	val latitude: Double? = null,
@@ -36,9 +36,9 @@ data class DetailWisataModel(
 	val ulasan: List<UlasanItem> = arrayListOf(),
 
     @SerializedName("id_wisata")
-	val idWisata: Int? = null,
+	val idWisata: String? = null,
 
-    @SerializedName("ratting")
+    @SerializedName("ratting_wisata")
 	val ratting: Double? = null,
 
     @SerializedName("alamat_wisata")

@@ -3,7 +3,7 @@ package com.fajarproject.travels.network
 import android.util.Log
 import okhttp3.ResponseBody
 import org.json.JSONObject
-import retrofit2.adapter.rxjava.HttpException
+import retrofit2.HttpException
 import rx.Subscriber
 
 
@@ -24,14 +24,16 @@ abstract class NetworkCallback<M> : Subscriber<M>() {
             val code: Int = httpException.code()
             val responseBody : ResponseBody? = httpException.response().errorBody()
             var jsonObject = JSONObject()
-            if (code != 403){
+            val message: String = httpException.message()
+            if (code == 404){
+                onFailure(message,404,null)
+            }else if (code != 403){
                 jsonObject = JSONObject(responseBody?.string())
             }
-            val message: String = httpException.message()
             Log.i(TAG, "code : $code")
             onFailure(message,code,jsonObject)
         } else {
-            onFailure(e.message,404,JSONObject())
+            onFailure(e.message,404,null)
         }
         onFinish()
     }

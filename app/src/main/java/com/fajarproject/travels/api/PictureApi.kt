@@ -14,7 +14,7 @@ interface PictureApi {
 
     @GET("wisata/pictureWisata")
     fun getPictureWisata(@Header("Authorization") token : String?,
-                        @Query("id_wisata") id_wisata: Int?): Observable<List<PictureItem>>
+                        @Query("id_wisata") id_wisata: String?): Observable<List<PictureItem>>
 
     @Multipart
     @POST("wisata/saveMultiplePicture")

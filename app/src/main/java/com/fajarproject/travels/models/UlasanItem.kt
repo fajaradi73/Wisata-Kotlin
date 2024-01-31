@@ -16,7 +16,7 @@ data class UlasanItem(
 	val rattingUlasan: Int? = 0,
 
 	@field:SerializedName("id_wisata")
-	val idWisata: Int? = 0,
+	val idWisata: String? = "",
 
 	@field:SerializedName("fullname")
 	val fullname: String? = "",
@@ -25,8 +25,8 @@ data class UlasanItem(
 	val createDate: Long? = 0,
 
 	@field:SerializedName("ulasan_id")
-	val ulasanId: Int? = 0,
+	val ulasanId: String? = "",
 
 	@field:SerializedName("userID")
-	val userID: Int? = 0
+	val userID: String? = ""
 )

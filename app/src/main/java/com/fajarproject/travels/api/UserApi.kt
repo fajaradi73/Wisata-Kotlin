@@ -15,7 +15,7 @@ import rx.Observable
 
 interface UserApi {
 
-    @GET("user/profile")
+    @GET("user/")
     fun getProfile(@Header("Authorization") token : String?): Observable<ProfileModel>
 
     @Multipart

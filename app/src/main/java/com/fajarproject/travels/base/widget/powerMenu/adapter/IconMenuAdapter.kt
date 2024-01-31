@@ -17,24 +17,24 @@ class IconMenuAdapter : MenuBaseAdapter<IconPowerMenuItem?>() {
     private var position = 0
 
     override fun getView(index: Int, view: View?, viewGroup: ViewGroup): View? {
-        var view: View? = view
+        var thisView: View? = view
         val context: Context = viewGroup.context
-        if (view == null) {
+        if (thisView == null) {
             val inflater: LayoutInflater =
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.item_icon_menu, viewGroup, false)
+            thisView = inflater.inflate(R.layout.item_icon_menu, viewGroup, false)
         }
         val (icon1, title1) = getItem(index) as IconPowerMenuItem
-        val icon: ImageView = view!!.findViewById(R.id.item_icon)
-        icon.setImageDrawable(icon1)
-        val title: TextView = view.findViewById(R.id.item_title)
-        val parentView : ConstraintLayout = view.findViewById(R.id.parentView)
+        val icon: ImageView? = thisView?.findViewById(R.id.item_icon)
+        icon?.setImageDrawable(icon1)
+        val title: TextView? = thisView?.findViewById(R.id.item_title)
+        val parentView : ConstraintLayout? = thisView?.findViewById(R.id.parentView)
         if (position == index){
-            parentView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary))
+            parentView?.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary))
         }else{
-            parentView.setBackgroundColor(ContextCompat.getColor(context,R.color.white))
+            parentView?.setBackgroundColor(ContextCompat.getColor(context,R.color.white))
         }
-        title.text = title1
+        title?.text = title1
 
         return super.getView(index, view, viewGroup)
     }

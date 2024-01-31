@@ -8,14 +8,17 @@ import com.google.gson.annotations.SerializedName
 
 data class WisataModel(
 
+    @SerializedName("_id")
+    val id: String? = null,
+
     @SerializedName("id_wisata")
-    val idWisata: Int? = null,
+    val idWisata: String? = null,
 
     @SerializedName("jam_tutup")
     val jamTutup: Long? = null,
 
     @SerializedName("type_id")
-    val typeId: Int? = null,
+    val typeId: String? = null,
 
     @SerializedName("latitude")
     val latitude: Double? = null,
@@ -32,7 +35,7 @@ data class WisataModel(
     @SerializedName("jam_buka")
     val jamBuka: Long? = null,
 
-    @SerializedName("ratting")
+    @SerializedName("ratting_wisata")
     val ratting: Double? = null,
 
     @SerializedName("alamat_wisata")

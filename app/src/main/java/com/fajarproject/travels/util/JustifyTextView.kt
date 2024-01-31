@@ -19,7 +19,7 @@ public class JustifyTextView(
     context: Context?,
     attrs: AttributeSet?
 ) :
-    AppCompatTextView(context, attrs) {
+    AppCompatTextView(context!!, attrs) {
     private var mLineY = 0
     private var mViewWidth = 0
     public override fun onLayout(

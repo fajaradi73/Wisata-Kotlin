@@ -12,25 +12,13 @@ import org.parceler.Parcel
 @Parcel
 data class PictureItem(
 
-	@SerializedName("id_picture")
-	@Expose
-	val idPicture: Int? = 0,
-
 	@SerializedName("id_wisata")
 	@Expose
-	val idWisata: Int? = 0,
+	val idWisata: String? = "",
 
 	@SerializedName("nama_wisata")
 	@Expose
 	val namaWisata: String? = "",
-
-	@SerializedName("namaUser")
-	@Expose
-	val namaUser: String? = "",
-
-	@SerializedName("userID")
-	@Expose
-	val userID: Int? = 0,
 
 	@SerializedName("create_date")
 	@Expose
@@ -41,21 +29,16 @@ data class PictureItem(
 	val picture: String? = ""
 ) : Parcelable {
 	constructor(parcel: android.os.Parcel) : this(
-		parcel.readValue(Int::class.java.classLoader) as? Int,
-		parcel.readValue(Int::class.java.classLoader) as? Int,
 		parcel.readString(),
 		parcel.readString(),
-		parcel.readValue(Int::class.java.classLoader) as? Int,
 		parcel.readValue(Long::class.java.classLoader) as? Long,
 		parcel.readString()
-	)
+	) {
+	}
 
 	override fun writeToParcel(parcel: android.os.Parcel, flags: Int) {
-		parcel.writeValue(idPicture)
-		parcel.writeValue(idWisata)
+		parcel.writeString(idWisata)
 		parcel.writeString(namaWisata)
-		parcel.writeString(namaUser)
-		parcel.writeValue(userID)
 		parcel.writeValue(createDate)
 		parcel.writeString(picture)
 	}
@@ -73,4 +56,5 @@ data class PictureItem(
 			return arrayOfNulls(size)
 		}
 	}
+
 }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="activityPadding">16dp</dimen>
+    <dimen name="placeholderImage">60dp</dimen>
+    <dimen name="placeholderTextHeight">8dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="custom_profile_image">50dp</dimen>
+    <dimen name="custom_profile_padding">2dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="image_width">120dp</dimen>
+    <dimen name="image_final_width">32dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="header_view_end_margin_left">56dp</dimen>
+    <dimen name="header_view_start_margin_bottom">16dp</dimen>
+    <dimen name="header_view_end_margin_right">14dp</dimen>
+
+    <dimen name="spacing_huge">32dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="radius">10dp</dimen>
+
+    <!--General Dimensions-->
+
+    <!--dialog_one_button-->
+    <dimen name="dlg_one_button_icon_size">96dp</dimen>
+    <!--dialog_one_button-->
+
+    <!--dialog_two_buttons-->
+    <dimen name="dlg_two_buttons_icon_size">96dp</dimen>
+    <dimen name="icon_width">48dp</dimen>
+    <dimen name="icon_height">48dp</dimen>
+    <!--dialog_two_buttons-->
+
+    <dimen name="itemBetweenMargin">4dp</dimen>
+    <dimen name="itemBetweenMarginMedium">6dp</dimen>
+
+    <dimen name="card_corner_radius">5dp</dimen>
+    <dimen name="card_corner_radius2">8dp</dimen>
+    <dimen name="card_corner_radius3">16dp</dimen>
+    <dimen name="activityHorizontalMargin_medium">14dp</dimen>
+    <dimen name="activityHorizontalMargin">16dp</dimen>
+    <dimen name="activityHorizontalMargin_big">36dp</dimen>
+    <dimen name="activityHorizontalMargin_big2">45dp</dimen>
+    <dimen name="activityHorizontalMargin_big3">60dp</dimen>
+    <dimen name="activityVerticalMargin">16dp</dimen>
+    <dimen name="activityVerticalMargin_medium">24dp</dimen>
+    <dimen name="activityVerticalMargin_big">36dp</dimen>
+    <dimen name="activityVerticalMargin_big2">45dp</dimen>
+    <dimen name="menu_icon_bottom">2dp</dimen>
+    <dimen name="elevation_min">-3dp</dimen>
+    <dimen name="inputBottomMedium">18dp</dimen>
+    <dimen name="inputBottomMedium2">24dp</dimen>
+    <dimen name="inputBottomEasy">12dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="padding_20">20dp</dimen>
+    <dimen name="height_icon">40dp</dimen>
+
+    <!--BottomNavigation-->
+<!--    <dimen name="design_bottom_navigation_item_max_width" tools:override="true">600dp</dimen>-->
+<!--    <dimen name="design_bottom_navigation_active_item_max_width" tools:override="true">600dp</dimen>-->
+<!--    <dimen name="design_bottom_navigation_text_size" tools:override="true">13sp</dimen>-->
+<!--    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">13sp</dimen>-->
+<!--    <dimen name="design_bottom_navigation_active_icon_size" tools:override="true">24dp</dimen>-->
+
+    <!--Text Size-->
+    <dimen name="text_menu">12sp</dimen>
+    <dimen name="height_200">200dp</dimen>
+    <dimen name="size_100">100dp</dimen>
+    <dimen name="height_image">125dp</dimen>
+    <dimen name="height_image2">150dp</dimen>
+    <dimen name="padding_15">15dp</dimen>
+    <dimen name="samplePickerCornerRadius">16dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
+    <dimen name="dimen_25">25dp</dimen>
+    <dimen name="dimen_12">12dp</dimen>
+
+</resources>

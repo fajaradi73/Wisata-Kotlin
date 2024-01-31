@@ -16,13 +16,13 @@ import rx.Observable
 
 interface LoginAPI {
 
-    @POST("auth/login")
+    @POST("login")
     fun loginPosts(@Body login : LoginModel?): Observable<UserModel>
 
     @FormUrlEncoded
-    @POST("auth/login_sosmed")
+    @POST("login_sosmed")
     fun loginSosmedPosts(@Field ("fg_code") fgCode : String?): Observable<UserModel>
 
-    @POST("auth/register_sosmed")
+    @POST("register_sosmed")
     fun registerSosmeds(@Body registerSosmedModel: RegisterSosmedModel?) : Observable<UserModel>
 }

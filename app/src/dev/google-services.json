@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "1037036133695",
+    "firebase_url": "https://wisata-6df91.firebaseio.com",
+    "project_id": "wisata-6df91",
+    "storage_bucket": "wisata-6df91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037036133695:android:8dc900db3521d83e75078a",
+        "android_client_info": {
+          "package_name": "com.fajarproject.travels.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037036133695-004kih2khg2juagtk90308br789isr0e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fajarproject.travels.dev",
+            "certificate_hash": "128fa87d6d5fc3dc411555bf944f4dc398c0afb2"
+          }
+        },
+        {
+          "client_id": "1037036133695-p0h56ldeqh32tc4f81rpttana1u7u5vi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fajarproject.travels.dev",
+            "certificate_hash": "2476978c10797ff14dfb1b3a2f3753eb1e4b8c5b"
+          }
+        },
+        {
+          "client_id": "1037036133695-k258pggm1gvergsfhndqgp2l9dtrlctm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAO_T9chWM6e1qsbTWRq2voTIZWNovs5Y0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037036133695-k258pggm1gvergsfhndqgp2l9dtrlctm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

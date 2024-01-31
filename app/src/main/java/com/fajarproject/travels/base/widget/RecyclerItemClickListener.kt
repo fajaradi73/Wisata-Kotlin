@@ -40,7 +40,7 @@ class RecyclerItemClickListener(
 
     init {
         mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
                 return true
             }
 

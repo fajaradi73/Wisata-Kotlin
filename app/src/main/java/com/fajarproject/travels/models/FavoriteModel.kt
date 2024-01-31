@@ -11,7 +11,7 @@ data class FavoriteModel(
 	val jamTutup: Int? = null,
 
 	@SerializedName("type_id")
-	val typeId: Int? = null,
+	val typeId: String? = null,
 
 	@SerializedName("latitude")
 	val latitude: Double? = null,
@@ -32,9 +32,9 @@ data class FavoriteModel(
 	val jamBuka: Int? = null,
 
 	@SerializedName("id_wisata")
-	val idWisata: Int? = null,
+	val idWisata: String? = null,
 
-	@SerializedName("ratting")
+	@SerializedName("ratting_wisata")
 	val ratting: Double? = null,
 
 	@SerializedName("alamat_wisata")

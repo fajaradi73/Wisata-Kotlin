@@ -12,7 +12,7 @@ import rx.Observable
 
 interface RegisterApi {
 
-    @POST("auth/register")
+    @POST("register")
     fun registerWisata(@Body registerSubmitModel: RegisterSubmitModel) : Observable<SaveModel>
 
 }

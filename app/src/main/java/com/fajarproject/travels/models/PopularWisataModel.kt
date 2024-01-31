@@ -12,7 +12,7 @@ data class PopularWisataModel(
 	val jamTutup: Int? = null,
 
 	@field:SerializedName("type_id")
-	val typeId: Int? = null,
+	val typeId: String? = null,
 
 	@field:SerializedName("latitude")
 	val latitude: Double? = null,
@@ -32,10 +32,13 @@ data class PopularWisataModel(
 	@field:SerializedName("jam_buka")
 	val jamBuka: Int? = null,
 
-	@field:SerializedName("id_wisata")
-	val idWisata: Int? = null,
+	@SerializedName("_id")
+	val id: String? = null,
 
-	@field:SerializedName("ratting")
+	@SerializedName("id_wisata")
+	val idWisata: String? = null,
+
+	@field:SerializedName("ratting_wisata")
 	val ratting: Double? = null,
 
 	@field:SerializedName("alamat_wisata")

@@ -11,11 +11,11 @@ data class NearbyModel(
 	@SerializedName("jam_tutup")
 	val jamTutup: Long? = null,
 
-	@SerializedName("distance")
+	@SerializedName("jarak")
 	val distance: Double? = null,
 
 	@SerializedName("type_id")
-	val typeId: Int? = null,
+	val typeId: String? = null,
 
 	@SerializedName("latitude")
 	val latitude: Double? = null,
@@ -32,10 +32,13 @@ data class NearbyModel(
 	@SerializedName("jam_buka")
 	val jamBuka: Long? = null,
 
-	@SerializedName("id_wisata")
-	val idWisata: Int? = null,
+	@SerializedName("_id")
+	val id: String? = null,
 
-	@SerializedName("ratting")
+	@SerializedName("id_wisata")
+	val idWisata: String? = null,
+
+	@SerializedName("ratting_wisata")
 	val ratting: Double? = null,
 
 	@SerializedName("alamat_wisata")

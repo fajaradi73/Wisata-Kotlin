@@ -35,6 +35,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
+import android.webkit.MimeTypeMap
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -44,17 +45,19 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.akexorcist.googledirection.model.Route
-import com.fajarproject.travels.App
-import com.fajarproject.travels.App.Companion.My_Permissions_Request_Location
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.fajarproject.travels.BuildConfig
+import com.fajarproject.travels.FlavorConfig
 import com.fajarproject.travels.R
 import com.fajarproject.travels.base.view.DialogNoListener
 import com.fajarproject.travels.base.view.DialogYesListener
 import com.fajarproject.travels.base.widget.ImageLoader
 import com.fajarproject.travels.base.widget.Spannable
-import com.fajarproject.travels.feature.opsiLogin.OpsiLoginActivity
+import com.fajarproject.travels.config.apiUrl
+import com.fajarproject.travels.config.apiUrl.Companion.My_Permissions_Request_Location
 import com.fajarproject.travels.models.UserModel
 import com.fajarproject.travels.preference.AppPreference
+import com.fajarproject.travels.ui.opsiLogin.OpsiLoginActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.InterstitialAd
@@ -72,6 +75,7 @@ import com.google.firebase.iid.InstanceIdResult
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
@@ -80,7 +84,6 @@ import retrofit2.Retrofit
 import retrofit2.Retrofit.Builder
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.*
 import java.lang.reflect.Type
 import java.net.HttpURLConnection
@@ -100,56 +103,35 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.regex.Pattern
 import kotlin.math.*
 
+
 /**
  * Created by Fajar Adi Prasetyo on 09/10/19.
  */
 
 
-@SuppressLint("StaticFieldLeak")
-object Util {
-    fun getDefaultRetrofit(): Retrofit? {
-        return Builder()
-            .baseUrl(App.API)
-            .client(getOkHttp())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+@SuppressLint("StaticFieldLeak","VisibleForTests")
 
-    fun getRetrofitRxJava2() : Retrofit?{
+object Util {
+
+    fun getRetrofitRxJava2(context: Context) : Retrofit?{
         return Builder()
-            .baseUrl(App.BASE_URL)
-            .client(getOkHttp())
+            .baseUrl(FlavorConfig.baseUrl())
+            .client(getOkHttp(context))
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .build()
     }
 
-    fun getStringResponseRetrofit(): Retrofit? {
-        return Builder()
-            .baseUrl(App.API)
-            .client(getOkHttp())
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-    }
-
-    fun getEmptyResponseRetrofit(): Retrofit? {
-        return Builder()
-            .baseUrl(App.API)
-            .client(getOkHttp())
-            .addConverterFactory(NullOnEmptyConverterFactory())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    private fun getOkHttp(): OkHttpClient {
+    private fun getOkHttp(context: Context): OkHttpClient {
         val interceptor =
             HttpLoggingInterceptor()
         interceptor.level = Level.BODY
+        val chucker = ChuckerInterceptor(context)
         return OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
-            .addInterceptor(interceptor).build()
+            .addInterceptor(interceptor).addInterceptor(chucker).build()
     }
 
     fun okHttpDownload(): OkHttpClient {
@@ -316,18 +298,21 @@ object Util {
     }
 
     fun checkGooglePlayServicesAvailable(activity: Activity?): Boolean {
-        val googleAPI: GoogleApiAvailability = GoogleApiAvailability.getInstance()
-        val result = googleAPI.isGooglePlayServicesAvailable(activity)
-        if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(
-                    activity, result,
-                    0
-                ).show()
+        if(activity != null){
+            val googleAPI: GoogleApiAvailability = GoogleApiAvailability.getInstance()
+            val result = googleAPI.isGooglePlayServicesAvailable(activity)
+            if (result != ConnectionResult.SUCCESS) {
+                if (googleAPI.isUserResolvableError(result)) {
+                    googleAPI.getErrorDialog(
+                        activity, result,
+                        0
+                    ).show()
+                }
+                return false
             }
-            return false
+            return true
         }
-        return true
+        return false
     }
 
     fun setCameraWithCoordinationBounds(route: Route,googleMap: GoogleMap?) {
@@ -546,7 +531,7 @@ object Util {
         }
     }
     fun mediaType(): MediaType? {
-        return MediaType.parse("application/json; charset=utf-8")
+        return "application/json; charset=utf-8".toMediaTypeOrNull()
     }
 
     fun justify(textView: TextView) {
@@ -601,12 +586,12 @@ object Util {
     }
     fun checkFileByName(context: Context, vararg strings: String): Boolean {
         var result = false
-        if (!File(context.filesDir.toString() + File.separator + App.BASE_FILE).exists()) {
-            File(context.filesDir.toString() + File.separator + App.BASE_FILE)
+        if (!File(context.filesDir.toString() + File.separator + apiUrl.BASE_FILE).exists()) {
+            File(context.filesDir.toString() + File.separator + apiUrl.BASE_FILE)
                 .mkdirs()
         }
         val string = strings[strings.size - 1]
-        val directory = context.filesDir.toString() + File.separator + App.BASE_FILE + File.separator
+        val directory = context.filesDir.toString() + File.separator + apiUrl.BASE_FILE + File.separator
         val listFiles: Array<File> = File(directory).listFiles()!!
         for (file in listFiles) {
             if (file.absolutePath.contains(string)) {
@@ -622,12 +607,12 @@ object Util {
 
     fun writeResponseBodyToDisk(context: Context, body: ResponseBody, filename: String, ext: String?): Boolean {
         return try {
-            if (!File(context.filesDir.toString() + File.separator + App.BASE_FILE).exists()) {
-                File(context.filesDir.toString() + File.separator + App.BASE_FILE)
+            if (!File(context.filesDir.toString() + File.separator + apiUrl.BASE_FILE).exists()) {
+                File(context.filesDir.toString() + File.separator + apiUrl.BASE_FILE)
                     .mkdirs()
             }
             val directory =
-                context.filesDir.toString() + File.separator + App.BASE_FILE + File.separator
+                context.filesDir.toString() + File.separator + apiUrl.BASE_FILE + File.separator
             val path: String
             path = if (ext == null) {
                 directory + filename
@@ -1016,13 +1001,13 @@ object Util {
 
     fun convertLongToDateWithTime(timestamp: Long) :String {
         val calendar = Calendar.getInstance(Locale.getDefault())
-        calendar.timeInMillis = timestamp * 1000L
+        calendar.timeInMillis = timestamp
         return android.text.format.DateFormat.format("dd MMMM yyyy HH:mm:dd", calendar).toString()
     }
 
     fun convertLongToDate(timestamp: Long) :String {
         val calendar = Calendar.getInstance(Locale.getDefault())
-        calendar.timeInMillis = timestamp * 1000L
+        calendar.timeInMillis = timestamp
         return android.text.format.DateFormat.format("dd MMMM yyyy", calendar).toString()
     }
 
@@ -1231,5 +1216,13 @@ object Util {
                     + " Meter   " + meterInDec
         )
         return radius * c
+    }
+    fun getMimeType(url: String?): String? {
+        var type: String? = null
+        val extension = MimeTypeMap.getFileExtensionFromUrl(url)
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        }
+        return type
     }
 }

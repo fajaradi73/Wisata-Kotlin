@@ -16,7 +16,7 @@ data class WisataDetailModel(
 	val descWisata: String? = "",
 
 	@SerializedName("type_id")
-	val typeId: Int? = 0,
+	val typeId: String? = "",
 
 	@SerializedName("latitude")
 	val latitude: Double? = 0.0,
@@ -24,7 +24,7 @@ data class WisataDetailModel(
 	@SerializedName("nama_wisata")
 	val namaWisata: String? = "",
 
-	@SerializedName("jumlah_ratting")
+	@SerializedName("jumlah_ulasan")
 	val jumlahRatting: Int? = 0,
 
 	@SerializedName("type_wisata")
@@ -42,10 +42,13 @@ data class WisataDetailModel(
 	@SerializedName("ulasan")
 	val ulasan: MutableList<UlasanItem>? = arrayListOf(),
 
-	@SerializedName("id_wisata")
-	val idWisata: Int? = 0,
+	@SerializedName("_id")
+	val id: String? = null,
 
-	@SerializedName("ratting")
+	@SerializedName("id_wisata")
+	val idWisata: String? = null,
+
+	@SerializedName("ratting_wisata")
 	val ratting: Double? = 0.0,
 
 	@SerializedName("alamat_wisata")

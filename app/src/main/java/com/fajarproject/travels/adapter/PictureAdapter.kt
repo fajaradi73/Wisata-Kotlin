@@ -11,80 +11,73 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.fajarproject.travels.App
+import com.fajarproject.travels.FlavorConfig
 import com.fajarproject.travels.R
+import com.fajarproject.travels.base.ui.AdapterHolder
 import com.fajarproject.travels.base.view.OnItemClickListener
-import com.fajarproject.travels.feature.previewPictureWisata.PreviewPictureActivity
+import com.fajarproject.travels.databinding.AdapterFotoBinding
 import com.fajarproject.travels.models.PictureItem
+import com.fajarproject.travels.ui.previewPictureWisata.PreviewPictureActivity
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
-import kotlinx.android.synthetic.main.adapter_foto.view.*
 import org.parceler.Parcels
 
 /**
  * Create by Fajar Adi Prasetyo on 13/01/2020.
  */
-class PictureAdapter(private val list: List<PictureItem>, private val context : Activity) : RecyclerView.Adapter<PictureAdapter.AdapterHolder>() {
+class PictureAdapter(
+	private val list: List<PictureItem>, private val context: Activity
+) : RecyclerView.Adapter<AdapterHolder<AdapterFotoBinding>>() {
 
-    private var onItemClickListener : OnItemClickListener? = null
+	private var onItemClickListener: OnItemClickListener? = null
 
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener?){
-        this.onItemClickListener = onItemClickListener
-    }
+	fun setOnItemClickListener(onItemClickListener: OnItemClickListener?) {
+		this.onItemClickListener = onItemClickListener
+	}
 
-    class AdapterHolder(itemView: View, onItemClickListener: OnItemClickListener?) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-        private var onItemClickListener : OnItemClickListener? = null
+	override fun onCreateViewHolder(
+		parent: ViewGroup,
+		viewType: Int
+	): AdapterHolder<AdapterFotoBinding> {
+		return AdapterHolder(
+			AdapterFotoBinding.inflate(
+				LayoutInflater.from(parent.context), parent, false
+			), this.onItemClickListener
+		)
+	}
 
-        override fun onClick(v: View?) {
-            onItemClickListener?.onItemClick(v,adapterPosition)
-        }
-        init {
-            itemView.setOnClickListener(this)
-            this.onItemClickListener = onItemClickListener
-        }
-    }
+	override fun getItemCount(): Int {
+		return list.size
+	}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterHolder {
-        return AdapterHolder(
-            LayoutInflater.from(
-                parent.context
-            ).inflate(R.layout.adapter_foto, parent, false)
-            , this.onItemClickListener
-        )
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
-    }
-
-    override fun onBindViewHolder(holder: AdapterHolder, position: Int) {
+	override fun onBindViewHolder(holder: AdapterHolder<AdapterFotoBinding>, position: Int) {
+		val binding = AdapterFotoBinding.bind(holder.itemView)
         val data = list[position]
-        Glide.with(context)
-            .load(App.BASE_IMAGE + data.picture)
-            .error(R.drawable.image_dieng)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .thumbnail(0.1f)
-            .placeholder(Util.circleLoading(context))
-            .into(holder.itemView.picture)
-        ViewCompat.setTransitionName(holder.itemView.picture,data.namaWisata)
+		Glide.with(context)
+			.load(FlavorConfig.baseImage() + data.picture)
+			.error(R.drawable.image_dieng)
+			.diskCacheStrategy(DiskCacheStrategy.ALL)
+			.thumbnail(0.1f)
+			.placeholder(Util.circleLoading(context))
+			.into(binding.picture)
+		ViewCompat.setTransitionName(binding.picture, data.namaWisata)
 
-        holder.itemView.picture.setOnClickListener {
-            previewImageWisata(holder.itemView.picture,position,list)
-        }
-    }
+		binding.picture.setOnClickListener {
+			previewImageWisata(binding.picture, position, list)
+		}
+	}
 
-    private fun previewImageWisata(view : View, position: Int, data: List<PictureItem>){
-        // Ordinary Intent for launching a new activity
-        val intent = Intent(context, PreviewPictureActivity::class.java)
-        intent.putExtra(Constant.position,position)
-        intent.putExtra(Constant.dataFoto, Parcels.wrap(data))
+	private fun previewImageWisata(view: View, position: Int, data: List<PictureItem>) {
+		// Ordinary Intent for launching a new activity
+		val intent = Intent(context, PreviewPictureActivity::class.java)
+		intent.putExtra(Constant.position, position)
+		intent.putExtra(Constant.dataFoto, Parcels.wrap(data))
 
-        val options: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            context,
-            view,  // Starting view
-            ViewCompat.getTransitionName(view)!! // The String
-        )
-        ActivityCompat.startActivity(context, intent,options.toBundle())
-    }
+		val options: ActivityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+			context,
+			view,  // Starting view
+			ViewCompat.getTransitionName(view)!! // The String
+		)
+		ActivityCompat.startActivity(context, intent, options.toBundle())
+	}
 }

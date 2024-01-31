@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/background">
+        <bitmap
+            android:src="@drawable/star_on"
+            android:tint="@color/golden"
+            android:alpha="?android:attr/disabledAlpha"
+            tools:targetApi="lollipop" />
+    </item>
+    <item android:id="@+id/secondaryProgress">
+        <bitmap
+            android:src="@drawable/star_on"
+            android:tint="@color/golden" />
+    </item>
+    <item android:id="@+id/progress">
+        <bitmap
+            android:src="@drawable/star_off"
+            android:tint="@color/golden"
+            android:tileModeX="repeat" />
+    </item>
+</layer-list>

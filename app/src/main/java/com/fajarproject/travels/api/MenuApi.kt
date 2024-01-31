@@ -7,7 +7,7 @@ import rx.Observable
 
 interface MenuApi {
 
-    @GET("auth/menuList")
+    @GET("menuList")
     fun getMenu(
         @Header("Authorization") token : String?
     ): Observable<List<LookupDetailModel>>

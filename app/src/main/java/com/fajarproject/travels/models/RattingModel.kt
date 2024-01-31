@@ -8,7 +8,7 @@ data class RattingModel(
 	val createUlasan: Boolean? = true,
 
 	@field:SerializedName("id_wisata")
-	val idWisata: Int? = 0,
+	val idWisata: String? = "",
 
 	@field:SerializedName("ratting")
 	val ratting: List<RattingItem> = arrayListOf(),

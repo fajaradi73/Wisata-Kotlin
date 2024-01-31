@@ -26,6 +26,7 @@ open class BaseActivity : AppCompatActivity() {
         super.setContentView(layoutResID)
         activity = this
         ButterKnife.bind(this)
+
     }
 
     override fun onDestroy() {

@@ -16,12 +16,12 @@ interface UlasanApi {
     fun getUlasan(@Header("Authorization") token : String?,
                   @Path("limit") limit : Int?,
                   @Path("page") page : Int?,
-                  @Query("id_wisata") id_wisata: Int?): Observable<MutableList<UlasanItem>>
+                  @Query("id_wisata") id_wisata: String?): Observable<MutableList<UlasanItem>>
 
     @GET("wisata/rattingWisata")
     fun getRatting(@Header("Authorization") token : String?,
-                  @Query("id_wisata") id_wisata: Int?): Observable<RattingModel>
+                  @Query("id_wisata") id_wisata: String?): Observable<RattingModel>
 
-    @POST("user/save_ulasan")
+    @POST("user/saveUlasan")
     fun saveUlasan(@Header("Authorization") token : String?,@Body request: CreateUlasanRequest) : Observable<SaveModel>
 }

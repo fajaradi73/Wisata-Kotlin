@@ -26,7 +26,7 @@ data class ProfileModel(
 	@field:SerializedName("last_login")
 	val lastLogin: Long? = 0,
 
-	@field:SerializedName("tanggal_lahir")
+	@field:SerializedName("birth_date")
 	val tanggal_lahir: Long? = 0,
 
 	@field:SerializedName("login_with")
@@ -35,7 +35,7 @@ data class ProfileModel(
 	@field:SerializedName("gender")
 	val gender: String? = "",
 
-	@field:SerializedName("tempat_lahir")
+	@field:SerializedName("birth_place")
 	val tempat_lahir: String? = "",
 
 	@field:SerializedName("picture_background")

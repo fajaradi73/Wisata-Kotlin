@@ -21,7 +21,7 @@ abstract class MvpFragment<P : BasePresenter<*,*>?> : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter = createPresenter()
-        if (!Util.isInternetAvailable(activity!!)){
+        if (!Util.isInternetAvailable(requireActivity())){
             showDialogInternet()
             isConnection = false
         }

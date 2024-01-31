@@ -8,107 +8,97 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.fajarproject.travels.App
+import com.fajarproject.travels.FlavorConfig
 import com.fajarproject.travels.R
+import com.fajarproject.travels.base.ui.AdapterHolder
+import com.fajarproject.travels.base.ui.LoadingViewHolder
 import com.fajarproject.travels.base.view.OnItemClickListener
+import com.fajarproject.travels.databinding.AdapterFavoriteBinding
+import com.fajarproject.travels.databinding.ProgressLoadingBinding
 import com.fajarproject.travels.models.FavoriteModel
 import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
-import kotlinx.android.synthetic.main.adapter_favorite.view.*
 
-class FavoriteWisataAdapter(private val list: MutableList<FavoriteModel>, private val context : Context) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FavoriteWisataAdapter(
+	private val list: MutableList<FavoriteModel>,
+	private val context: Context
+) :
+	RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var onItemClickListener : OnItemClickListener? = null
-    private var isLoadingAdded = false
+	private var onItemClickListener: OnItemClickListener? = null
+	private var isLoadingAdded = false
 
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener?){
-        this.onItemClickListener = onItemClickListener
-    }
+	fun setOnItemClickListener(onItemClickListener: OnItemClickListener?) {
+		this.onItemClickListener = onItemClickListener
+	}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == Constant.VIEW_TYPE_ITEM){
-            AdapterHolder(
-                LayoutInflater.from(
-                    parent.context
-                ).inflate(R.layout.adapter_favorite, parent, false)
-                , this.onItemClickListener
-            )
-        }else {
-            LoadingViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.progress_loading,
-                    parent,
-                    false
-                )
-            )
-        }
-    }
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+		return if (viewType == Constant.VIEW_TYPE_ITEM) {
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+			AdapterHolder(
+				AdapterFavoriteBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false),
+				this.onItemClickListener
+			)
+		} else {
+			LoadingViewHolder(
+				ProgressLoadingBinding.inflate(
+                    LayoutInflater.from(parent.context),parent,false)
+			)
+		}
+	}
 
-    @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder.itemViewType == Constant.VIEW_TYPE_ITEM) {
-            val tour = list[position]
-            holder.itemView.title_wisata.text = tour.namaWisata
-            holder.itemView.alamat_wisata.text = tour.alamatWisata
+	override fun getItemCount(): Int {
+		return list.size
+	}
 
-            Glide.with(context)
-                .load(App.BASE_IMAGE + tour.imageWisata)
-                .error(R.drawable.image_dieng)
-                .placeholder(Util.circleLoading(context))
-                .into(holder.itemView.image_wisata)
-        }else{
-            ///do nothing
-            Log.d("Loading",".....")
-        }
-    }
+	@SuppressLint("SetTextI18n")
+	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+		if (holder.itemViewType == Constant.VIEW_TYPE_ITEM) {
+            val binding = AdapterFavoriteBinding.bind(holder.itemView)
+			val tour = list[position]
+			binding.titleWisata.text = tour.namaWisata
+			binding.alamatWisata.text = tour.alamatWisata
 
-    fun addLoadingFooter() {
-        isLoadingAdded = true
-        list.add(FavoriteModel())
-        notifyItemInserted(list.size - 1)
-    }
+			Glide.with(context)
+				.load(FlavorConfig.baseImage() + tour.imageWisata)
+				.error(R.drawable.image_dieng)
+				.placeholder(Util.circleLoading(context))
+				.into(binding.imageWisata)
+		} else {
+			///do nothing
+			Log.d("Loading", ".....")
+		}
+	}
 
-    fun removeLoadingFooter() {
-        isLoadingAdded = false
-        val position: Int = list.size - 1
-        list.removeAt(position)
-        notifyItemRemoved(position)
-    }
+	fun addLoadingFooter() {
+		isLoadingAdded = true
+		list.add(FavoriteModel())
+		notifyItemInserted(list.size - 1)
+	}
 
-    fun getItem(position: Int) : FavoriteModel{
-        return list[position]
-    }
+	fun removeLoadingFooter() {
+		isLoadingAdded = false
+		val position: Int = list.size - 1
+		list.removeAt(position)
+		notifyItemRemoved(position)
+	}
 
-    fun addData(data : MutableList<FavoriteModel>){
-        this.list.addAll(data)
-        notifyDataSetChanged()
-    }
+	fun getItem(position: Int): FavoriteModel {
+		return list[position]
+	}
 
-    fun getDataList() : MutableList<FavoriteModel>{
-        return list
-    }
+	fun addData(data: MutableList<FavoriteModel>) {
+		this.list.addAll(data)
+		notifyDataSetChanged()
+	}
 
-    override fun getItemViewType(position: Int): Int {
-        return if (position == list.size - 1 && isLoadingAdded) Constant.VIEW_TYPE_LOADING else Constant.VIEW_TYPE_ITEM
-    }
+	fun getDataList(): MutableList<FavoriteModel> {
+		return list
+	}
 
-    class AdapterHolder(itemView: View, onItemClickListener: OnItemClickListener?) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-        private var onItemClickListener : OnItemClickListener? = null
-
-        override fun onClick(v: View?) {
-            onItemClickListener?.onItemClick(v,adapterPosition)
-        }
-        init {
-            itemView.setOnClickListener(this)
-            this.onItemClickListener = onItemClickListener
-        }
-    }
-    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+	override fun getItemViewType(position: Int): Int {
+		return if (position == list.size - 1 && isLoadingAdded) Constant.VIEW_TYPE_LOADING else Constant.VIEW_TYPE_ITEM
+	}
 
 }
