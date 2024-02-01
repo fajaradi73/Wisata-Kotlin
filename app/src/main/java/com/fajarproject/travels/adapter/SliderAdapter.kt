@@ -22,10 +22,10 @@ class SliderAdapter(val context: Context) : SliderViewAdapter<SliderAdapter.Adap
 
 	override fun onBindViewHolder(holder: AdapterHolder, position: Int) {
         val binding = ImageSliderLayoutItemBinding.bind(holder.itemView.root)
-		when (position) {
+		when(position) {
 			0 -> {
 				Glide.with(binding.root)
-					.load("https://agnizeeyolo.files.wordpress.com/2018/12/13.jpg")
+					.load("https://content.fortune.com/wp-content/uploads/2019/09/1920x1080-Intrepid-Travel-Egypt-Cairo-Pyramids-group-hug-028.jpeg")
 					.placeholder(Util.circleLoading(context))
 					.into(binding.ivAutoImageSlider)
 			}

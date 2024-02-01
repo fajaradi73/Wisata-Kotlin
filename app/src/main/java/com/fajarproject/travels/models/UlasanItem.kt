@@ -9,7 +9,7 @@ import org.parceler.Parcel
 @Parcel
 data class UlasanItem(
 
-	@field:SerializedName("ulasan")
+	@field:SerializedName("ulasan_wisata")
 	val ulasan: String? = "",
 
 	@field:SerializedName("ratting_ulasan")

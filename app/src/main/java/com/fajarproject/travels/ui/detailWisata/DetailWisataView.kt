@@ -12,8 +12,6 @@ import com.fajarproject.travels.models.WisataDetailModel
 
 interface DetailWisataView {
 
-    fun setNativeAds()
-
     fun setToolbar()
 
     fun init()

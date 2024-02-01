@@ -39,7 +39,6 @@ import com.fajarproject.travels.util.Constant
 import com.fajarproject.travels.util.Util
 import com.fajarproject.travels.util.fileUtil.FileUtil
 import com.fajarproject.travels.util.fileUtil.FileUtilCallbacks
-import com.google.android.ads.nativetemplates.NativeTemplateStyle
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -89,7 +88,6 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(), DetailWisataV
 		setToolbar()
 		init()
 		idWisata = intent.getStringExtra(Constant.IdWisata)
-		setNativeAds()
 		binding.swipeRefresh.setOnRefreshListener {
 			binding.swipeRefresh.isRefreshing = false
 			presenter?.getDetailWisata(idWisata, true)
@@ -102,35 +100,6 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(), DetailWisataV
 		if (isConnection) {
 			presenter?.getDetailWisata(idWisata, true)
 		}
-	}
-
-	override fun setNativeAds() {
-		val builder: AdLoader.Builder = AdLoader.Builder(
-			this, getString(R.string.ads_native_advance)
-		)
-
-		builder.forUnifiedNativeAd { unifiedNativeAd ->
-			val styles: NativeTemplateStyle? =
-				NativeTemplateStyle.Builder()
-					.withMainBackgroundColor(
-						ColorDrawable(
-							ContextCompat.getColor(
-								this,
-								R.color.white
-							)
-						)
-					).build()
-			binding.adsNative.setStyles(styles)
-			binding.adsNative.setNativeAd(unifiedNativeAd)
-		}
-		builder.withAdListener(object : AdListener() {
-			override fun onAdFailedToLoad(errorCode: Int) {
-				Log.d("errorCode", "$errorCode ")
-				binding.adsNative.visibility = View.GONE
-			}
-		})
-		val adLoader: AdLoader = builder.build()
-		adLoader.loadAd(AdRequest.Builder().build())
 	}
 
 	override fun setToolbar() {
@@ -190,12 +159,6 @@ class DetailWisataActivity : MvpActivity<DetailWisataPresenter>(), DetailWisataV
 
 
 	private fun openPicker() {
-//		PhotoPickerFragment.newInstance(
-//			multiple = true,
-//			maxSelection = 5,
-//			allowCamera = true,
-//			theme = R.style.ChiliPhotoPicker_Dark
-//		).show(supportFragmentManager, "picker")
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
 			intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 5);

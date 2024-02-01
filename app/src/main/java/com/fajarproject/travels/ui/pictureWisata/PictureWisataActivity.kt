@@ -1,14 +1,17 @@
 package com.fajarproject.travels.ui.pictureWisata
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresExtension
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.fajarproject.travels.R
@@ -31,7 +34,7 @@ import kotlin.collections.ArrayList
 /**
  * Create by Fajar Adi Prasetyo on 13/01/2020.
  */
-
+@RequiresExtension(extension = Build.VERSION_CODES.R, version = 2)
 class PictureWisataActivity : MvpActivity<PictureWisataPresenter>(),PictureWisataView,FileUtilCallbacks,PhotoPickerFragment.Callback  {
 
     override fun createPresenter(): PictureWisataPresenter {
@@ -108,12 +111,42 @@ class PictureWisataActivity : MvpActivity<PictureWisataPresenter>(),PictureWisat
     }
 
     private fun openPicker() {
-        PhotoPickerFragment.newInstance(
-            multiple = true,
-            maxSelection = 5,
-            allowCamera = true,
-            theme = R.style.ChiliPhotoPicker_Dark
-        ).show(supportFragmentManager, "picker")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+            intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 5)
+            intent.type = "image/*"
+
+            startActivityForResult(intent, 888)
+        }else {
+            PhotoPickerFragment.newInstance(
+                multiple = true,
+                maxSelection = 5,
+                allowCamera = true,
+                theme = R.style.ChiliPhotoPicker_Dark
+            ).show(supportFragmentManager, "picker")
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 888) {
+                if(data?.clipData != null) {
+                    val images = data.clipData!!
+                    list.clear()
+                    for (i in 0 until images.itemCount){
+                        val uri = images.getItemAt(i).uri
+                        fileUtil?.getPath(
+                            uri,
+                            Build.VERSION.SDK_INT
+                        )
+                    }
+                    if (list.size > 0) {
+                        presenter?.uploadPicture(idWisata!!, list)
+                    }
+                }
+
+            }
+        }
     }
 
     override fun successUpload(title: String, message: String) {
@@ -164,6 +197,7 @@ class PictureWisataActivity : MvpActivity<PictureWisataPresenter>(),PictureWisat
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         if (isSafeBackPressed){
             if(newImage){

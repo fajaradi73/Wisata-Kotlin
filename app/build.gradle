@@ -145,7 +145,6 @@ dependencies {
     //noinspection PlaySdkIndexGenericIssues
     implementation 'com.google.android.gms:play-services-ads:18.3.0'
     implementation 'com.google.firebase:firebase-ads:18.3.0'
-    implementation project(':NativeTemplatesAndroid-1.0.0')
     //// Like Button
     implementation 'com.github.jd-alexander:LikeButton:0.2.3'
     ///// facebook
@@ -191,8 +190,11 @@ dependencies {
 
     /////crashlytics
     //noinspection OutdatedLibrary
-
+    //// Chucker
     debugImplementation "com.github.chuckerteam.chucker:library:4.0.0"
     releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.0.0"
+
+    //// Curved Bottom Navigation Bar
+    implementation 'com.github.Akshay-Katariya:CurveBottomBar:1.0'
 }
 apply plugin: 'com.google.gms.google-services'

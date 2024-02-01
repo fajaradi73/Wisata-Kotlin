@@ -110,7 +110,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:targetApi="lollipop">
+        >
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -301,7 +301,6 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/itemBetweenMarginMedium"
                             android:id="@+id/alamat_wisata"
-                            android:drawableStart="@drawable/ic_map_marker"
                             android:drawablePadding="@dimen/itemBetweenMargin"
                             tools:text="Jl. Tanah abang 1 no 20"
                             android:textSize="13sp"
@@ -309,7 +308,9 @@
                             android:padding="@dimen/itemBetweenMarginMedium"
                             app:layout_constraintTop_toBottomOf="@id/cv_maps"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:drawableStartCompat="@drawable/ic_map_marker"
+                            />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
@@ -321,7 +322,7 @@
                     app:layout_constraintTop_toBottomOf="@id/cl_tentang"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/adsNative">
+                    app:layout_constraintBottom_toTopOf="@id/cl_foto">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -400,23 +401,13 @@
                         </com.github.florent37.expansionpanel.ExpansionLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
-                <com.google.android.ads.nativetemplates.TemplateView
-                    android:id="@+id/adsNative"
-                    app:gnt_template_type="@layout/gnt_medium_template_view"
-                    android:layout_width="350dp"
-                    android:layout_height="350dp"
-                    android:layout_marginTop="@dimen/padding_10"
-                    app:layout_constraintTop_toBottomOf="@id/cvExpansion"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/cl_foto"/>
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/cl_foto"
                     android:layout_margin="@dimen/itemBetweenMarginMedium"
                     app:cardCornerRadius="@dimen/itemBetweenMarginMedium"
-                    app:layout_constraintTop_toBottomOf="@id/adsNative"
+                    app:layout_constraintTop_toBottomOf="@id/cvExpansion"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent">
                     <androidx.constraintlayout.widget.ConstraintLayout

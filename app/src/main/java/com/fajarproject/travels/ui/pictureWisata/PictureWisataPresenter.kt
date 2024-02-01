@@ -10,7 +10,7 @@ import com.fajarproject.travels.network.NetworkCallback
 import com.fajarproject.travels.util.Util
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject
 import java.io.File
 
@@ -52,12 +52,12 @@ class PictureWisataPresenter(view: PictureWisataView, val context: Activity,
         for(i in 0 until list.size){
             val path = list[i].replace("\n","")
             val file = File(path)
-            val imageBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
-            imageWisata[i] = MultipartBody.Part.createFormData("files[]", file.name.replace("\"\n",""), imageBody)
+            val fileType = Util.getMimeType(file.path)
+            val imageBody = file.asRequestBody(fileType?.toMediaTypeOrNull())
+            imageWisata[i] = MultipartBody.Part.createFormData("files", file.name.replace("\"\n",""), imageBody)
         }
-        val id = RequestBody.create("text/plain".toMediaTypeOrNull(), idWisata.toString())
         view?.showLoading()
-        addSubscribe(apiStores.uploadPictureWisata("Bearer " + user.token,id,imageWisata),object : NetworkCallback<PictureModel>(){
+        addSubscribe(apiStores.uploadPictureWisata("Bearer " + user.token,idWisata,imageWisata),object : NetworkCallback<PictureModel>(){
             override fun onSuccess(model: PictureModel) {
                 view?.successUpload(model.title,model.message)
             }

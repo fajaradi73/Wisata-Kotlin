@@ -17,8 +17,10 @@ interface PictureApi {
                         @Query("id_wisata") id_wisata: String?): Observable<List<PictureItem>>
 
     @Multipart
-    @POST("wisata/saveMultiplePicture")
-    fun uploadPictureWisata(@Header("Authorization") token : String?,
-                            @Part("id_wisata") idWisata : RequestBody,
-                            @Part files : Array<MultipartBody.Part?> ) : Observable<PictureModel>
+    @POST("wisata/saveMultiplePicture/{id_wisata}")
+    fun uploadPictureWisata(
+        @Header("Authorization") token: String?,
+        @Path("id_wisata") idWisata: String?,
+        @Part files: Array<MultipartBody.Part?>
+    ): Observable<PictureModel>
 }
